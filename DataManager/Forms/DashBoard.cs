@@ -9,33 +9,35 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using System.Transactions;
+using System.Diagnostics;
 
 namespace DataManager
 {
     public partial class DashBoard : Form
     {
         private Sql_Manager _SqlManager = null;
+        private BackgroundWorker _BackgroundWorker = null;
+
         private List<string> _TableList = null;
         private Queue<string> _TableQueue = null;
-
         private Dictionary<string, List<string>> _ForeignKeyList = null;
-        private bool isPositiveDirection = true;
+        private string _SourceDbName = string.Empty;
 
-        private BackgroundWorker _BackgroundWorker = null;
+        
         private enum Step
         {
-            SEARCH_FK = -1,
+            SEARCH_FK,
             NOCHECK_FK,
             TRANSFER_DATA,
-            CHECK_FK,
-            FINISH
+            CHECK_FK
         }
 
-        public DashBoard(List<string> tableList, Sql_Manager sqlManager)
+        public DashBoard(List<string> tableList, Sql_Manager sqlManager, string sourceDbName)
         {
             InitializeComponent();
             setTableList(tableList);
             _SqlManager = sqlManager;
+            _SourceDbName = sourceDbName;
 
             SetBackgroundWorkerList();
 
@@ -55,40 +57,38 @@ namespace DataManager
             {
                 _TableQueue.Enqueue(tableList[i]);
             }
+
+            SetTableCount();
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            using (TransactionScope transactionScope = new TransactionScope())
+            try
             {
-                try
-                {
-                    while ((Step)spb_Step.SelectedItemIndex != Step.FINISH)
+                bool exit = false;
+                while (!exit)
+                {   
+                    switch ((Step)spb_Step.SelectedItemIndex)
                     {
-                        switch ((Step)spb_Step.SelectedItemIndex)
-                        {
-                            case Step.SEARCH_FK:
-                                SearchForeignKey();
-                                break;
-                            case Step.NOCHECK_FK:
-                                SetForeignKey(false);
-                                break;
-                            case Step.TRANSFER_DATA:
-                                break;
-                            case Step.CHECK_FK:
-                                SetForeignKey(true);
-                                break;
-                        }
+                        case Step.SEARCH_FK:
+                            SearchForeignKey();
+                            break;
+                        case Step.NOCHECK_FK:
+                            SetForeignKey(false);
+                            break;
+                        case Step.TRANSFER_DATA:
+                            TransferTableData();
+                            break;
+                        case Step.CHECK_FK:
+                            SetForeignKey(true);
+                            exit = true;
+                            break;
                     }
-
-                    transactionScope.Complete();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    transactionScope.Dispose();
-                }
-
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -142,9 +142,91 @@ namespace DataManager
             MoveNextStep();
         }
 
+        private void TransferTableData()
+        {
+            DateTime startTime = DateTime.Now;
+
+            // 목록 초기화
+            List<BackgroundWorkerProgress> enabledBackroundWorkerList = new List<BackgroundWorkerProgress>();
+            for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
+            {
+                BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
+                if (backgroundWorkerProgress.IsEnabled)
+                {
+                    enabledBackroundWorkerList.Add(backgroundWorkerProgress);
+                }
+            }
+
+            // 시작 명령
+            for (int i = 0; i < enabledBackroundWorkerList.Count; i++)
+            {
+                enabledBackroundWorkerList[i].RunBackgroundWorker();                
+            }
+
+            double timeSpanSecond = 0;
+            // 대기
+            while (true)
+            {
+                DateTime currentTime = DateTime.Now;
+                if ((currentTime - startTime).TotalSeconds != timeSpanSecond)
+                {
+                    timeSpanSecond = (currentTime - startTime).TotalSeconds;
+                    SetProcessTime(timeSpanSecond);
+                }
+
+                bool allWorkerComplete = true;
+                bool existException = false;
+                string exceptionMessage = string.Empty;
+                for (int i = enabledBackroundWorkerList.Count - 1; i >= 0; i--)
+                {
+                    if (enabledBackroundWorkerList[i].IsBusy)
+                        allWorkerComplete = false;
+                    else if (enabledBackroundWorkerList[i].IsException)
+                    {
+                        existException = true;
+                        exceptionMessage = enabledBackroundWorkerList[i].ExceptionMessage;
+                        break;
+                    }   
+                    else
+                        enabledBackroundWorkerList.RemoveAt(i);
+                }
+
+                if (existException)
+                { 
+                    for (int i = 0; i < enabledBackroundWorkerList.Count; i++)
+                    {
+                        enabledBackroundWorkerList[i].CancelBackgroundWorker();
+                    }
+                    throw new Exception(exceptionMessage);
+                }
+
+                if (allWorkerComplete)
+                    break;
+            }
+
+            // 완료
+            MoveNextStep();
+        }
+
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (DialogResult.OK == MessageBox.Show("데이터 이전이 완료되었습니다."))
+            {
+                FormClose();
+            }
+        }
+
+        private void FormClose()
+        {
+            if (this.InvokeRequired)
+            {
+                Action close = delegate { FormClose(); };
+                this.Invoke(close);
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
 
@@ -155,7 +237,7 @@ namespace DataManager
             for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
             {
                 BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
-                backgroundWorkerProgress.SetTitle(++backgroundWorkerIndex);
+                backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
                 if (backgroundWorkerProgress.BackgroundWorkerSeq > backgroundWorkerCount)
                     backgroundWorkerProgress.Disabled();
                 else
@@ -163,6 +245,12 @@ namespace DataManager
                     backgroundWorkerProgress._GetTableInTableList = new BackgroundWorkerProgress.GetTableInTableList(GetTable);
                     backgroundWorkerProgress.ConnectDatabase(_SqlManager.ConnectionString);
                 }
+            }
+
+            Process process = Process.GetCurrentProcess();
+            foreach (ProcessThread processThread in process.Threads)
+            {
+                processThread.ProcessorAffinity = process.ProcessorAffinity;
             }
         }
 
@@ -193,28 +281,50 @@ namespace DataManager
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        public string GetTable()
         {
-            if (isPositiveDirection)
-            { 
-                spb_Step.SelectedItemIndex++;
-                if (spb_Step.SelectedItemIndex == spb_Step.Items.Count - 1)
-                    isPositiveDirection = false;
-            }
-            else
+            lock(_TableQueue)
             {
-                spb_Step.SelectedItemIndex--;
-                if (spb_Step.SelectedItemIndex == 0)
-                    isPositiveDirection = true;
+                string tableName = string.Empty;
+                if (_TableQueue.Count > 0)                    
+                    tableName = _TableQueue.Dequeue();
+
+                SetTableCount();
+                return tableName;
             }
         }
 
-        public string GetTable()
+        private void SetTableCount()
         {
-            if (_TableQueue.Count > 0)
-                return _TableQueue.Dequeue();
+            if (lc_TableCount.InvokeRequired)
+            {
+                Action setTableCount = delegate { SetTableCount(); };
+                lc_ProcessTime.Invoke(setTableCount);
+            }
             else
-                return string.Empty;
+            {   
+                lc_TableCount.Text = string.Format("{0} / {1}", _TableList.Count - _TableQueue.Count, _TableList.Count);
+            }
+        }
+
+        public void SetProcessTime(double totalSeconds)
+        {
+            if (lc_ProcessTime.InvokeRequired)
+            {
+                Action setProcessTime = delegate { SetProcessTime(totalSeconds); };
+                lc_ProcessTime.Invoke(setProcessTime);
+            }   
+            else
+            {
+                double _totalSeconds = totalSeconds;
+                int hours = (int)(_totalSeconds / 3600);
+                _totalSeconds = _totalSeconds % 3600;
+                int minutes = (int)(_totalSeconds / 60);
+                _totalSeconds = _totalSeconds % 60;
+                int seconds = (int)(_totalSeconds);
+
+                lc_ProcessTime.Text = string.Format("{0:D3}:{1:D2}:{2:D2}", hours, minutes, seconds);
+            }
         }
     }
 }

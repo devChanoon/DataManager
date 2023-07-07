@@ -177,7 +177,7 @@ namespace DataManager
                     tableList.Add(gv_TableList.GetRowCellValue(i, gc_TableName).ToString());
             }
 
-            DashBoard dashBoard = new DashBoard(tableList, _SqlManager);
+            DashBoard dashBoard = new DashBoard(tableList, _SqlManager, cb_SrcDB.SelectedItem.ToString());
             dashBoard.ShowDialog();
         }
     }

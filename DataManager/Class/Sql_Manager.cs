@@ -72,7 +72,36 @@ namespace DataManager
             return ExecuteSql(DataType.STRING, Query_Manager.SetForeignKey(tableName, foreignKeyName, isCheck));
         }
 
+        public string ValidationTable(string tableName)
+        {
+            return ExecuteSql(DataType.STRING, Query_Manager.ValidationTable(tableName));
+        }
 
+        public void DeleteTableData(string tablename)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.DeleteTableData(tablename));
+        }
+
+        public void SetIdentityInsert(string tableName, bool isOn)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.SetIdentityInsert(tableName, isOn));
+        }
+
+        public DataTable GetComputedColumnList(string tableName)
+        {
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetComputedColumnList(tableName));
+        }
+
+        public DataTable GetTableDataList(string sourceDbName, string tableName)
+        {
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName));
+        }
+
+        public string InsertDataToTable(string tableName, string columnData, string valueData, ref string query)
+        {
+            query = Query_Manager.InsertDataToTable(tableName, columnData, valueData);
+            return ExecuteSql(DataType.STRING, query);
+        }
 
         private dynamic ExecuteSql(DataType dataType, string query)
         {
