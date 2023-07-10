@@ -15,7 +15,6 @@ namespace DataManager
         private Sql_Manager _SqlManager = new Sql_Manager();
         private Init_Manager _InitManager = new Init_Manager();
         
-
         public Main()
         {
             InitializeComponent();
@@ -44,8 +43,6 @@ namespace DataManager
             if (_SqlManager.SqlConnect(connectionString))
             {
                 SetDBControlEnabled(false);
-
-                SetLog("################# DB Connect Success #################");
                 sb_Connect.Text = "DISCONNECT";
 
                 _InitManager._InitDb.dbAddress = tb_DBAddress.Text;
@@ -57,7 +54,6 @@ namespace DataManager
             }
             else
             {
-                SetLog("################# DB Connect Fail #################");
                 sb_Connect.Text = "CONNECT";
                 return false;
             }
@@ -68,13 +64,10 @@ namespace DataManager
             if (_SqlManager.SqlDisconnect())
             {
                 SetDBControlEnabled(true);
-
-                SetLog("################# DB Disconnect Success #################");
                 sb_Connect.Text = "CONNECT";
             }
             else
             {
-                SetLog("################# DB Disconnect Fail #################");
                 sb_Connect.Text = "DISCONNECT";
             }
         }
@@ -89,7 +82,6 @@ namespace DataManager
                 cbe_ViewPassword.Checked = enabled;
             cbe_ViewPassword.Enabled = enabled;
 
-            groupBox2.Enabled = !enabled;
             groupBox3.Enabled = !enabled;
         }
 
@@ -105,11 +97,6 @@ namespace DataManager
                 if (cb_SrcDB.SelectedItem == null)
                     cb_SrcDB.SelectedItem = cb_SrcDB.Items[0];
             }
-        }
-
-        private void SetLog(string logMessage)
-        {
-            tb_log.AppendText(string.Format("[{0}] {1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), logMessage));
         }
 
         private void cb_SrcDB_SelectedValueChanged(object sender, EventArgs e)
@@ -177,7 +164,7 @@ namespace DataManager
                     tableList.Add(gv_TableList.GetRowCellValue(i, gc_TableName).ToString());
             }
 
-            DashBoard dashBoard = new DashBoard(tableList, _SqlManager);
+            DashBoard dashBoard = new DashBoard(tableList, cb_SrcDB.SelectedItem.ToString(), ref _SqlManager);
             dashBoard.ShowDialog();
         }
     }

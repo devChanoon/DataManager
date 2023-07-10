@@ -46,8 +46,6 @@ namespace DataManager
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.tb_log = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.gc_TableList = new DevExpress.XtraGrid.GridControl();
@@ -66,7 +64,6 @@ namespace DataManager
             this.tlp_Step.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.styleController1)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.tlp_Main.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).BeginInit();
@@ -91,7 +88,7 @@ namespace DataManager
             this.tlp_Step.Name = "tlp_Step";
             this.tlp_Step.RowCount = 1;
             this.tlp_Step.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Step.Size = new System.Drawing.Size(715, 34);
+            this.tlp_Step.Size = new System.Drawing.Size(916, 34);
             this.tlp_Step.TabIndex = 0;
             // 
             // lc_SrcDB
@@ -107,7 +104,7 @@ namespace DataManager
             this.lc_SrcDB.Location = new System.Drawing.Point(1, 1);
             this.lc_SrcDB.Margin = new System.Windows.Forms.Padding(0);
             this.lc_SrcDB.Name = "lc_SrcDB";
-            this.lc_SrcDB.Size = new System.Drawing.Size(216, 32);
+            this.lc_SrcDB.Size = new System.Drawing.Size(277, 32);
             this.lc_SrcDB.TabIndex = 2;
             this.lc_SrcDB.Text = "원본 DB";
             // 
@@ -117,10 +114,10 @@ namespace DataManager
             this.cb_SrcDB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cb_SrcDB.Font = new System.Drawing.Font("맑은 고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.cb_SrcDB.FormattingEnabled = true;
-            this.cb_SrcDB.Location = new System.Drawing.Point(218, 1);
+            this.cb_SrcDB.Location = new System.Drawing.Point(279, 1);
             this.cb_SrcDB.Margin = new System.Windows.Forms.Padding(0);
             this.cb_SrcDB.Name = "cb_SrcDB";
-            this.cb_SrcDB.Size = new System.Drawing.Size(496, 33);
+            this.cb_SrcDB.Size = new System.Drawing.Size(636, 33);
             this.cb_SrcDB.TabIndex = 3;
             this.cb_SrcDB.SelectedValueChanged += new System.EventHandler(this.cb_SrcDB_SelectedValueChanged);
             // 
@@ -135,7 +132,6 @@ namespace DataManager
             // 
             // groupBox1
             // 
-            this.tlp_Main.SetColumnSpan(this.groupBox1, 2);
             this.groupBox1.Controls.Add(this.tb_Password);
             this.groupBox1.Controls.Add(this.tb_DBName);
             this.groupBox1.Controls.Add(this.tb_ID);
@@ -149,7 +145,7 @@ namespace DataManager
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1031, 84);
+            this.groupBox1.Size = new System.Drawing.Size(922, 84);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "DB Information";
@@ -157,7 +153,7 @@ namespace DataManager
             // tb_Password
             // 
             this.tb_Password.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_Password.Location = new System.Drawing.Point(538, 49);
+            this.tb_Password.Location = new System.Drawing.Point(479, 49);
             this.tb_Password.Name = "tb_Password";
             this.tb_Password.Size = new System.Drawing.Size(193, 23);
             this.tb_Password.TabIndex = 3;
@@ -168,7 +164,7 @@ namespace DataManager
             // tb_DBName
             // 
             this.tb_DBName.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_DBName.Location = new System.Drawing.Point(538, 20);
+            this.tb_DBName.Location = new System.Drawing.Point(479, 20);
             this.tb_DBName.Name = "tb_DBName";
             this.tb_DBName.Size = new System.Drawing.Size(220, 23);
             this.tb_DBName.TabIndex = 1;
@@ -178,7 +174,7 @@ namespace DataManager
             // tb_ID
             // 
             this.tb_ID.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_ID.Location = new System.Drawing.Point(169, 49);
+            this.tb_ID.Location = new System.Drawing.Point(110, 49);
             this.tb_ID.Name = "tb_ID";
             this.tb_ID.Size = new System.Drawing.Size(238, 23);
             this.tb_ID.TabIndex = 2;
@@ -188,7 +184,7 @@ namespace DataManager
             // tb_DBAddress
             // 
             this.tb_DBAddress.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_DBAddress.Location = new System.Drawing.Point(169, 20);
+            this.tb_DBAddress.Location = new System.Drawing.Point(110, 20);
             this.tb_DBAddress.Name = "tb_DBAddress";
             this.tb_DBAddress.Size = new System.Drawing.Size(238, 23);
             this.tb_DBAddress.TabIndex = 0;
@@ -202,7 +198,7 @@ namespace DataManager
             this.cbe_ViewPassword.AppearancePressed.Options.UseBackColor = true;
             this.cbe_ViewPassword.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("cbe_ViewPassword.ImageOptions.Image")));
             this.cbe_ViewPassword.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.cbe_ViewPassword.Location = new System.Drawing.Point(730, 49);
+            this.cbe_ViewPassword.Location = new System.Drawing.Point(671, 49);
             this.cbe_ViewPassword.Name = "cbe_ViewPassword";
             this.cbe_ViewPassword.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.cbe_ViewPassword.Size = new System.Drawing.Size(28, 23);
@@ -213,7 +209,7 @@ namespace DataManager
             this.sb_Connect.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sb_Connect.Appearance.Options.UseFont = true;
             this.sb_Connect.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_Connect.Location = new System.Drawing.Point(829, 20);
+            this.sb_Connect.Location = new System.Drawing.Point(770, 20);
             this.sb_Connect.Name = "sb_Connect";
             this.sb_Connect.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.sb_Connect.Size = new System.Drawing.Size(124, 53);
@@ -223,7 +219,7 @@ namespace DataManager
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(90, 52);
+            this.labelControl4.Location = new System.Drawing.Point(31, 52);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(12, 14);
             this.labelControl4.TabIndex = 3;
@@ -231,7 +227,7 @@ namespace DataManager
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(470, 52);
+            this.labelControl3.Location = new System.Drawing.Point(411, 52);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(51, 14);
             this.labelControl3.TabIndex = 2;
@@ -239,7 +235,7 @@ namespace DataManager
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(470, 23);
+            this.labelControl2.Location = new System.Drawing.Point(411, 23);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(50, 14);
             this.labelControl2.TabIndex = 1;
@@ -247,39 +243,17 @@ namespace DataManager
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(90, 23);
+            this.labelControl1.Location = new System.Drawing.Point(31, 23);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(62, 14);
             this.labelControl1.TabIndex = 0;
             this.labelControl1.Text = "DB Address";
             // 
-            // tb_log
-            // 
-            this.tb_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_log.Location = new System.Drawing.Point(3, 17);
-            this.tb_log.Multiline = true;
-            this.tb_log.Name = "tb_log";
-            this.tb_log.Size = new System.Drawing.Size(298, 645);
-            this.tb_log.TabIndex = 2;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.tb_log);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Enabled = false;
-            this.groupBox2.Location = new System.Drawing.Point(730, 93);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(304, 665);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Log";
-            // 
             // tlp_Main
             // 
-            this.tlp_Main.ColumnCount = 2;
+            this.tlp_Main.ColumnCount = 1;
             this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 310F));
-            this.tlp_Main.Controls.Add(this.groupBox2, 1, 1);
+            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlp_Main.Controls.Add(this.groupBox1, 0, 0);
             this.tlp_Main.Controls.Add(this.groupBox3, 0, 1);
             this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -288,7 +262,7 @@ namespace DataManager
             this.tlp_Main.RowCount = 2;
             this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 90F));
             this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.Size = new System.Drawing.Size(1037, 761);
+            this.tlp_Main.Size = new System.Drawing.Size(928, 761);
             this.tlp_Main.TabIndex = 5;
             // 
             // groupBox3
@@ -300,7 +274,7 @@ namespace DataManager
             this.groupBox3.Enabled = false;
             this.groupBox3.Location = new System.Drawing.Point(3, 93);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(721, 665);
+            this.groupBox3.Size = new System.Drawing.Size(922, 665);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Action";
@@ -314,7 +288,7 @@ namespace DataManager
             this.gc_TableList.Name = "gc_TableList";
             this.gc_TableList.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.r_ce_Check});
-            this.gc_TableList.Size = new System.Drawing.Size(715, 568);
+            this.gc_TableList.Size = new System.Drawing.Size(916, 568);
             this.gc_TableList.TabIndex = 7;
             this.gc_TableList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gv_TableList});
@@ -371,7 +345,7 @@ namespace DataManager
             this.gc_Check.OptionsFilter.AllowFilter = false;
             this.gc_Check.Visible = true;
             this.gc_Check.VisibleIndex = 0;
-            this.gc_Check.Width = 70;
+            this.gc_Check.Width = 113;
             // 
             // r_ce_Check
             // 
@@ -402,7 +376,7 @@ namespace DataManager
             this.gc_TableName.OptionsFilter.AllowFilter = false;
             this.gc_TableName.Visible = true;
             this.gc_TableName.VisibleIndex = 1;
-            this.gc_TableName.Width = 242;
+            this.gc_TableName.Width = 709;
             // 
             // gc_TableSize
             // 
@@ -425,6 +399,7 @@ namespace DataManager
             this.gc_TableSize.OptionsFilter.AllowFilter = false;
             this.gc_TableSize.Visible = true;
             this.gc_TableSize.VisibleIndex = 2;
+            this.gc_TableSize.Width = 201;
             // 
             // pnl_Top
             // 
@@ -436,7 +411,7 @@ namespace DataManager
             this.pnl_Top.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnl_Top.Location = new System.Drawing.Point(3, 51);
             this.pnl_Top.Name = "pnl_Top";
-            this.pnl_Top.Size = new System.Drawing.Size(715, 43);
+            this.pnl_Top.Size = new System.Drawing.Size(916, 43);
             this.pnl_Top.TabIndex = 6;
             // 
             // sb_UncheckAll
@@ -473,7 +448,7 @@ namespace DataManager
             this.tlp_Step4_Checked_Count.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlp_Step4_Checked_Count.Controls.Add(this.labelControl6, 0, 0);
             this.tlp_Step4_Checked_Count.Controls.Add(this.lc_Checked_Count, 1, 0);
-            this.tlp_Step4_Checked_Count.Location = new System.Drawing.Point(354, 4);
+            this.tlp_Step4_Checked_Count.Location = new System.Drawing.Point(554, 4);
             this.tlp_Step4_Checked_Count.Name = "tlp_Step4_Checked_Count";
             this.tlp_Step4_Checked_Count.RowCount = 1;
             this.tlp_Step4_Checked_Count.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -520,7 +495,7 @@ namespace DataManager
             this.sb_Execute.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sb_Execute.Appearance.Options.UseFont = true;
             this.sb_Execute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_Execute.Location = new System.Drawing.Point(587, 4);
+            this.sb_Execute.Location = new System.Drawing.Point(787, 4);
             this.sb_Execute.Name = "sb_Execute";
             this.sb_Execute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.sb_Execute.Size = new System.Drawing.Size(124, 34);
@@ -533,8 +508,9 @@ namespace DataManager
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1037, 761);
+            this.ClientSize = new System.Drawing.Size(928, 761);
             this.Controls.Add(this.tlp_Main);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DataManager";
@@ -543,8 +519,6 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.styleController1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.tlp_Main.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).EndInit();
@@ -562,8 +536,6 @@ namespace DataManager
         private DevExpress.XtraEditors.StyleController styleController1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tlp_Main;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox tb_log;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox tb_Password;
         private System.Windows.Forms.TextBox tb_DBName;

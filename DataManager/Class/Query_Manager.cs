@@ -40,7 +40,6 @@ SELECT 'Y' as 'check'
        INNER JOIN [@SELECTED_DB_NAME].dbo.sysobjects b on (a.id = b.id)
  WHERE a.indid in (0, 1, 255)
    AND b.xtype = 'U'
-   AND reserved > 0
 GROUP BY a.id
 ORDER BY table_name
 ";
@@ -76,5 +75,80 @@ END CATCH
             return query.Replace("@CHECK_STATUS", isCheck ? "CHECK" : "NOCHECK");
         }
 
+        public static string ValidationTable(string tableName)
+        {
+            string query = @"
+IF EXISTS (select name from sys.tables where name = '@TABLE_NAME')
+	SELECT 'Y'
+ELSE
+	SELECT 'N'
+";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string DeleteTableData(string tableName)
+        {
+            string query = @"
+DELETE @TABLE_NAME
+";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string SetIdentityInsert(string tableName, bool isOn)
+        {
+            string query = @"
+BEGIN TRY
+    SET IDENTITY_INSERT @TABLE_NAME @ONOFF;
+    SELECT ''
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+END CATCH
+";
+            query = query.Replace("@TABLE_NAME", tableName);
+            return query.Replace("@ONOFF", isOn ? "ON" : "OFF");
+        }
+
+        public static string GetColumnList(string tableName)
+        {
+            string query = @"
+ SELECT b.name as column_name
+   FROM sys.tables a
+		INNER JOIN sys.columns b on a.object_id = b.object_id
+	    LEFT OUTER JOIN sys.computed_columns b1 on a.object_id = b1.object_id and b.column_id = b1.column_id  
+  WHERE a.name = '@TABLE_NAME'
+    AND isnull(b1.column_id, -1) = -1
+";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string GetTableDataList(string sourceDbName, string tableName, string columnData)
+        {
+            string query = @"
+SELECT @COLUMN_DATA
+  FROM [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
+";
+            query = query.Replace("@COLUMN_DATA", columnData);
+            query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string InsertDataToTable(string tableName, string columnData, string valueData)
+        {
+            string query = @"
+BEGIN TRY
+    INSERT INTO @TABLE_NAME (@COLUMN_DATA)
+         VALUES @INSERT_DATA;
+
+    SELECT ''
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+END CATCH
+";
+            query = query.Replace("@TABLE_NAME", tableName);
+            query = query.Replace("@COLUMN_DATA", columnData);
+            return query.Replace("@INSERT_DATA", valueData);
+        }
     }
 }

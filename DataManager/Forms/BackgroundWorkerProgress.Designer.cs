@@ -31,13 +31,13 @@ namespace DataManager
         {
             this.pnl_Main = new System.Windows.Forms.Panel();
             this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.lc_TableName = new DevExpress.XtraEditors.LabelControl();
-            this.pbc_ = new DevExpress.XtraEditors.ProgressBarControl();
-            this.lc_BWName = new DevExpress.XtraEditors.LabelControl();
             this.lc_CompleteCount = new DevExpress.XtraEditors.LabelControl();
+            this.lc_BWName = new DevExpress.XtraEditors.LabelControl();
+            this.lc_TableName = new DevExpress.XtraEditors.LabelControl();
+            this.pbc_Progress = new DevExpress.XtraEditors.ProgressBarControl();
             this.pnl_Main.SuspendLayout();
             this.tlp_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbc_.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbc_Progress.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Main
@@ -59,7 +59,7 @@ namespace DataManager
             this.tlp_Main.Controls.Add(this.lc_CompleteCount, 0, 3);
             this.tlp_Main.Controls.Add(this.lc_BWName, 0, 0);
             this.tlp_Main.Controls.Add(this.lc_TableName, 0, 1);
-            this.tlp_Main.Controls.Add(this.pbc_, 0, 2);
+            this.tlp_Main.Controls.Add(this.pbc_Progress, 0, 2);
             this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlp_Main.Location = new System.Drawing.Point(0, 0);
             this.tlp_Main.Name = "tlp_Main";
@@ -72,32 +72,21 @@ namespace DataManager
             this.tlp_Main.Size = new System.Drawing.Size(258, 183);
             this.tlp_Main.TabIndex = 0;
             // 
-            // lc_TableName
+            // lc_CompleteCount
             // 
-            this.lc_TableName.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lc_TableName.Appearance.Options.UseFont = true;
-            this.lc_TableName.Appearance.Options.UseTextOptions = true;
-            this.lc_TableName.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.lc_TableName.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.lc_TableName.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.lc_TableName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lc_TableName.Location = new System.Drawing.Point(3, 76);
-            this.lc_TableName.Name = "lc_TableName";
-            this.lc_TableName.Size = new System.Drawing.Size(252, 48);
-            this.lc_TableName.TabIndex = 0;
-            this.lc_TableName.Text = "TABLE NAME";
-            // 
-            // pbc_
-            // 
-            this.pbc_.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbc_.Location = new System.Drawing.Point(3, 130);
-            this.pbc_.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.pbc_.Name = "pbc_";
-            this.pbc_.Properties.LookAndFeel.SkinName = "Visual Studio 2013 Blue";
-            this.pbc_.Properties.LookAndFeel.UseDefaultLookAndFeel = false;
-            this.pbc_.Properties.Step = 1;
-            this.pbc_.Size = new System.Drawing.Size(252, 24);
-            this.pbc_.TabIndex = 1;
+            this.lc_CompleteCount.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lc_CompleteCount.Appearance.Options.UseFont = true;
+            this.lc_CompleteCount.Appearance.Options.UseTextOptions = true;
+            this.lc_CompleteCount.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.lc_CompleteCount.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
+            this.lc_CompleteCount.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.lc_CompleteCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.lc_CompleteCount.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lc_CompleteCount.Location = new System.Drawing.Point(3, 157);
+            this.lc_CompleteCount.Name = "lc_CompleteCount";
+            this.lc_CompleteCount.Size = new System.Drawing.Size(252, 23);
+            this.lc_CompleteCount.TabIndex = 3;
+            this.lc_CompleteCount.Text = "000 / 000";
             // 
             // lc_BWName
             // 
@@ -116,21 +105,32 @@ namespace DataManager
             this.lc_BWName.TabIndex = 2;
             this.lc_BWName.Text = "Thread 1";
             // 
-            // lc_CompleteCount
+            // lc_TableName
             // 
-            this.lc_CompleteCount.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lc_CompleteCount.Appearance.Options.UseFont = true;
-            this.lc_CompleteCount.Appearance.Options.UseTextOptions = true;
-            this.lc_CompleteCount.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.lc_CompleteCount.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
-            this.lc_CompleteCount.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.lc_CompleteCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.lc_CompleteCount.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lc_CompleteCount.Location = new System.Drawing.Point(3, 157);
-            this.lc_CompleteCount.Name = "lc_CompleteCount";
-            this.lc_CompleteCount.Size = new System.Drawing.Size(252, 23);
-            this.lc_CompleteCount.TabIndex = 3;
-            this.lc_CompleteCount.Text = "000 / 000";
+            this.lc_TableName.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lc_TableName.Appearance.Options.UseFont = true;
+            this.lc_TableName.Appearance.Options.UseTextOptions = true;
+            this.lc_TableName.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.lc_TableName.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.lc_TableName.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.lc_TableName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lc_TableName.Location = new System.Drawing.Point(3, 76);
+            this.lc_TableName.Name = "lc_TableName";
+            this.lc_TableName.Size = new System.Drawing.Size(252, 48);
+            this.lc_TableName.TabIndex = 0;
+            // 
+            // pbc_Progress
+            // 
+            this.pbc_Progress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbc_Progress.Location = new System.Drawing.Point(3, 130);
+            this.pbc_Progress.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.pbc_Progress.Name = "pbc_Progress";
+            this.pbc_Progress.Properties.LookAndFeel.SkinName = "Visual Studio 2013 Blue";
+            this.pbc_Progress.Properties.LookAndFeel.UseDefaultLookAndFeel = false;
+            this.pbc_Progress.Properties.ShowTitle = true;
+            this.pbc_Progress.Properties.Step = 1;
+            this.pbc_Progress.Size = new System.Drawing.Size(252, 24);
+            this.pbc_Progress.TabIndex = 1;
             // 
             // BackgroundWorkerProgress
             // 
@@ -142,7 +142,7 @@ namespace DataManager
             this.pnl_Main.ResumeLayout(false);
             this.tlp_Main.ResumeLayout(false);
             this.tlp_Main.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbc_.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbc_Progress.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -154,6 +154,6 @@ namespace DataManager
         private DevExpress.XtraEditors.LabelControl lc_TableName;
         private DevExpress.XtraEditors.LabelControl lc_CompleteCount;
         private DevExpress.XtraEditors.LabelControl lc_BWName;
-        private DevExpress.XtraEditors.ProgressBarControl pbc_;
+        private DevExpress.XtraEditors.ProgressBarControl pbc_Progress;
     }
 }
