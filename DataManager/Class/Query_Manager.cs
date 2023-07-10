@@ -40,7 +40,6 @@ SELECT 'Y' as 'check'
        INNER JOIN [@SELECTED_DB_NAME].dbo.sysobjects b on (a.id = b.id)
  WHERE a.indid in (0, 1, 255)
    AND b.xtype = 'U'
-   AND reserved > 0
 GROUP BY a.id
 ORDER BY table_name
 ";
@@ -110,24 +109,26 @@ END CATCH
             return query.Replace("@ONOFF", isOn ? "ON" : "OFF");
         }
 
-        public static string GetComputedColumnList(string tableName)
+        public static string GetColumnList(string tableName)
         {
             string query = @"
-SELECT a.name as column_name
-     , a.column_id - 1 as column_index
-  FROM sys.computed_columns a
-       INNER JOIN sys.tables b on a.object_id = b.object_id
- WHERE b.name = '@TABLE_NAME'
+ SELECT b.name as column_name
+   FROM sys.tables a
+		INNER JOIN sys.columns b on a.object_id = b.object_id
+	    LEFT OUTER JOIN sys.computed_columns b1 on a.object_id = b1.object_id and b.column_id = b1.column_id  
+  WHERE a.name = '@TABLE_NAME'
+    AND isnull(b1.column_id, -1) = -1
 ";
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string GetTableDataList(string sourceDbName, string tableName)
+        public static string GetTableDataList(string sourceDbName, string tableName, string columnData)
         {
             string query = @"
-SELECT *
+SELECT @COLUMN_DATA
   FROM [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
 ";
+            query = query.Replace("@COLUMN_DATA", columnData);
             query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
             return query.Replace("@TABLE_NAME", tableName);
         }

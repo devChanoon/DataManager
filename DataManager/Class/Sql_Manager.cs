@@ -87,20 +87,34 @@ namespace DataManager
             ExecuteSql(DataType.STRING, Query_Manager.SetIdentityInsert(tableName, isOn));
         }
 
-        public DataTable GetComputedColumnList(string tableName)
+        public DataTable GetColumnList(string tableName)
         {
-            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetComputedColumnList(tableName));
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetColumnList(tableName));
         }
 
-        public DataTable GetTableDataList(string sourceDbName, string tableName)
+        public DataTable GetTableDataList(string sourceDbName, string tableName, string columnData)
         {
-            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName));
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName, columnData));
         }
 
         public string InsertDataToTable(string tableName, string columnData, string valueData, ref string query)
         {
             query = Query_Manager.InsertDataToTable(tableName, columnData, valueData);
             return ExecuteSql(DataType.STRING, query);
+        }
+
+        public void InsertDataToTable(string tableName, string columnData, string valueData, Dictionary<string, byte[]> bytesData, ref string query)
+        {
+            query = Query_Manager.InsertDataToTable(tableName, columnData, valueData);
+            using (SqlCommand sqlCommand = new SqlCommand(query, _SqlConnection))
+            {
+                for (int i = 0; i < bytesData.Count; i++)
+                {
+                    sqlCommand.Parameters.AddWithValue(string.Format("@BinaryData_{0}", bytesData.Keys.ElementAt(i)), bytesData.Values.ElementAt(i));
+                }
+
+                sqlCommand.ExecuteNonQuery();
+            }
         }
 
         private dynamic ExecuteSql(DataType dataType, string query)

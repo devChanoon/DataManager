@@ -23,6 +23,7 @@ namespace DataManager
         private Dictionary<string, List<string>> _ForeignKeyList = null;
         private string _SourceDbName = string.Empty;
 
+        private int _BackgroundWorkerCount = -1;
         
         private enum Step
         {
@@ -32,7 +33,7 @@ namespace DataManager
             CHECK_FK
         }
 
-        public DashBoard(List<string> tableList, Sql_Manager sqlManager, string sourceDbName)
+        public DashBoard(List<string> tableList, string sourceDbName, ref Sql_Manager sqlManager)
         {
             InitializeComponent();
             setTableList(tableList);
@@ -210,6 +211,7 @@ namespace DataManager
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            GC.Collect();
             if (DialogResult.OK == MessageBox.Show("데이터 이전이 완료되었습니다."))
             {
                 FormClose();
@@ -233,6 +235,7 @@ namespace DataManager
         private void SetBackgroundWorkerList()
         {
             int backgroundWorkerCount = Environment.ProcessorCount > 8 ? 8 : Environment.ProcessorCount;
+            backgroundWorkerCount = _BackgroundWorkerCount > 0 ? _BackgroundWorkerCount : backgroundWorkerCount;
             int backgroundWorkerIndex = 0;
             for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
             {
@@ -296,14 +299,14 @@ namespace DataManager
 
         private void SetTableCount()
         {
-            if (lc_TableCount.InvokeRequired)
+            if (pbc_TableProgress.InvokeRequired)
             {
                 Action setTableCount = delegate { SetTableCount(); };
-                lc_ProcessTime.Invoke(setTableCount);
+                pbc_TableProgress.Invoke(setTableCount);
             }
             else
             {   
-                lc_TableCount.Text = string.Format("{0} / {1}", _TableList.Count - _TableQueue.Count, _TableList.Count);
+                pbc_TableProgress.Position = Convert.ToInt32(Convert.ToDouble(_TableList.Count - _TableQueue.Count) / Convert.ToDouble(_TableList.Count) * 100); ;
             }
         }
 

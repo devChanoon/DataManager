@@ -15,7 +15,6 @@ namespace DataManager
         private Sql_Manager _SqlManager = new Sql_Manager();
         private Init_Manager _InitManager = new Init_Manager();
         
-
         public Main()
         {
             InitializeComponent();
@@ -177,7 +176,7 @@ namespace DataManager
                     tableList.Add(gv_TableList.GetRowCellValue(i, gc_TableName).ToString());
             }
 
-            DashBoard dashBoard = new DashBoard(tableList, _SqlManager, cb_SrcDB.SelectedItem.ToString());
+            DashBoard dashBoard = new DashBoard(tableList, cb_SrcDB.SelectedItem.ToString(), ref _SqlManager);
             dashBoard.ShowDialog();
         }
     }

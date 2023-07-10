@@ -127,6 +127,7 @@ namespace DataManager
             this.pbc_Progress.Name = "pbc_Progress";
             this.pbc_Progress.Properties.LookAndFeel.SkinName = "Visual Studio 2013 Blue";
             this.pbc_Progress.Properties.LookAndFeel.UseDefaultLookAndFeel = false;
+            this.pbc_Progress.Properties.ShowTitle = true;
             this.pbc_Progress.Properties.Step = 1;
             this.pbc_Progress.Size = new System.Drawing.Size(252, 24);
             this.pbc_Progress.TabIndex = 1;
