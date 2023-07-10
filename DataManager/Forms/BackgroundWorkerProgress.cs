@@ -171,7 +171,7 @@ namespace DataManager
             else
             {
                 _BackgoundWorker_Manager = new BackgoundWorker_Manager();
-                _BackgoundWorker_Manager.Initialize(_SqlManager, _SourceDbName, _BackgroundWorkerSeq);
+                _BackgoundWorker_Manager.Initialize(_SourceDbName, _BackgroundWorkerSeq, ref _SqlManager);
                 _BackgoundWorker_Manager._GetTableInTableList = new BackgoundWorker_Manager.GetTableInTableList(GetTable);
                 _BackgoundWorker_Manager._SetStatusIdle = new SetStatusIdle(SetIdle);
                 _BackgoundWorker_Manager._SetStatusDelete = new SetStatusDelete(SetDelete);
@@ -180,7 +180,6 @@ namespace DataManager
                 _BackgoundWorker_Manager._SetStatusException = new SetStatusException(SetException);
                 _BackgoundWorker_Manager._ProgressChanged = new ProgressChanged(SetProgress);
 
-                _SqlManager.SqlDisconnect();
                 SetIdle();
             }
         }
@@ -193,11 +192,6 @@ namespace DataManager
         public void CancelBackgroundWorker()
         {
             _BackgoundWorker_Manager.CancelAsync();
-        }
-
-        public void DisconnectDatabase()
-        {
-            _SqlManager.SqlDisconnect();
         }
 
         public string GetTable()

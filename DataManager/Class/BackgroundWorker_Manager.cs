@@ -30,7 +30,7 @@ namespace DataManager
             get { return _BackgroundWorker.IsBusy; }
         }
 
-        public void Initialize(Sql_Manager sqlManager, string sourceDbName, int backgroundWorkerSeq)
+        public void Initialize(string sourceDbName, int backgroundWorkerSeq, ref Sql_Manager sqlManager)
         {
             if (sqlManager == null)
             {
@@ -87,6 +87,7 @@ namespace DataManager
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _SetStatusIdle();
+            _SqlManager.SqlDisconnect();
             GC.Collect();
         }
 
