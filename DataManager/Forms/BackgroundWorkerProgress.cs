@@ -19,6 +19,7 @@ namespace DataManager
         private bool _IsException = false;
         private string _ExceptionMessage = string.Empty;
 
+        private Color _DeleteStatus = Color.IndianRed;
         private Color _SearchStatus = Color.LightYellow;
         private Color _InsertStatus = Color.SeaGreen;
         private Color _IdleStatus = Color.WhiteSmoke;
@@ -27,6 +28,7 @@ namespace DataManager
 
         public delegate string GetTableInTableList();
         public delegate void SetStatusIdle();
+        public delegate void SetStatusDelete();
         public delegate void SetStatusSearch();
         public delegate void SetStatusInsert();
         public delegate void SetStatusException(string message);
@@ -51,11 +53,6 @@ namespace DataManager
 
             _SourceDbName = sourceDbName;
         }
-        public void SetTitle(int backgroundWorkerSeq)
-        {
-            _BackgroundWorkerSeq = backgroundWorkerSeq;
-            lc_BWName.Text = string.Format("Thread {0}", backgroundWorkerSeq);
-        }
 
         public void Disabled()
         {
@@ -77,6 +74,19 @@ namespace DataManager
             else
             {
                 lc_BWName.BackColor = _IdleStatus;
+            }
+        }
+
+        private void SetDelete()
+        {
+            if (lc_BWName.InvokeRequired)
+            {
+                Action setDelete = delegate { SetDelete(); };
+                lc_BWName.Invoke(setDelete);
+            }
+            else
+            {
+                lc_BWName.BackColor = _DeleteStatus;
             }
         }
 
@@ -126,7 +136,7 @@ namespace DataManager
         {   
             if (lc_TableName.InvokeRequired)
             {
-                Console.WriteLine(string.Format("[{0}] Thread {1} > {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), _BackgroundWorkerSeq, tableName));
+                //Console.WriteLine(string.Format("[{0}] Thread {1} > {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), _BackgroundWorkerSeq, tableName));
                 Action setTableName = delegate { SetTableName(tableName); };
                 pbc_Progress.Invoke(setTableName);
             }
@@ -164,11 +174,13 @@ namespace DataManager
                 _BackgoundWorker_Manager.Initialize(_SqlManager, _SourceDbName, _BackgroundWorkerSeq);
                 _BackgoundWorker_Manager._GetTableInTableList = new BackgoundWorker_Manager.GetTableInTableList(GetTable);
                 _BackgoundWorker_Manager._SetStatusIdle = new SetStatusIdle(SetIdle);
+                _BackgoundWorker_Manager._SetStatusDelete = new SetStatusDelete(SetDelete);
                 _BackgoundWorker_Manager._SetStatusSearch = new SetStatusSearch(SetSearch);
                 _BackgoundWorker_Manager._SetStatusInsert = new SetStatusInsert(SetInsert);
                 _BackgoundWorker_Manager._SetStatusException = new SetStatusException(SetException);
                 _BackgoundWorker_Manager._ProgressChanged = new ProgressChanged(SetProgress);
 
+                _SqlManager.SqlDisconnect();
                 SetIdle();
             }
         }

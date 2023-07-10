@@ -14,6 +14,7 @@ namespace DataManager
         public delegate string GetTableInTableList();
         public GetTableInTableList _GetTableInTableList;
         public BackgroundWorkerProgress.SetStatusIdle _SetStatusIdle;
+        public BackgroundWorkerProgress.SetStatusDelete _SetStatusDelete;
         public BackgroundWorkerProgress.SetStatusSearch _SetStatusSearch;
         public BackgroundWorkerProgress.SetStatusInsert _SetStatusInsert;
         public BackgroundWorkerProgress.SetStatusException _SetStatusException;
@@ -62,7 +63,8 @@ namespace DataManager
                     { 
                         SetIndentityInsert(tableName, true);
                         DeleteTableData(tableName);
-                        InsertTableData(tableName, SearchDataTable(tableName));
+                        string columnData = SearchColumnList(tableName);
+                        InsertTableData(tableName, columnData, SearchDataTable(tableName, columnData));
                         SetIndentityInsert(tableName, false);
                     }
 
@@ -85,12 +87,13 @@ namespace DataManager
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _SetStatusIdle();
+            GC.Collect();
         }
 
-        private DataTable SearchDataTable(string tableName)
+        private DataTable SearchDataTable(string tableName, string columnData)
         {
             _SetStatusSearch();
-            return _SqlManager.GetTableDataList(_SourceDbName, tableName);
+            return _SqlManager.GetTableDataList(_SourceDbName, tableName, columnData);
         }
 
         private void SetIndentityInsert(string tableName, bool isOn)
@@ -100,108 +103,102 @@ namespace DataManager
 
         private void DeleteTableData(string tableName)
         {
+            _SetStatusDelete();
             _SqlManager.DeleteTableData(tableName);
         }
 
-        private Dictionary<string, int> SearchComputedColumnList(string tableName)
+        private string SearchColumnList(string tableName)
         {
-            Dictionary<string, int> computedcolumnList = new Dictionary<string, int>();
-            DataTable dataTable = _SqlManager.GetComputedColumnList(tableName);
+            DataTable dataTable = _SqlManager.GetColumnList(tableName);
+            string columnData = string.Empty;
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
-                computedcolumnList.Add(dataTable.Rows[i]["column_name"].ToString(), Convert.ToInt32(dataTable.Rows[i]["column_index"].ToString()));
+                columnData += string.Format("{0}[{1}]", i == 0 ? "" : ",", dataTable.Rows[i]["column_name"].ToString());
             }
-            return computedcolumnList;
+            return columnData;
         }
 
-        private void InsertTableData(string tableName, DataTable targetDataTable)
+        private void InsertTableData(string tableName, string columnData, DataTable targetDataTable)
         {
             if (targetDataTable != null && targetDataTable.Rows.Count > 0)
             {
-                Dictionary<string, int> computedColumnList = SearchComputedColumnList(tableName);
-
                 int totalRowCount = targetDataTable.Rows.Count;
                 _ProgressChanged(0, totalRowCount);
 
                 _SetStatusInsert();
-                string columnData = GetColumnData(targetDataTable.Rows[0], computedColumnList);
                 string valueData = string.Empty;
+                int valueDataCount = 0;
+                Dictionary<string, byte[]> bytesData = new Dictionary<string, byte[]>();
                 for (int i = 0; i < totalRowCount; i++)
                 {
                     if (_BackgroundWorker.CancellationPending)
                         break;
 
-                    valueData += string.Format("{0}({1})", valueData == string.Empty ? "" : ",", CreateValueData(targetDataTable.Rows[i], computedColumnList));
-                    if ((i + 1) % 25 == 0)
+                    string comma = valueData == string.Empty ? "" : ",";
+                    string data = CreateValueData(targetDataTable.Rows[i], i, ref bytesData);
+                    valueData += string.Format("{0}({1})", comma, data);
+                    valueDataCount++;
+                    if ((valueDataCount + 1) % 25 == 0 || bytesData.Count > 0)
                     { 
-                        InsertDataToTable(tableName, columnData, ref valueData);
+                        InsertDataToTable(tableName, columnData, ref bytesData, ref valueData, ref valueDataCount);                        
                         _ProgressChanged(i + 1, totalRowCount);
                     }
                 }
 
                 if (valueData != string.Empty && !_BackgroundWorker.CancellationPending)
                 { 
-                    InsertDataToTable(tableName, columnData, ref valueData);
+                    InsertDataToTable(tableName, columnData, ref bytesData, ref valueData, ref valueDataCount);
                     _ProgressChanged(totalRowCount, totalRowCount);
                 }
             }
         }
 
-        private string GetColumnData(DataRow dr, Dictionary<string, int> computedColumnList)
-        {
-            string columnData = string.Empty;
-            for (int i = 0; i < dr.Table.Columns.Count; i++)
-            {
-                string currentColumnName = dr.Table.Columns[i].ColumnName;
-                if (!computedColumnList.ContainsKey(currentColumnName))
-                    columnData += string.Format("{0}[{1}]", i == 0 ? "" : ",", currentColumnName);
-            }
-            return columnData;
-        }
-
-        private string CreateValueData(DataRow dr, Dictionary<string, int> computedColumnList)
+        private string CreateValueData(DataRow dr, int currentRowIndex, ref Dictionary<string, byte[]> bytesData)
         {
             string valueData = string.Empty;
             for (int i = 0; i < dr.ItemArray.Length; i++)
             {
-                bool isComputedColumn = false;
-                for (int j = 0; j < computedColumnList.Count; j++)
-                {
-                    if (i == computedColumnList.Values.ElementAt(j))
-                    {
-                        isComputedColumn = true;
-                        break;
-                    }
-                }
-                if (isComputedColumn)
-                    continue;
-
                 string comma = i == 0 ? "" : ",";
                 string data = string.Empty;
                 if (dr.ItemArray[i] == DBNull.Value)
                     data = "null";
                 else if (dr.ItemArray[i].GetType() == typeof(DateTime))
-                    data = ((DateTime)dr.ItemArray[i]).ToString("yyyy-MM-dd HH:mm:ss.fff");
-                else
-                    data = dr.ItemArray[i].ToString().Replace("'", "''");
+                    data = string.Format("'{0}'", ((DateTime)dr.ItemArray[i]).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                else if (dr.ItemArray[i].GetType() == typeof(byte[]))
+                {
+                    string keyName = currentRowIndex.ToString();
+                    if (bytesData.ContainsKey(keyName))
+                        keyName = string.Format("{0}_{1}", keyName, DateTime.Now.ToString("HHmmssfff"));
 
-                data = dr.ItemArray[i] == DBNull.Value ? "null" : string.Format("'{0}'", data);
+                    bytesData.Add(keyName, (byte[])dr.ItemArray[i]);
+                    data = string.Format("@BinaryData_{0}", keyName);
+                }
+                else
+                    data = string.Format("'{0}'", dr.ItemArray[i].ToString().Replace("'", "''"));
                 valueData += string.Format("{0}{1}", comma, data);
             }
 
             return valueData;
         }
 
-        private void InsertDataToTable(string tableName, string columnData, ref string valueData)
+        private void InsertDataToTable(string tableName, string columnData, ref Dictionary<string, byte[]> bytesData, ref string valueData, ref int valueDataCount)
         {
             string query = string.Empty;
-            string result = _SqlManager.InsertDataToTable(tableName, columnData, valueData, ref query);
+            string result = string.Empty;
+            if (bytesData.Count > 0)
+            { 
+                _SqlManager.InsertDataToTable(tableName, columnData, valueData, bytesData, ref query);
+                bytesData.Clear();
+            }
+            else
+                result = _SqlManager.InsertDataToTable(tableName, columnData, valueData, ref query);
             if (result != string.Empty)
             {
                 throw new Exception(result);
             }
 
             valueData = string.Empty;
+            valueDataCount = 0;
         }
 
         public void RunWorkerAsync()
