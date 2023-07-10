@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using System.Transactions;
 using System.Diagnostics;
+using System.Threading;
 
 namespace DataManager
 {
@@ -24,13 +25,17 @@ namespace DataManager
         private string _SourceDbName = string.Empty;
 
         private int _BackgroundWorkerCount = -1;
-        
+        private DateTime _StepStartTime = new DateTime();
+        private int _StepProcessSecond = 0;
+
+
         private enum Step
         {
             SEARCH_FK,
             NOCHECK_FK,
             TRANSFER_DATA,
-            CHECK_FK
+            CHECK_FK,
+            CHECK_DATA
         }
 
         public DashBoard(List<string> tableList, string sourceDbName, ref Sql_Manager sqlManager)
@@ -59,7 +64,7 @@ namespace DataManager
                 _TableQueue.Enqueue(tableList[i]);
             }
 
-            SetTableCount();
+            SetTableCount(_TableList.Count - _TableQueue.Count, _TableList.Count);
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -82,6 +87,9 @@ namespace DataManager
                             break;
                         case Step.CHECK_FK:
                             SetForeignKey(true);
+                            break;
+                        case Step.CHECK_DATA:
+                            ValidationTableData();
                             exit = true;
                             break;
                     }
@@ -128,8 +136,13 @@ namespace DataManager
 
         private void SetForeignKey(bool isCheck)
         {
+            SetStepStartTime();
+            SetTableCount(0, _ForeignKeyList.Count);
+
             for (int i = 0; i < _ForeignKeyList.Count; i++)
             {
+                SetTableCount(i + 1, _ForeignKeyList.Count);
+
                 string tableName = _ForeignKeyList.Keys.ElementAt(i);
                 List<string> foreignKeyNameList = _ForeignKeyList[tableName];
                 for (int j = 0; j < foreignKeyNameList.Count; j++)
@@ -143,9 +156,41 @@ namespace DataManager
             MoveNextStep();
         }
 
+        private void ValidationTableData()
+        {
+            SetStepStartTime();
+            SetTableCount(0, _TableList.Count);
+
+            string invalidTable = string.Empty;
+            for (int i = 0; i < _TableList.Count; i++)
+            {
+                SetTableCount(i + 1, _TableList.Count);
+
+                string result = _SqlManager.CheckExistTable(_TableList[i]);
+                if (result == "Y")
+                {
+                    string tableName = _TableList[i];
+                    DataTable dataTable = _SqlManager.ValidationTableData(_SourceDbName, tableName);
+                    if (dataTable != null && dataTable.Rows.Count > 0)
+                    {                        
+                        invalidTable += string.Format("{0}[{1}]", invalidTable == string.Empty ? "" : ",", tableName);
+                    }
+                }
+            }
+
+            if (invalidTable != string.Empty)
+                throw new Exception(string.Format("{0} > not valid.", invalidTable));
+        }
+
+        private void SetStepStartTime()
+        {
+            _StepStartTime = DateTime.Now;
+            _StepProcessSecond = 0;
+        }
+
         private void TransferTableData()
         {
-            DateTime startTime = DateTime.Now;
+            SetStepStartTime();
 
             // 목록 초기화
             List<BackgroundWorkerProgress> enabledBackroundWorkerList = new List<BackgroundWorkerProgress>();
@@ -164,16 +209,10 @@ namespace DataManager
                 enabledBackroundWorkerList[i].RunBackgroundWorker();                
             }
 
-            double timeSpanSecond = 0;
             // 대기
             while (true)
             {
-                DateTime currentTime = DateTime.Now;
-                if ((currentTime - startTime).TotalSeconds != timeSpanSecond)
-                {
-                    timeSpanSecond = (currentTime - startTime).TotalSeconds;
-                    SetProcessTime(timeSpanSecond);
-                }
+                SetProcessTime();
 
                 bool allWorkerComplete = true;
                 bool existException = false;
@@ -273,13 +312,13 @@ namespace DataManager
             {
                 currentItem.Options.Indicator.ActiveStateImageOptions.SvgImage = svgImageCollection1[0];
                 currentItem.Options.Indicator.Width = 100;
-                currentItem.ContentBlock1.Description = "Step " + (stepProgressBar.SelectedItemIndex + 1).ToString() + " of 4";
+                currentItem.ContentBlock1.Description = "Step " + (stepProgressBar.SelectedItemIndex + 1).ToString() + " of 5";
                 currentItem.Options.ConnectorOffset = 0;
                 if (stepProgressBar.SelectedItemIndex < 2)
                     stepProgressBar.Appearances.CommonActiveColor = Color.IndianRed;
-                if (stepProgressBar.SelectedItemIndex >= 2 && stepProgressBar.SelectedItemIndex < 3)
+                if (stepProgressBar.SelectedItemIndex >= 2 && stepProgressBar.SelectedItemIndex < 4)
                     stepProgressBar.Appearances.CommonActiveColor = Color.Goldenrod;
-                if (stepProgressBar.SelectedItemIndex >= 3)
+                if (stepProgressBar.SelectedItemIndex >= 4)
                     stepProgressBar.Appearances.CommonActiveColor = Color.Green;
             }
         }
@@ -292,41 +331,50 @@ namespace DataManager
                 if (_TableQueue.Count > 0)                    
                     tableName = _TableQueue.Dequeue();
 
-                SetTableCount();
+                SetTableCount(_TableList.Count - _TableQueue.Count, _TableList.Count);
                 return tableName;
             }
         }
 
-        private void SetTableCount()
+        private void SetTableCount(int currentCount, int totalCount)
         {
             if (pbc_TableProgress.InvokeRequired)
             {
-                Action setTableCount = delegate { SetTableCount(); };
+                Action setTableCount = delegate { SetTableCount(currentCount, totalCount); };
                 pbc_TableProgress.Invoke(setTableCount);
             }
             else
-            {   
-                pbc_TableProgress.Position = Convert.ToInt32(Convert.ToDouble(_TableList.Count - _TableQueue.Count) / Convert.ToDouble(_TableList.Count) * 100); ;
+            {
+                if (totalCount == 0)
+                    pbc_TableProgress.Position = 0;
+                else
+                    pbc_TableProgress.Position = Convert.ToInt32(Convert.ToDouble(currentCount) / Convert.ToDouble(totalCount) * 100);
             }
         }
 
-        public void SetProcessTime(double totalSeconds)
+        private void SetProcessTime()
         {
             if (lc_ProcessTime.InvokeRequired)
             {
-                Action setProcessTime = delegate { SetProcessTime(totalSeconds); };
+                Action setProcessTime = delegate { SetProcessTime(); };
                 lc_ProcessTime.Invoke(setProcessTime);
             }   
-            else
+            else 
             {
-                double _totalSeconds = totalSeconds;
-                int hours = (int)(_totalSeconds / 3600);
-                _totalSeconds = _totalSeconds % 3600;
-                int minutes = (int)(_totalSeconds / 60);
-                _totalSeconds = _totalSeconds % 60;
-                int seconds = (int)(_totalSeconds);
+            	DateTime currentTime = DateTime.Now;
+            	if ((currentTime - _StepStartTime).TotalSeconds != _StepProcessSecond)
+            	{
+                	_StepProcessSecond = Convert.ToInt32((currentTime - _StepStartTime).TotalSeconds);
 
-                lc_ProcessTime.Text = string.Format("{0:D3}:{1:D2}:{2:D2}", hours, minutes, seconds);
+            	    double _totalSeconds = _StepProcessSecond;
+            	    int hours = (int)(_totalSeconds / 3600);
+            	    _totalSeconds = _totalSeconds % 3600;
+            	    int minutes = (int)(_totalSeconds / 60);
+            	    _totalSeconds = _totalSeconds % 60;
+            	    int seconds = (int)(_totalSeconds);
+
+            	    lc_ProcessTime.Text = string.Format("{0:D3}:{1:D2}:{2:D2}", hours, minutes, seconds);
+                }
             }
         }
     }

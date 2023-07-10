@@ -72,9 +72,14 @@ namespace DataManager
             return ExecuteSql(DataType.STRING, Query_Manager.SetForeignKey(tableName, foreignKeyName, isCheck));
         }
 
-        public string ValidationTable(string tableName)
+        public string CheckExistTable(string tableName)
         {
-            return ExecuteSql(DataType.STRING, Query_Manager.ValidationTable(tableName));
+            return ExecuteSql(DataType.STRING, Query_Manager.CheckExistTable(tableName));
+        }
+
+        public DataTable ValidationTableData(string sourceDbName, string tableName)
+        {
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.ValidationTableData(sourceDbName, tableName));
         }
 
         public void DeleteTableData(string tablename)

@@ -36,6 +36,7 @@ namespace DataManager
             this.stepProgressBarItem2 = new DevExpress.XtraEditors.StepProgressBarItem();
             this.stepProgressBarItem3 = new DevExpress.XtraEditors.StepProgressBarItem();
             this.stepProgressBarItem4 = new DevExpress.XtraEditors.StepProgressBarItem();
+            this.stepProgressBarItem5 = new DevExpress.XtraEditors.StepProgressBarItem();
             this.tlp_BWList = new System.Windows.Forms.TableLayoutPanel();
             this.backgroundWorkerProgress8 = new DataManager.BackgroundWorkerProgress();
             this.backgroundWorkerProgress7 = new DataManager.BackgroundWorkerProgress();
@@ -47,24 +48,24 @@ namespace DataManager
             this.backgroundWorkerProgress1 = new DataManager.BackgroundWorkerProgress();
             this.lc_ProcessTime = new DevExpress.XtraEditors.LabelControl();
             this.tlp_ProcessTime = new System.Windows.Forms.TableLayoutPanel();
-            this.svgImageCollection1 = new DevExpress.Utils.SvgImageCollection(this.components);
             this.pbc_TableProgress = new DevExpress.XtraEditors.ProgressBarControl();
             this.tlp_legend = new System.Windows.Forms.TableLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            this.svgImageCollection1 = new DevExpress.Utils.SvgImageCollection(this.components);
             this.pnl_Bottom = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.spb_Step)).BeginInit();
             this.tlp_BWList.SuspendLayout();
             this.tlp_ProcessTime.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbc_TableProgress.Properties)).BeginInit();
             this.tlp_legend.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection1)).BeginInit();
             this.pnl_Bottom.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +76,7 @@ namespace DataManager
             this.spb_Step.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             this.spb_Step.ConnectorLineThickness = 10;
             this.spb_Step.Dock = System.Windows.Forms.DockStyle.Top;
-            this.spb_Step.IndentBetweenItems = 200;
+            this.spb_Step.IndentBetweenItems = 150;
             this.spb_Step.IndicatorLineThickness = 4;
             this.spb_Step.ItemOptions.ConnectorOffset = -20;
             this.spb_Step.ItemOptions.Indicator.ActiveStateDrawMode = DevExpress.XtraEditors.IndicatorDrawMode.None;
@@ -85,6 +86,7 @@ namespace DataManager
             this.spb_Step.Items.Add(this.stepProgressBarItem2);
             this.spb_Step.Items.Add(this.stepProgressBarItem3);
             this.spb_Step.Items.Add(this.stepProgressBarItem4);
+            this.spb_Step.Items.Add(this.stepProgressBarItem5);
             this.spb_Step.Location = new System.Drawing.Point(0, 0);
             this.spb_Step.Name = "spb_Step";
             this.spb_Step.SelectedItemIndex = 0;
@@ -94,6 +96,8 @@ namespace DataManager
             // 
             // stepProgressBarItem1
             // 
+            this.stepProgressBarItem1.ContentBlock2.Appearance.Caption.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepProgressBarItem1.ContentBlock2.Appearance.Caption.Options.UseFont = true;
             this.stepProgressBarItem1.ContentBlock2.Caption = "FK 목록 조회";
             this.stepProgressBarItem1.Name = "stepProgressBarItem1";
             this.stepProgressBarItem1.Options.ConnectorOffset = -20;
@@ -102,6 +106,8 @@ namespace DataManager
             // 
             // stepProgressBarItem2
             // 
+            this.stepProgressBarItem2.ContentBlock2.Appearance.Caption.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepProgressBarItem2.ContentBlock2.Appearance.Caption.Options.UseFont = true;
             this.stepProgressBarItem2.ContentBlock2.Caption = "FK 비활성화";
             this.stepProgressBarItem2.Name = "stepProgressBarItem2";
             this.stepProgressBarItem2.Options.ConnectorOffset = -20;
@@ -109,6 +115,8 @@ namespace DataManager
             // 
             // stepProgressBarItem3
             // 
+            this.stepProgressBarItem3.ContentBlock2.Appearance.Caption.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepProgressBarItem3.ContentBlock2.Appearance.Caption.Options.UseFont = true;
             this.stepProgressBarItem3.ContentBlock2.Caption = "데이터 복사";
             this.stepProgressBarItem3.Name = "stepProgressBarItem3";
             this.stepProgressBarItem3.Options.ConnectorOffset = -20;
@@ -116,10 +124,21 @@ namespace DataManager
             // 
             // stepProgressBarItem4
             // 
+            this.stepProgressBarItem4.ContentBlock2.Appearance.Caption.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepProgressBarItem4.ContentBlock2.Appearance.Caption.Options.UseFont = true;
             this.stepProgressBarItem4.ContentBlock2.Caption = "FK 활성화";
             this.stepProgressBarItem4.Name = "stepProgressBarItem4";
             this.stepProgressBarItem4.Options.ConnectorOffset = -20;
             this.stepProgressBarItem4.Options.Indicator.Width = 50;
+            // 
+            // stepProgressBarItem5
+            // 
+            this.stepProgressBarItem5.ContentBlock2.Appearance.Caption.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepProgressBarItem5.ContentBlock2.Appearance.Caption.Options.UseFont = true;
+            this.stepProgressBarItem5.ContentBlock2.Caption = "데이터 검증";
+            this.stepProgressBarItem5.Name = "stepProgressBarItem5";
+            this.stepProgressBarItem5.Options.ConnectorOffset = -20;
+            this.stepProgressBarItem5.Options.Indicator.Width = 50;
             // 
             // tlp_BWList
             // 
@@ -267,10 +286,6 @@ namespace DataManager
             this.tlp_ProcessTime.Size = new System.Drawing.Size(1078, 58);
             this.tlp_ProcessTime.TabIndex = 9;
             // 
-            // svgImageCollection1
-            // 
-            this.svgImageCollection1.Add("check", ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("svgImageCollection1.check"))));
-            // 
             // pbc_TableProgress
             // 
             this.tlp_ProcessTime.SetColumnSpan(this.pbc_TableProgress, 5);
@@ -312,24 +327,29 @@ namespace DataManager
             this.tlp_legend.Size = new System.Drawing.Size(257, 20);
             this.tlp_legend.TabIndex = 10;
             // 
-            // panel1
+            // labelControl4
             // 
-            this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(14, 14);
-            this.panel1.TabIndex = 0;
+            this.labelControl4.Location = new System.Drawing.Point(215, 3);
+            this.labelControl4.Name = "labelControl4";
+            this.labelControl4.Size = new System.Drawing.Size(32, 14);
+            this.labelControl4.TabIndex = 5;
+            this.labelControl4.Text = "Insert";
             // 
-            // panel2
+            // labelControl3
             // 
-            this.panel2.BackColor = System.Drawing.Color.IndianRed;
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(67, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(14, 14);
-            this.panel2.TabIndex = 1;
+            this.labelControl3.Location = new System.Drawing.Point(151, 3);
+            this.labelControl3.Name = "labelControl3";
+            this.labelControl3.Size = new System.Drawing.Size(34, 14);
+            this.labelControl3.TabIndex = 4;
+            this.labelControl3.Text = "Select";
+            // 
+            // labelControl2
+            // 
+            this.labelControl2.Location = new System.Drawing.Point(87, 3);
+            this.labelControl2.Name = "labelControl2";
+            this.labelControl2.Size = new System.Drawing.Size(36, 14);
+            this.labelControl2.TabIndex = 3;
+            this.labelControl2.Text = "Delete";
             // 
             // panel3
             // 
@@ -351,6 +371,25 @@ namespace DataManager
             this.panel4.Size = new System.Drawing.Size(14, 14);
             this.panel4.TabIndex = 1;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(14, 14);
+            this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.IndianRed;
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(67, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(14, 14);
+            this.panel2.TabIndex = 1;
+            // 
             // labelControl1
             // 
             this.labelControl1.Location = new System.Drawing.Point(23, 3);
@@ -359,29 +398,9 @@ namespace DataManager
             this.labelControl1.TabIndex = 2;
             this.labelControl1.Text = "Idle";
             // 
-            // labelControl2
+            // svgImageCollection1
             // 
-            this.labelControl2.Location = new System.Drawing.Point(87, 3);
-            this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(36, 14);
-            this.labelControl2.TabIndex = 3;
-            this.labelControl2.Text = "Delete";
-            // 
-            // labelControl3
-            // 
-            this.labelControl3.Location = new System.Drawing.Point(151, 3);
-            this.labelControl3.Name = "labelControl3";
-            this.labelControl3.Size = new System.Drawing.Size(34, 14);
-            this.labelControl3.TabIndex = 4;
-            this.labelControl3.Text = "Select";
-            // 
-            // labelControl4
-            // 
-            this.labelControl4.Location = new System.Drawing.Point(215, 3);
-            this.labelControl4.Name = "labelControl4";
-            this.labelControl4.Size = new System.Drawing.Size(32, 14);
-            this.labelControl4.TabIndex = 5;
-            this.labelControl4.Text = "Insert";
+            this.svgImageCollection1.Add("check", ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("svgImageCollection1.check"))));
             // 
             // pnl_Bottom
             // 
@@ -414,10 +433,10 @@ namespace DataManager
             this.tlp_BWList.ResumeLayout(false);
             this.tlp_ProcessTime.ResumeLayout(false);
             this.tlp_ProcessTime.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbc_TableProgress.Properties)).EndInit();
             this.tlp_legend.ResumeLayout(false);
             this.tlp_legend.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection1)).EndInit();
             this.pnl_Bottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -453,5 +472,6 @@ namespace DataManager
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private System.Windows.Forms.Panel pnl_Bottom;
+        private DevExpress.XtraEditors.StepProgressBarItem stepProgressBarItem5;
     }
 }

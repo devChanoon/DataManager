@@ -75,7 +75,7 @@ END CATCH
             return query.Replace("@CHECK_STATUS", isCheck ? "CHECK" : "NOCHECK");
         }
 
-        public static string ValidationTable(string tableName)
+        public static string CheckExistTable(string tableName)
         {
             string query = @"
 IF EXISTS (select name from sys.tables where name = '@TABLE_NAME')
@@ -83,6 +83,21 @@ IF EXISTS (select name from sys.tables where name = '@TABLE_NAME')
 ELSE
 	SELECT 'N'
 ";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string ValidationTableData(string sourceDbName, string tableName)
+        {
+            string query = @"
+SELECT * 
+  FROM [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
+
+EXCEPT 
+
+SELECT * 
+  FROM [@TABLE_NAME]
+";
+            query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
             return query.Replace("@TABLE_NAME", tableName);
         }
 
