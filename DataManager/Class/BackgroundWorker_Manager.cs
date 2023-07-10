@@ -80,7 +80,7 @@ namespace DataManager
 
         private bool ValidationTable(string tableName)
         {
-            string result = _SqlManager.ValidationTable(tableName);
+            string result = _SqlManager.CheckExistTable(tableName);
             return result == "Y" ? true : false;
         }
 
@@ -174,8 +174,11 @@ namespace DataManager
                     bytesData.Add(keyName, (byte[])dr.ItemArray[i]);
                     data = string.Format("@BinaryData_{0}", keyName);
                 }
+                else if (dr.ItemArray[i].GetType() == typeof(double))
+                    data = string.Format("{0}", dr.ItemArray[i].ToString());
                 else
-                    data = string.Format("'{0}'", dr.ItemArray[i].ToString().Replace("'", "''"));
+                    data = string.Format("N'{0}'", dr.ItemArray[i].ToString().Replace("'", "''"));
+                    
                 valueData += string.Format("{0}{1}", comma, data);
             }
 
