@@ -121,14 +121,11 @@ namespace DataManager
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
                 string tableName = dataTable.Rows[i]["table_name"].ToString();
-                string foreignKeyName = dataTable.Rows[i]["foreign_key_name"].ToString();
-                if (_TableList.Contains(dataTable.Rows[i]["table_name"].ToString()))
-                {
-                    if (!_ForeignKeyList.ContainsKey(tableName))
-                        _ForeignKeyList.Add(tableName, new List<string>());
+                string foreignKeyName = dataTable.Rows[i]["foreign_key_name"].ToString();                
+                if (!_ForeignKeyList.ContainsKey(tableName))
+                    _ForeignKeyList.Add(tableName, new List<string>());
 
-                    _ForeignKeyList[tableName].Add(foreignKeyName);
-                }
+                _ForeignKeyList[tableName].Add(foreignKeyName);
             }
 
             MoveNextStep();
@@ -170,7 +167,7 @@ namespace DataManager
                 if (result == "Y")
                 {
                     string tableName = _TableList[i];
-                    DataTable dataTable = _SqlManager.ValidationTableData(_SourceDbName, tableName);
+                    DataTable dataTable = _SqlManager.ValidationTableData(_SourceDbName, tableName, SearchColumnList(tableName));
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {                        
                         invalidTable += string.Format("{0}[{1}]", invalidTable == string.Empty ? "" : ",", tableName);
@@ -180,6 +177,18 @@ namespace DataManager
 
             if (invalidTable != string.Empty)
                 throw new Exception(string.Format("{0} > not valid.", invalidTable));
+        }
+
+
+        private string SearchColumnList(string tableName)
+        {
+            DataTable dataTable = _SqlManager.GetColumnList(_SourceDbName, tableName);
+            string columnData = string.Empty;
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                columnData += string.Format("{0}[{1}]", i == 0 ? "" : ",", dataTable.Rows[i]["column_name"].ToString());
+            }
+            return columnData;
         }
 
         private void SetStepStartTime()
