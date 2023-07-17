@@ -77,9 +77,9 @@ namespace DataManager
             return ExecuteSql(DataType.STRING, Query_Manager.CheckExistTable(tableName));
         }
 
-        public DataTable ValidationTableData(string sourceDbName, string tableName)
+        public DataTable ValidationTableData(string sourceDbName, string tableName, string columnData)
         {
-            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.ValidationTableData(sourceDbName, tableName));
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.ValidationTableData(sourceDbName, tableName, columnData));
         }
 
         public void DeleteTableData(string tablename)
@@ -92,9 +92,9 @@ namespace DataManager
             ExecuteSql(DataType.STRING, Query_Manager.SetIdentityInsert(tableName, isOn));
         }
 
-        public DataTable GetColumnList(string tableName)
+        public DataTable GetColumnList(string sourceDbName, string tableName)
         {
-            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetColumnList(tableName));
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetColumnList(sourceDbName, tableName));
         }
 
         public DataTable GetTableDataList(string sourceDbName, string tableName, string columnData)

@@ -86,18 +86,19 @@ ELSE
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string ValidationTableData(string sourceDbName, string tableName)
+        public static string ValidationTableData(string sourceDbName, string tableName, string columnData)
         {
             string query = @"
-SELECT * 
+SELECT @COLUMN_DATA 
   FROM [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
 
 EXCEPT 
 
-SELECT * 
+SELECT @COLUMN_DATA 
   FROM [@TABLE_NAME]
 ";
             query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
+            query = query.Replace("@COLUMN_DATA", columnData);
             return query.Replace("@TABLE_NAME", tableName);
         }
 
@@ -124,16 +125,26 @@ END CATCH
             return query.Replace("@ONOFF", isOn ? "ON" : "OFF");
         }
 
-        public static string GetColumnList(string tableName)
+        public static string GetColumnList(string sourceDbName, string tableName)
         {
             string query = @"
  SELECT b.name as column_name
+   INTO #COLUMN_LIST
    FROM sys.tables a
 		INNER JOIN sys.columns b on a.object_id = b.object_id
 	    LEFT OUTER JOIN sys.computed_columns b1 on a.object_id = b1.object_id and b.column_id = b1.column_id  
   WHERE a.name = '@TABLE_NAME'
     AND isnull(b1.column_id, -1) = -1
+	
+ SELECT b.name as column_name
+   FROM [@SOURCE_DB_NAME].sys.tables a
+		INNER JOIN [@SOURCE_DB_NAME].sys.columns b on a.object_id = b.object_id
+		INNER JOIN #COLUMN_LIST c on b.name = c.column_name
+  WHERE a.name = '@TABLE_NAME'
+
+ DROP TABLE #COLUMN_LIST
 ";
+            query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
             return query.Replace("@TABLE_NAME", tableName);
         }
 

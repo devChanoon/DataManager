@@ -110,7 +110,7 @@ namespace DataManager
 
         private string SearchColumnList(string tableName)
         {
-            DataTable dataTable = _SqlManager.GetColumnList(tableName);
+            DataTable dataTable = _SqlManager.GetColumnList(_SourceDbName, tableName);
             string columnData = string.Empty;
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
