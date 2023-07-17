@@ -122,6 +122,12 @@ namespace DataManager
             }
         }
 
+        public void ResetIdentity(string tableName)
+        {
+            ExecuteSql(DataType.DATA_TABLE, Query_Manager.ResetIdentity(tableName));
+            ExecuteSql(DataType.DATA_TABLE, Query_Manager.SetIdentityMax(tableName));
+        }
+
         private dynamic ExecuteSql(DataType dataType, string query)
         {
             _SqlCommand.CommandText = query;

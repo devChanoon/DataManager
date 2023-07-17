@@ -176,5 +176,21 @@ END CATCH
             query = query.Replace("@COLUMN_DATA", columnData);
             return query.Replace("@INSERT_DATA", valueData);
         }
+
+        public static string ResetIdentity(string tableName)
+        {
+            string query = @"
+DBCC CHECKIDENT ('@TABLE_NAME', RESEED, 0)
+";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string SetIdentityMax(string tableName)
+        {
+            string query = @"
+DBCC CHECKIDENT ('@TABLE_NAME', RESEED)
+";
+            return query.Replace("@TABLE_NAME", tableName);
+        }
     }
 }

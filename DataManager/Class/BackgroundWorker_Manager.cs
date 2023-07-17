@@ -62,10 +62,13 @@ namespace DataManager
                     if (ValidationTable(tableName))
                     { 
                         SetIndentityInsert(tableName, true);
+
                         DeleteTableData(tableName);
                         string columnData = SearchColumnList(tableName);
                         InsertTableData(tableName, columnData, SearchDataTable(tableName, columnData));
+
                         SetIndentityInsert(tableName, false);
+                        ResetIdentity(tableName);
                     }
 
                     tableName = _GetTableInTableList();
@@ -100,6 +103,11 @@ namespace DataManager
         private void SetIndentityInsert(string tableName, bool isOn)
         {
             _SqlManager.SetIdentityInsert(tableName, isOn);
+        }
+
+        private void ResetIdentity(string tableName)
+        {
+            _SqlManager.ResetIdentity(tableName);
         }
 
         private void DeleteTableData(string tableName)
