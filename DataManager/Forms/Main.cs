@@ -167,5 +167,53 @@ namespace DataManager
             DashBoard dashBoard = new DashBoard(tableList, cb_SrcDB.SelectedItem.ToString(), ref _SqlManager);
             dashBoard.ShowDialog();
         }
+
+        private void cbe_ViewPassword_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbe_ViewPassword.Checked)
+                tb_Password.UseSystemPasswordChar = false;
+            else
+                tb_Password.UseSystemPasswordChar = true;
+        }
+
+        private void sb_FindTable_Click(object sender, EventArgs e)
+        {
+            int startIndex = 0;
+            if (gv_TableList.RowCount > 0 && gv_TableList.FocusedRowHandle != gv_TableList.RowCount - 1)
+                startIndex = gv_TableList.FocusedRowHandle + 1;
+
+            int rowIndex = SearchTable(startIndex);
+            if (startIndex > 0 && rowIndex == -1)
+            {
+                startIndex = 0;
+                rowIndex = SearchTable(startIndex);
+            }
+
+            if (rowIndex == -1)
+                MessageBox.Show("해당하는 테이블이 존재하지 않습니다.");
+            else
+                gv_TableList.FocusedRowHandle = rowIndex;
+        }
+
+        private int SearchTable(int startIndex)
+        {
+            int rowIndex = -1;
+            for (int i = startIndex; i < gv_TableList.RowCount; i++)
+            {
+                if (gv_TableList.GetRowCellValue(i, gc_TableName).ToString().ToUpper().Contains(te_TableName.Text.ToUpper()))
+                {
+                    rowIndex = i;
+                    break;
+                }
+            }
+
+            return rowIndex;
+        }
+
+        private void te_TableName_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+                sb_FindTable_Click(null, null);
+        }
     }
 }
