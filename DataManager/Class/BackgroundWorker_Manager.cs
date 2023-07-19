@@ -147,7 +147,7 @@ namespace DataManager
                     string data = CreateValueData(targetDataTable.Rows[i], i, ref bytesData);
                     valueData += string.Format("{0}({1})", comma, data);
                     valueDataCount++;
-                    if ((valueDataCount + 1) % 25 == 0 || bytesData.Count > 0)
+                    if (valueDataCount % 25 == 0 || bytesData.Count > 0)
                     { 
                         InsertDataToTable(tableName, columnData, ref bytesData, ref valueData, ref valueDataCount);                        
                         _ProgressChanged(i + 1, totalRowCount);

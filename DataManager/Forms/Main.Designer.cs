@@ -61,6 +61,8 @@ namespace DataManager
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             this.lc_Checked_Count = new DevExpress.XtraEditors.LabelControl();
             this.sb_Execute = new DevExpress.XtraEditors.SimpleButton();
+            this.te_TableName = new DevExpress.XtraEditors.TextEdit();
+            this.sb_FindTable = new DevExpress.XtraEditors.SimpleButton();
             this.tlp_Step.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.styleController1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -71,6 +73,7 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.r_ce_Check)).BeginInit();
             this.pnl_Top.SuspendLayout();
             this.tlp_Step4_Checked_Count.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.te_TableName.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // tlp_Step
@@ -203,6 +206,7 @@ namespace DataManager
             this.cbe_ViewPassword.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.cbe_ViewPassword.Size = new System.Drawing.Size(28, 23);
             this.cbe_ViewPassword.TabIndex = 9;
+            this.cbe_ViewPassword.CheckedChanged += new System.EventHandler(this.cbe_ViewPassword_CheckedChanged);
             // 
             // sb_Connect
             // 
@@ -404,6 +408,8 @@ namespace DataManager
             // pnl_Top
             // 
             this.pnl_Top.BackColor = System.Drawing.Color.White;
+            this.pnl_Top.Controls.Add(this.sb_FindTable);
+            this.pnl_Top.Controls.Add(this.te_TableName);
             this.pnl_Top.Controls.Add(this.sb_UncheckAll);
             this.pnl_Top.Controls.Add(this.sb_CheckAll);
             this.pnl_Top.Controls.Add(this.tlp_Step4_Checked_Count);
@@ -503,6 +509,26 @@ namespace DataManager
             this.sb_Execute.Text = "EXECUTE";
             this.sb_Execute.Click += new System.EventHandler(this.sb_Execute_Click);
             // 
+            // te_TableName
+            // 
+            this.te_TableName.Location = new System.Drawing.Point(224, 5);
+            this.te_TableName.Name = "te_TableName";
+            this.te_TableName.Properties.Appearance.Font = new System.Drawing.Font("맑은 고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.te_TableName.Properties.Appearance.Options.UseFont = true;
+            this.te_TableName.Size = new System.Drawing.Size(235, 32);
+            this.te_TableName.TabIndex = 14;
+            this.te_TableName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.te_TableName_KeyPress);
+            // 
+            // sb_FindTable
+            // 
+            this.sb_FindTable.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.sb_FindTable.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_FindTable.Location = new System.Drawing.Point(458, 4);
+            this.sb_FindTable.Name = "sb_FindTable";
+            this.sb_FindTable.Size = new System.Drawing.Size(33, 33);
+            this.sb_FindTable.TabIndex = 15;
+            this.sb_FindTable.Click += new System.EventHandler(this.sb_FindTable_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -527,6 +553,7 @@ namespace DataManager
             this.pnl_Top.ResumeLayout(false);
             this.tlp_Step4_Checked_Count.ResumeLayout(false);
             this.tlp_Step4_Checked_Count.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.te_TableName.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -562,6 +589,8 @@ namespace DataManager
         private DevExpress.XtraEditors.SimpleButton sb_Execute;
         private DevExpress.XtraEditors.LabelControl lc_SrcDB;
         private System.Windows.Forms.ComboBox cb_SrcDB;
+        private DevExpress.XtraEditors.SimpleButton sb_FindTable;
+        private DevExpress.XtraEditors.TextEdit te_TableName;
     }
 }
 
