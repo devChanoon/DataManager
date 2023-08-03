@@ -37,7 +37,7 @@ namespace DataManager
 
         public int BackgroundWorkerSeq { get { return _BackgroundWorkerSeq; } }
         public bool IsEnabled { get { return this.Enabled; } }
-        public bool IsBusy { get { return _BackgoundWorker_Manager.IsBusy; } }
+        public bool IsBusy { get { return _BackgoundWorker_Manager == null ? false : _BackgoundWorker_Manager.IsBusy; } }
         public bool IsException { get { return _IsException; } }
         public string ExceptionMessage { get { return _ExceptionMessage; } }
 
@@ -166,7 +166,8 @@ namespace DataManager
 
         public void ConnectDatabase(string connectionString)
         {
-            if (!_SqlManager.SqlConnect(connectionString))
+            string connectionResult = _SqlManager.SqlConnect(connectionString);
+            if (connectionResult != string.Empty)
                 Disabled();
             else
             {
