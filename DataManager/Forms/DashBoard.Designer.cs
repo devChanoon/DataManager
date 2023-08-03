@@ -429,6 +429,7 @@ namespace DataManager
             this.Name = "DashBoard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "DashBoard";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DashBoard_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.spb_Step)).EndInit();
             this.tlp_BWList.ResumeLayout(false);
             this.tlp_ProcessTime.ResumeLayout(false);

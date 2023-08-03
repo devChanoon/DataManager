@@ -55,14 +55,16 @@ namespace DataManager
             this.gc_TableName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gc_TableSize = new DevExpress.XtraGrid.Columns.GridColumn();
             this.pnl_Top = new System.Windows.Forms.Panel();
+            this.sb_FindTable = new DevExpress.XtraEditors.SimpleButton();
+            this.te_TableName = new DevExpress.XtraEditors.TextEdit();
             this.sb_UncheckAll = new DevExpress.XtraEditors.SimpleButton();
             this.sb_CheckAll = new DevExpress.XtraEditors.SimpleButton();
             this.tlp_Step4_Checked_Count = new System.Windows.Forms.TableLayoutPanel();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             this.lc_Checked_Count = new DevExpress.XtraEditors.LabelControl();
             this.sb_Execute = new DevExpress.XtraEditors.SimpleButton();
-            this.te_TableName = new DevExpress.XtraEditors.TextEdit();
-            this.sb_FindTable = new DevExpress.XtraEditors.SimpleButton();
+            this.nud_MaxThread = new System.Windows.Forms.NumericUpDown();
+            this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             this.tlp_Step.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.styleController1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -72,8 +74,9 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.gv_TableList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.r_ce_Check)).BeginInit();
             this.pnl_Top.SuspendLayout();
-            this.tlp_Step4_Checked_Count.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.te_TableName.Properties)).BeginInit();
+            this.tlp_Step4_Checked_Count.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_MaxThread)).BeginInit();
             this.SuspendLayout();
             // 
             // tlp_Step
@@ -408,6 +411,8 @@ namespace DataManager
             // pnl_Top
             // 
             this.pnl_Top.BackColor = System.Drawing.Color.White;
+            this.pnl_Top.Controls.Add(this.labelControl5);
+            this.pnl_Top.Controls.Add(this.nud_MaxThread);
             this.pnl_Top.Controls.Add(this.sb_FindTable);
             this.pnl_Top.Controls.Add(this.te_TableName);
             this.pnl_Top.Controls.Add(this.sb_UncheckAll);
@@ -419,6 +424,26 @@ namespace DataManager
             this.pnl_Top.Name = "pnl_Top";
             this.pnl_Top.Size = new System.Drawing.Size(916, 43);
             this.pnl_Top.TabIndex = 6;
+            // 
+            // sb_FindTable
+            // 
+            this.sb_FindTable.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("sb_FindTable.ImageOptions.Image")));
+            this.sb_FindTable.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_FindTable.Location = new System.Drawing.Point(382, 5);
+            this.sb_FindTable.Name = "sb_FindTable";
+            this.sb_FindTable.Size = new System.Drawing.Size(32, 32);
+            this.sb_FindTable.TabIndex = 15;
+            this.sb_FindTable.Click += new System.EventHandler(this.sb_FindTable_Click);
+            // 
+            // te_TableName
+            // 
+            this.te_TableName.Location = new System.Drawing.Point(182, 5);
+            this.te_TableName.Name = "te_TableName";
+            this.te_TableName.Properties.Appearance.Font = new System.Drawing.Font("맑은 고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.te_TableName.Properties.Appearance.Options.UseFont = true;
+            this.te_TableName.Size = new System.Drawing.Size(201, 32);
+            this.te_TableName.TabIndex = 14;
+            this.te_TableName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.te_TableName_KeyPress);
             // 
             // sb_UncheckAll
             // 
@@ -509,25 +534,45 @@ namespace DataManager
             this.sb_Execute.Text = "EXECUTE";
             this.sb_Execute.Click += new System.EventHandler(this.sb_Execute_Click);
             // 
-            // te_TableName
+            // nud_MaxThread
             // 
-            this.te_TableName.Location = new System.Drawing.Point(224, 5);
-            this.te_TableName.Name = "te_TableName";
-            this.te_TableName.Properties.Appearance.Font = new System.Drawing.Font("맑은 고딕", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.te_TableName.Properties.Appearance.Options.UseFont = true;
-            this.te_TableName.Size = new System.Drawing.Size(235, 32);
-            this.te_TableName.TabIndex = 14;
-            this.te_TableName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.te_TableName_KeyPress);
+            this.nud_MaxThread.Font = new System.Drawing.Font("맑은 고딕", 14F, System.Drawing.FontStyle.Bold);
+            this.nud_MaxThread.Location = new System.Drawing.Point(493, 5);
+            this.nud_MaxThread.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nud_MaxThread.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nud_MaxThread.Name = "nud_MaxThread";
+            this.nud_MaxThread.Size = new System.Drawing.Size(55, 32);
+            this.nud_MaxThread.TabIndex = 16;
+            this.nud_MaxThread.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.nud_MaxThread.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
-            // sb_FindTable
+            // labelControl5
             // 
-            this.sb_FindTable.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.sb_FindTable.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_FindTable.Location = new System.Drawing.Point(458, 4);
-            this.sb_FindTable.Name = "sb_FindTable";
-            this.sb_FindTable.Size = new System.Drawing.Size(33, 33);
-            this.sb_FindTable.TabIndex = 15;
-            this.sb_FindTable.Click += new System.EventHandler(this.sb_FindTable_Click);
+            this.labelControl5.Appearance.BackColor = System.Drawing.Color.AliceBlue;
+            this.labelControl5.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.labelControl5.Appearance.Options.UseBackColor = true;
+            this.labelControl5.Appearance.Options.UseFont = true;
+            this.labelControl5.Appearance.Options.UseTextOptions = true;
+            this.labelControl5.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.labelControl5.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControl5.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.labelControl5.Location = new System.Drawing.Point(424, 5);
+            this.labelControl5.Name = "labelControl5";
+            this.labelControl5.Size = new System.Drawing.Size(70, 32);
+            this.labelControl5.TabIndex = 17;
+            this.labelControl5.Text = "Thread";
             // 
             // Main
             // 
@@ -551,9 +596,10 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.gv_TableList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.r_ce_Check)).EndInit();
             this.pnl_Top.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.te_TableName.Properties)).EndInit();
             this.tlp_Step4_Checked_Count.ResumeLayout(false);
             this.tlp_Step4_Checked_Count.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.te_TableName.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_MaxThread)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -591,6 +637,8 @@ namespace DataManager
         private System.Windows.Forms.ComboBox cb_SrcDB;
         private DevExpress.XtraEditors.SimpleButton sb_FindTable;
         private DevExpress.XtraEditors.TextEdit te_TableName;
+        private DevExpress.XtraEditors.LabelControl labelControl5;
+        private System.Windows.Forms.NumericUpDown nud_MaxThread;
     }
 }
 
