@@ -30,6 +30,8 @@ namespace DataManager
                 nud_MaxThread.Maximum = Environment.ProcessorCount;
                 nud_MaxThread.Value = nud_MaxThread.Value;
             }
+
+            this.Text = string.Format("DataManager - V{0}", Application.ProductVersion);
         }
 
         private void sb_Connect_Click(object sender, EventArgs e)
