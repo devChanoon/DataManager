@@ -34,13 +34,14 @@ SELECT name as table_name
         {
             string query = @"
 SELECT 'Y' as 'check'
-     , convert(varchar(30), min(b.name)) as table_name
-     , CONCAT(convert(int, ltrim(str(sum(reserved) * 8.192, 15, 0))), ' kb') as table_size
-  FROM [@SELECTED_DB_NAME].dbo.sysindexes a
-       INNER JOIN [@SELECTED_DB_NAME].dbo.sysobjects b on (a.id = b.id)
- WHERE a.indid in (0, 1, 255)
-   AND b.xtype = 'U'
-GROUP BY a.id
+     , max(b.name) as table_name
+	 , CONCAT(FORMAT(SUM (CASE WHEN (a.index_id < 2) THEN (a.in_row_data_page_count + a.lob_used_page_count + a.row_overflow_used_page_count)
+													ELSE (a.lob_used_page_count + a.row_overflow_used_page_count)
+							END) * 8, '#,0'), ' KB') AS table_size
+  FROM [@SELECTED_DB_NAME].sys.dm_db_partition_stats a
+	   INNER JOIN [@SELECTED_DB_NAME].sys.all_objects b ON a.object_id = b.object_id
+ WHERE b.type = 'U'
+GROUP BY a.object_id
 ORDER BY table_name
 ";
             return query.Replace("@SELECTED_DB_NAME", selectedDbName);

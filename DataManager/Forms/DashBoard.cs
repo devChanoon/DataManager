@@ -38,12 +38,13 @@ namespace DataManager
             CHECK_DATA
         }
 
-        public DashBoard(List<string> tableList, string sourceDbName, ref Sql_Manager sqlManager)
+        public DashBoard(List<string> tableList, string sourceDbName, int backgroundWorkerCount, ref Sql_Manager sqlManager)
         {
             InitializeComponent();
             setTableList(tableList);
             _SqlManager = sqlManager;
             _SourceDbName = sourceDbName;
+            _BackgroundWorkerCount = backgroundWorkerCount;
 
             SetBackgroundWorkerList();
 
@@ -127,7 +128,7 @@ namespace DataManager
 
                 _ForeignKeyList[tableName].Add(foreignKeyName);
             }
-
+            
             MoveNextStep();
         }
 
@@ -282,14 +283,12 @@ namespace DataManager
 
         private void SetBackgroundWorkerList()
         {
-            int backgroundWorkerCount = Environment.ProcessorCount > 8 ? 8 : Environment.ProcessorCount;
-            backgroundWorkerCount = _BackgroundWorkerCount > 0 ? _BackgroundWorkerCount : backgroundWorkerCount;
             int backgroundWorkerIndex = 0;
             for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
             {
                 BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
                 backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
-                if (backgroundWorkerProgress.BackgroundWorkerSeq > backgroundWorkerCount)
+                if (backgroundWorkerProgress.BackgroundWorkerSeq > _BackgroundWorkerCount)
                     backgroundWorkerProgress.Disabled();
                 else
                 {
@@ -384,6 +383,16 @@ namespace DataManager
 
             	    lc_ProcessTime.Text = string.Format("{0:D3}:{1:D2}:{2:D2}", hours, minutes, seconds);
                 }
+            }
+        }
+
+        private void DashBoard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
+            {
+                BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
+                if (backgroundWorkerProgress.IsBusy)
+                    backgroundWorkerProgress.CancelBackgroundWorker();
             }
         }
     }

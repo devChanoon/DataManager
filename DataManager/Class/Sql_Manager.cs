@@ -17,8 +17,9 @@ namespace DataManager
         private enum DataType { DATA_SET, DATA_TABLE, STRING };
         public string ConnectionString { get { return _ConnectionString; } }
 
-        public bool SqlConnect(string connectionString)
+        public string SqlConnect(string connectionString)
         {
+            string errorMessage = string.Empty;
             try
             {
                 _ConnectionString = connectionString;
@@ -27,15 +28,15 @@ namespace DataManager
 
                 _SqlCommand = new SqlCommand();
                 _SqlCommand.Connection = _SqlConnection;
-
-                return true;
+                _SqlCommand.CommandTimeout = 0;
             }
             catch (Exception ex)
             {
                 _SqlConnection.Close();
-
-                return false;
+                errorMessage = ex.Message;
             }
+
+            return errorMessage;
         }
         public bool SqlDisconnect()
         {

@@ -24,6 +24,14 @@ namespace DataManager
             tb_DBName.Text = _InitManager._InitDb.dbName;
             tb_ID.Text = _InitManager._InitDb.ID;
             tb_Password.Text = _InitManager._InitDb.password;
+
+            if (Environment.ProcessorCount < 8)
+            {
+                nud_MaxThread.Maximum = Environment.ProcessorCount;
+                nud_MaxThread.Value = nud_MaxThread.Value;
+            }
+
+            this.Text = string.Format("DataManager - V{0}", Application.ProductVersion);
         }
 
         private void sb_Connect_Click(object sender, EventArgs e)
@@ -40,7 +48,8 @@ namespace DataManager
         private bool ConnectDatabase()
         {
             string connectionString = string.Format("Server={0};database={1};uid={2};pwd={3}", tb_DBAddress.Text, tb_DBName.Text, tb_ID.Text, tb_Password.Text);
-            if (_SqlManager.SqlConnect(connectionString))
+            string connectionResult = _SqlManager.SqlConnect(connectionString);
+            if (connectionResult == string.Empty)
             {
                 SetDBControlEnabled(false);
                 sb_Connect.Text = "DISCONNECT";
@@ -55,6 +64,7 @@ namespace DataManager
             else
             {
                 sb_Connect.Text = "CONNECT";
+                MessageBox.Show(connectionResult, "경고", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -164,7 +174,7 @@ namespace DataManager
                     tableList.Add(gv_TableList.GetRowCellValue(i, gc_TableName).ToString());
             }
 
-            DashBoard dashBoard = new DashBoard(tableList, cb_SrcDB.SelectedItem.ToString(), ref _SqlManager);
+            DashBoard dashBoard = new DashBoard(tableList, cb_SrcDB.SelectedItem.ToString(), (int)nud_MaxThread.Value, ref _SqlManager);
             dashBoard.ShowDialog();
         }
 
