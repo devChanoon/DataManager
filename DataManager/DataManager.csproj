@@ -126,6 +126,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="_Ref\DB_Sync 매뉴얼.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -133,6 +134,7 @@
   <ItemGroup>
     <Content Include="Content\check.svg" />
     <Content Include="DataManager.ico" />
+    <Content Include="_Ref\#데이터베이스 이름 변경 쿼리.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
