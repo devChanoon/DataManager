@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -192,6 +193,63 @@ DBCC CHECKIDENT ('@TABLE_NAME', RESEED, 0)
 DBCC CHECKIDENT ('@TABLE_NAME', RESEED)
 ";
             return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string GetDBInfo(string currentDbName)
+        {
+            string query = @"
+SP_HELPDB @CURRENT_DB_NAME
+";
+            return query.Replace("@CURRENT_DB_NAME", currentDbName);
+        }
+
+        public static string SetDBAccess(string currentDbName, bool isMultiUser)
+        {
+            string query = @"
+ALTER DATABASE @CURRENT_DB_NAME SET @MODE WITH ROLLBACK IMMEDIATE;
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            return query.Replace("@MODE", isMultiUser ? "MULTI_USER" : "RESTRICTED_USER");
+        }
+
+        public static string SetDBStatus(string currentDbName, bool isOnline)
+        {
+            string query = @"
+ALTER DATABASE @CURRENT_DB_NAME SET @MODE WITH ROLLBACK IMMEDIATE;
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            return query.Replace("@MODE", isOnline ? "ONLINE" : "OFFLINE");
+        }
+
+        public static string SetDBLogicalName(string currentDbName, string currentName, string newName)
+        {
+            string query = @"
+ALTER DATABASE @CURRENT_DB_NAME
+MODIFY FILE ( NAME = @CURRENT_NAME, NEWNAME = @NEW_NAME )
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            query = query.Replace("@CURRENT_NAME", currentName);
+            return query.Replace("@NEW_NAME", newName);
+        }
+
+        public static string SetDBLogicalPath(string currentDbName, string name, string path)
+        {
+            string query = @"
+ALTER DATABASE @CURRENT_DB_NAME
+MODIFY FILE ( NAME = @NAME, FILENAME = '@PATH' )
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            query = query.Replace("@NAME", name);
+            return query.Replace("@PATH", path);
+        }
+
+        public static string ChangeDBName(string currentDbName, string newName)
+        {
+            string query = @"
+ALTER DATABASE @CURRENT_DB_NAME MODIFY NAME = @NEW_NAME;
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            return query.Replace("@NEW_NAME", newName);
         }
     }
 }
