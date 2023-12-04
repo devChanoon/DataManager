@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using DevExpress.XtraLayout.Customization;
 
 namespace DataManager
 {
@@ -127,6 +128,55 @@ namespace DataManager
         {
             ExecuteSql(DataType.DATA_TABLE, Query_Manager.ResetIdentity(tableName));
             ExecuteSql(DataType.DATA_TABLE, Query_Manager.SetIdentityMax(tableName));
+        }
+
+        public DataTable GetDBInfo(string currentDbName)
+        {
+            DataSet dataSet = ExecuteSql(DataType.DATA_SET, Query_Manager.GetDBInfo(currentDbName));
+            if (dataSet == null)
+                return null;
+            else
+                return dataSet.Tables[1];
+        }
+
+        public void SetDBAccess(string currentDbName, bool isMultiUser)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.SetDBAccess(currentDbName, isMultiUser));
+        }
+
+        public void SetDBStatus(string currentDbName, bool isOnline)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.SetDBStatus(currentDbName, isOnline));
+        }
+
+        public string SetDBLogicalName(string currentDbName, string currentName, string newName)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.SetDBLogicalName(currentDbName, currentName, newName));
+            DataTable dataTable = GetDBInfo(currentDbName);
+            bool isChanged = false;
+            if (dataTable != null)
+            {
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    if (row["name"].ToString() == newName)
+                    {
+                        isChanged = true;
+                        break;
+                    }
+                }
+            }
+
+            return isChanged ? newName : string.Empty;
+        }
+
+        public void SetDBLogicalPath(string currentDbName, string name, string path)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.SetDBLogicalPath(currentDbName, name, path));
+        }
+
+        public void ChangeDBName(string currentDbName, string newName)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.ChangeDBName(currentDbName, newName));
         }
 
         private dynamic ExecuteSql(DataType dataType, string query)
