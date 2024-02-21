@@ -20,7 +20,7 @@ namespace DataManager
 SELECT name as table_name
   FROM sys.databases
  WHERE name not in ('master', '@CURRENT_DB_NAME')
-   AND name @CONTAINTS_AT like '%_AT'
+   AND SUBSTRING(name, 0, CASE WHEN CHARINDEX('#', name) = 0 THEN LEN(name) + 1 ELSE CHARINDEX('#', name) END) @CONTAINTS_AT like '%_AT'
 ";
             query = query.Replace("@CONTAINTS_AT", currentDbName.Contains("_AT") ? "" : "not");
             return query.Replace("@CURRENT_DB_NAME", currentDbName);
