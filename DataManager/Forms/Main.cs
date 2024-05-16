@@ -1,21 +1,34 @@
-﻿using DevExpress.XtraLayout.Customization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Web.Administration;
 
 namespace DataManager
 {
     public partial class Main : Form
     {
+        public delegate void ModifyDBAppendLog(string log, Log.LogType logType);
+
+        public const string INI_FILE_NAME = "RTEGMS_SYSTEM.ini";
+        public const string NOT_EXIST_IIS = "IIS에 설정된 사이트가 없습니다.";
+        private const string NOT_EXIST_INI = "INI 파일을 찾을 수 없습니다.";
+
         private Sql_Manager _SqlManager = new Sql_Manager();
         private Init_Manager _InitManager = new Init_Manager();
+
+        [DllImport("kernel32.dll")]
+        private static extern int GetPrivateProfileString(    // ini Read 함수
+                    String section,
+                    String key,
+                    String def,
+                    StringBuilder retVal,
+                    int size,
+                    String filePath);
 
         public Main()
         {
@@ -30,10 +43,24 @@ namespace DataManager
             if (Environment.ProcessorCount < 8)
             {
                 nud_MaxThread.Maximum = Environment.ProcessorCount;
-                nud_MaxThread.Value = nud_MaxThread.Value;
+                nud_MaxThread.Value = Environment.ProcessorCount;
             }
 
-            this.Text = string.Format("DataManager - V{0}", Application.ProductVersion);
+            this.Text = string.Format("DataManager - V{0}", System.Windows.Forms.Application.ProductVersion);
+
+            InitializeDataSource(gv_Site);
+            InitializeDataSource(gv_Database);
+        }
+
+        private void InitializeDataSource(DevExpress.XtraGrid.Views.Grid.GridView gridView)
+        {
+            DataTable dataSource = new DataTable();
+            for (int i = 0; i < gridView.Columns.Count; i++)
+            {
+                DataColumn dataColumn = new DataColumn(gridView.Columns[i].FieldName);
+                dataSource.Columns.Add(dataColumn);
+            }
+            SetDataSource(gridView, dataSource);
         }
 
         private void sb_Connect_Click(object sender, EventArgs e)
@@ -49,8 +76,7 @@ namespace DataManager
 
         private bool ConnectDatabase()
         {
-            string connectionString = string.Format("Server={0};database={1};uid={2};pwd={3}", tb_DBAddress.Text, tb_DBName.Text, tb_ID.Text, tb_Password.Text);
-            string connectionResult = _SqlManager.SqlConnect(connectionString);
+            string connectionResult = _SqlManager.SqlConnect(Sql_Manager.CreateConnectionString(tb_DBAddress.Text, tb_DBName.Text, tb_ID.Text, tb_Password.Text));
             if (connectionResult == string.Empty)
             {
                 SetDBControlEnabled(false);
@@ -99,6 +125,7 @@ namespace DataManager
             tc_WorkType.Enabled = !enabled;
         }
 
+        #region Copy Data
         private void InitailizeDbList()
         {
             cb_SrcDB.Items.Clear();
@@ -230,6 +257,9 @@ namespace DataManager
                 sb_FindTable_Click(null, null);
         }
 
+        #endregion
+
+        #region Modify Database
         private void ClearDBInfo()
         {
             lb_DataDBName.Text = string.Empty;
@@ -241,152 +271,237 @@ namespace DataManager
         private void InitializeDBInfo()
         {
             ClearDBInfo();
+            
+            DatabaseInfo databaseInfo = new DatabaseInfo().GetDatabaseInfo(tb_DBName.Text, ref _SqlManager);
+            lb_DataDBName.Text = databaseInfo.Current.DataDBName;
+            lb_DataDBPath.Text = databaseInfo.Current.DataDBPath;
+            lb_LogDBName.Text = databaseInfo.Current.LogDBName;
+            lb_LogDBPath.Text = databaseInfo.Current.LogDBPath;
+        }
 
-            DataTable dataTable = _SqlManager.GetDBInfo(tb_DBName.Text);
-            if (dataTable != null)
-            {
-                lb_DataDBName.Text = dataTable.Rows[0]["name"].ToString();
-                lb_DataDBPath.Text = dataTable.Rows[0]["filename"].ToString();
-                lb_LogDBName.Text = dataTable.Rows[1]["name"].ToString();
-                lb_LogDBPath.Text = dataTable.Rows[1]["filename"].ToString();
-            }
+        private void AppendLog(string log, Log.LogType logType)
+        {
+            ModifyLog.AppendLog(log, logType);
         }
 
         private void sb_ModifyExecute_Click(object sender, EventArgs e)
         {
             ModifyLog.Clear();
 
-            if (!File.Exists(lb_DataDBPath.Text) || !File.Exists(lb_DataDBPath.Text))
+            if (!File.Exists(lb_DataDBPath.Text) || !File.Exists(lb_LogDBPath.Text))
             {
-                ModifyLog.AppendLog("DB 또는 log 파일이 해당 경로에 존재하지 않습니다.\r\n해당 DB 서버에서 실행해 주십시오.", Log.LogType.ALERT);
+                ModifyLog.AppendLog("data 파일 또는 log 파일이 해당 경로에 존재하지 않습니다.\r\n해당 DB 서버에서 실행해 주십시오.", Log.LogType.ALERT);
                 return;
             }
 
-            string prevDbName = tb_DBName.Text;
-            try
+            DatabaseInfo databaseInfo = new DatabaseInfo();
+            databaseInfo.Current.DBName = tb_DBName.Text;
+            databaseInfo.Current.DataDBName = lb_DataDBName.Text;
+            databaseInfo.Current.DataDBPath = lb_DataDBPath.Text;
+            databaseInfo.Current.LogDBName = lb_LogDBName.Text;
+            databaseInfo.Current.LogDBPath = lb_LogDBPath.Text;
+
+            Database_Manager databaseManager = new Database_Manager(databaseInfo, true, ref _SqlManager);
+            databaseManager.ModifyDBAppendLog = new ModifyDBAppendLog(AppendLog);
+            Tuple<bool, DatabaseInfo> modifyResult = databaseManager.ModifyDatabase();
+            tb_DBName.Text = modifyResult.Item2.Current.DBName;
+            lb_DataDBName.Text = modifyResult.Item2.Current.DataDBName;
+            lb_DataDBPath.Text = modifyResult.Item2.Current.DataDBPath;
+            lb_LogDBName.Text = modifyResult.Item2.Current.LogDBName;
+            lb_LogDBPath.Text = modifyResult.Item2.Current.LogDBPath;
+
+            if (modifyResult.Item1)
             {
-                // 1. 액세스 제한 RESTRICTED_USER로 변경
-                SetDBAccess(false);
-
-                // 2. 논리 이름 변경 (DB, LOG)
-                string suffix = DateTime.Now.ToString("yyyyMMddHHmmss");
-                string dbName = SetDBLogicalName(lb_DataDBName.Text, suffix);
-                string logName = SetDBLogicalName(lb_LogDBName.Text, suffix);
-
-                // 4. DB명 변경
-                tb_DBName.Text = SetDBName(tb_DBName.Text, suffix);
-
-                // 3. DB OFFLINE
-                SetDBStatus(false);
-
-                // 4. 물리 DB 파일 이름 변경
-                string dbPath = SetDBPhysicalName(lb_DataDBPath.Text, suffix);
-                string logPath = SetDBPhysicalName(lb_LogDBPath.Text, suffix);
-
-                // 5. DB ONLINE
-                SetDBStatus(true);
-
-                // 6. 파일 경로 수정
-                SetDBPath(dbName, dbPath);
-                SetDBPath(logName, logPath);
-
-                // 7. 변경된 경로 표시
-                lb_DataDBName.Text = dbName;
-                lb_LogDBName.Text = logName;
-                lb_DataDBPath.Text = dbPath;
-                lb_LogDBPath.Text = logPath;
+                MessageBox.Show("DB명 변경에 성공 했습니다.");
+                sb_Connect_Click(null, null); // Disconnect
+                sb_Connect_Click(null, null); // 변경된 DB명으로 Connect
             }
-            catch (Exception ex)
-            {
-                ModifyLog.AppendLog(ex.Message, Log.LogType.ALERT);
-            }
-            finally
-            {
-                // DB ONLINE
-                SetDBStatus(true);
+        }
 
-                // DB 액세스 제한 MULTI_USER로 변경
-                SetDBAccess(true);
+        #endregion
 
-                if (prevDbName != tb_DBName.Text)
+        #region All In One
+
+        private void gv_Site_RowCellClick(object sender, DevExpress.XtraGrid.Views.Grid.RowCellClickEventArgs e)
+        {
+            if (e.Column == gc_FilePath)
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Zip Files (*.zip)|*.zip";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show("DB명 변경에 성공 했습니다.");
-                    sb_Connect_Click(null, null); // Disconnect
-                    sb_Connect_Click(null, null); // 변경된 DB명으로 Connect
+                    gv_Site.SetFocusedRowCellValue(e.Column, openFileDialog.FileName);
                 }
             }
         }
 
-        private void SetDBAccess(bool isMultiUser)
+        private void gv_Database_RowCellClick(object sender, DevExpress.XtraGrid.Views.Grid.RowCellClickEventArgs e)
         {
-            ModifyLog.AppendLog(string.Format("DB Access 제한 변경 : {0}", isMultiUser ? "MULTI_USER" : "RESTRICED_USER"));
-            _SqlManager.SetDBAccess(tb_DBName.Text, isMultiUser);
-        }
-
-        private void SetDBStatus(bool isOnline)
-        {
-            ModifyLog.AppendLog(string.Format("DB State 변경 : {0}", isOnline ? "ONLINE" : "OFFLINE"));
-            _SqlManager.SetDBStatus(tb_DBName.Text, isOnline);
-        }
-
-        private string SetDBLogicalName(string currentName, string suffix)
-        {
-            string newName = GetNewName(currentName, suffix);
-            ModifyLog.AppendLog(string.Format("DB 논리 파일명 변경 : {0} >> {1}", currentName, newName));
-            
-            string resultName = _SqlManager.SetDBLogicalName(tb_DBName.Text, currentName, newName);
-            if (resultName != newName)
-                throw new Exception("DB 논리 파일명 변경에 실패 했습니다.");
-            else
-                return resultName;
-        }
-
-        private string GetNewName(string currentName, string suffix)
-        {
-            const string TIME_STAMP_SYMBOL = "#";
-            string sourceName = currentName;
-            if (sourceName.IndexOf(TIME_STAMP_SYMBOL) > -1)
-                sourceName = sourceName.Substring(0, sourceName.IndexOf(TIME_STAMP_SYMBOL));
-
-            return string.Format("{0}{1}{2}", sourceName, TIME_STAMP_SYMBOL, suffix);
-        }
-
-        private string SetDBPhysicalName(string path, string suffix)
-        {
-            string extention = Path.GetExtension(path);
-            string fileName = Path.GetFileName(path);
-            fileName = fileName.Substring(0, fileName.Length - extention.Length);
-
-            string newFileName = string.Format("{0}{1}", GetNewName(fileName, suffix), extention);
-            string newPath = Path.Combine(Path.GetDirectoryName(path), newFileName);
-
-            try
+            if (e.Column == gc_BackupFilePath)
             {
-                ModifyLog.AppendLog(string.Format("DB 물리 파일명 변경 : {0} >> {1}", Path.GetFileName(path), newFileName));
-
-                FileInfo fileInfo = new FileInfo(path);
-                fileInfo.MoveTo(newPath);
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Backup File (*.bak)|*.bak";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    gv_Database.SetFocusedRowCellValue(e.Column, openFileDialog.FileName);
+                }
             }
-            catch (Exception ex)
+        }
+
+        private void sb_Add_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                throw new Exception(string.Format("DB 물리 파일명 변경에 실패했습니다. {0}", ex.Message));
+                Tuple<bool, string> result = AddSite(folderBrowserDialog.SelectedPath);
+                if (!result.Item1)
+                    return;
+
+                AddDB(folderBrowserDialog.SelectedPath, result.Item2);
+            }
+        }
+
+        private Tuple<bool, string> AddSite(string path)
+        {
+            DataTable dataTable = GetDataSource(gv_Site);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                if (row["Path"].ToString().Equals(path))
+                    return new Tuple<bool, string>(false, string.Empty);
             }
 
-            return newPath;
+            DataRow dataRow = dataTable.NewRow();
+            dataRow["Path"] = path;
+            dataRow["SiteName"] = FindSiteName(path);
+            dataTable.Rows.Add(dataRow);
+            SetDataSource(gv_Site, dataTable);
+            return new Tuple<bool, string>(true, path);
+        }
+        public string FindSiteName(string path)
+        {
+            ServerManager serverManager = new ServerManager();
+            foreach (Site site in serverManager.Sites)
+            {
+                foreach (Microsoft.Web.Administration.Application application in site.Applications)
+                {
+                    // 특정 경로를 가지는 Application 확인
+                    if (application.VirtualDirectories[0].PhysicalPath.Equals(path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return site.Name;
+                    }
+                }
+            }
+
+            return NOT_EXIST_IIS;
         }
 
-        private void SetDBPath(string currentName, string path)
+        private Tuple<bool, string> FindDbName(string path)
         {
-            ModifyLog.AppendLog(string.Format("DB 물리 경로 변경 : {0} - {1}", currentName, path));
-            _SqlManager.SetDBLogicalPath(tb_DBName.Text, currentName, path);
+            StringBuilder temp = new StringBuilder(2000);
+            GetPrivateProfileString("Config", "dbName", "", temp, 2000, Path.Combine(path, INI_FILE_NAME));
+            string dbName = temp.ToString();
+            return new Tuple<bool, string>(dbName != string.Empty, dbName == string.Empty ? NOT_EXIST_INI : dbName);
         }
 
-        private string SetDBName(string currentName, string suffix)
+        private void AddDB(string path, string sitePath)
         {
-            string newName = GetNewName(currentName, suffix);
-            ModifyLog.AppendLog(string.Format("DB명 변경 : {0} >> {1}", tb_DBName.Text, newName));
-            _SqlManager.ChangeDBName(currentName, newName);
-            return newName;
+            Tuple<bool, string> dbInfo = FindDbName(path);
+            if (!dbInfo.Item1)
+                return;
+
+            DataTable dataTable = GetDataSource(gv_Database);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                if (row["DBName"].ToString().Equals(dbInfo.Item2))
+                    return;
+            }
+
+            DataRow dataRow = dataTable.NewRow();
+            dataRow["DBName"] = dbInfo.Item2;
+            dataRow["SitePath"] = sitePath;
+            dataTable.Rows.Add(dataRow);
+
+            dataRow = dataTable.NewRow();
+            dataRow["DBName"] = $"{dbInfo.Item2}_AT";
+            dataRow["SitePath"] = sitePath;
+            dataTable.Rows.Add(dataRow);
         }
+
+        private void sb_Delete_Click(object sender, EventArgs e)
+        {
+            string sitePath = gv_Site.GetFocusedRowCellValue(gc_Path).ToString();
+            SetDataSource(gv_Site, GetFilteredDataSource(gv_Site, sitePath, "Path"));
+            SetDataSource(gv_Database, GetFilteredDataSource(gv_Database, sitePath, "SitePath"));
+        }
+
+        private DataTable GetFilteredDataSource(DevExpress.XtraGrid.Views.Grid.GridView gridView, string targetString, string fieldName)
+        {
+            DataTable dataTable = GetDataSource(gridView);
+            var dataRows = dataTable.AsEnumerable().Where(row => row[fieldName].ToString() != targetString);
+            return dataRows.Any() ? dataRows.CopyToDataTable() : dataTable.Clone();
+        }
+
+        private DataTable GetDataSource(DevExpress.XtraGrid.Views.Grid.GridView gridView)
+        {
+            return gridView.GridControl.DataSource as DataTable;
+        }
+
+        private void SetDataSource(DevExpress.XtraGrid.Views.Grid.GridView gridView, DataTable dataSource)
+        {
+            gridView.GridControl.DataSource = dataSource;
+        }
+
+        private void sb_AllInOneExecute_Click(object sender, EventArgs e)
+        {
+            if (!CheckDBFile())
+            { 
+                MessageBox.Show("data 파일 또는 log 파일이 경로에 존재하지 않습니다.\r\n해당 DB 서버에서 실행해 주십시오.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!CheckEmptyFilePath())
+            {
+                if (DialogResult.No == MessageBox.Show("파일 경로가 지정되지 않은 사이트 또는 DB가 있습니다.\r\n계속 진행하시겠습니까?", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    return;
+            }
+
+            AllInOneDashBoard allInOneDashBoard = new AllInOneDashBoard(GetDataSource(gv_Site), 
+                GetDataSource(gv_Database), 
+                tb_DBAddress.Text,
+                tb_ID.Text,
+                tb_Password.Text);
+            allInOneDashBoard.ShowDialog();
+        }
+
+        private bool CheckDBFile()
+        {
+            DataTable dbTable = GetDataSource(gv_Database);
+            var filteredTable = dbTable.AsEnumerable().Where(row => row["BackupFilePath"].ToString() != string.Empty);
+            dbTable = filteredTable.Any() ? filteredTable.CopyToDataTable() : dbTable.Clone();
+            for (int i = 0; i < dbTable.Rows.Count; i++)
+            {
+                DatabaseInfo databaseInfo = new DatabaseInfo().GetDatabaseInfo(dbTable.Rows[i]["DBName"].ToString(), ref _SqlManager);
+                if (!File.Exists(databaseInfo.Current.DataDBPath) || !File.Exists(databaseInfo.Current.LogDBPath))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckEmptyFilePath()
+        {
+            DataTable siteTable = GetDataSource(gv_Site);
+            var filteredTable = siteTable.AsEnumerable().Where(row => row["FilePath"].ToString() == string.Empty);
+            siteTable = filteredTable.Any() ? filteredTable.CopyToDataTable() : siteTable.Clone();
+
+            DataTable dbTable = GetDataSource(gv_Database);
+            filteredTable = dbTable.AsEnumerable().Where(row => row["BackupFilePath"].ToString() == string.Empty);
+            dbTable = filteredTable.Any() ? filteredTable.CopyToDataTable() : dbTable.Clone();
+
+            return siteTable.Rows.Count == 0 && dbTable.Rows.Count == 0;
+        }
+
+        #endregion
     }
 }

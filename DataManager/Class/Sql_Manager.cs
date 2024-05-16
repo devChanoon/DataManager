@@ -18,6 +18,11 @@ namespace DataManager
         private enum DataType { DATA_SET, DATA_TABLE, STRING };
         public string ConnectionString { get { return _ConnectionString; } }
 
+        public static string CreateConnectionString(string dbAddress, string dbName, string userId, string password)
+        {   
+            return $"Server={dbAddress};database={dbName};uid={userId};pwd={password}";
+        }
+
         public string SqlConnect(string connectionString)
         {
             string errorMessage = string.Empty;
@@ -42,7 +47,7 @@ namespace DataManager
         public bool SqlDisconnect()
         {
             try
-            {
+            {                
                 _SqlConnection.Close();
                 _SqlCommand = null;
 
