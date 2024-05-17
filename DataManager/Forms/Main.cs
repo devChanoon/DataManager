@@ -503,5 +503,10 @@ namespace DataManager
         }
 
         #endregion
+
+        private void sb_Log_Click(object sender, EventArgs e)
+        {
+            new LogView().ShowDialog();
+        }
     }
 }

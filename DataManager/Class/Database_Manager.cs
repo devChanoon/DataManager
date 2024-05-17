@@ -12,6 +12,7 @@ namespace DataManager
     {
         public Main.ModifyDBAppendLog ModifyDBAppendLog;
         
+        private Log_Manager _LogManager = new Log_Manager();
         private Sql_Manager _SqlManager = null;
         private DatabaseInfo _DatabaseInfo;
 
@@ -26,6 +27,9 @@ namespace DataManager
 
         public Tuple<bool, DatabaseInfo> ModifyDatabase()
         {
+            if (_isAppendLog)
+                _LogManager.AppendMaster("Modify Database", _SqlManager.ServerName);
+
             string currentDBName = _DatabaseInfo.Current.DBName;
 
             try
@@ -146,7 +150,15 @@ namespace DataManager
         private void AppendLog(string content, Log.LogType logType = Log.LogType.INFO)
         {
             if (_isAppendLog)
+            {
+                _LogManager.AppendDetail(new Log_Manager.DetailData()
+                {
+                    LogMessage = content,
+                    Result = logType == Log.LogType.ALERT ? "FAIL" : "SUCCESS",
+                    ErrorMessage = logType == Log.LogType.ALERT ? content : string.Empty
+                });
                 ModifyDBAppendLog(content, logType);
+            }
         }
     }
 }

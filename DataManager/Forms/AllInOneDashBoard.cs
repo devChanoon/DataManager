@@ -35,6 +35,8 @@ namespace DataManager
         private ThreadInfo _DbThread;
         private DateTime _StartTime;
 
+        private Log_Manager _LogManager = new Log_Manager();
+
         public AllInOneDashBoard(DataTable siteData, DataTable dbData, string serverName, string id, string password)
         {
             InitializeComponent();
@@ -116,6 +118,7 @@ namespace DataManager
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             _StartTime = DateTime.Now;
+            _LogManager.AppendMaster("All In One", _DbThread.ServerName);
 
             Thread siteThread = new Thread(new ThreadStart(ExecuteSite));
             siteThread.Start();
@@ -211,21 +214,26 @@ namespace DataManager
             {
                 SetFocusedRowHandle(gv_Site, i);
 
-                string siteName = dataTable.Rows[i]["SiteName"].ToString();
-                string path = dataTable.Rows[i]["Path"].ToString();
-                string filePath = dataTable.Rows[i]["FilePath"].ToString();
+                Log_Manager.SiteData siteData = new Log_Manager.SiteData
+                {
+                    SiteName = dataTable.Rows[i]["SiteName"].ToString(),
+                    Path = dataTable.Rows[i]["Path"].ToString(),
+                    FilePath = dataTable.Rows[i]["FilePath"].ToString(),
+                    Result = "Success",
+                    ErrorMessage = string.Empty
+                };
 
                 string status = "N";
                 try
                 {
                     // 1. 기존 배포파일 압축하여 백업
-                    CompressionFolder(path);
+                    CompressionFolder(siteData.Path);
                     
                     // 2. 신규 배포 파일 압축 풀기
-                    filePath = DecompressionFolder(filePath);
+                    string filePath = DecompressionFolder(siteData.FilePath);
 
                     // 3. 압축 해제한 파일들을 기존 경로로 복사
-                    CopyFiles(filePath, path);
+                    CopyFiles(filePath, siteData.Path);
 
                     // 4. 복사 후 폴더 삭제
                     DisplaySiteStatus("정리하는 중...");
@@ -234,10 +242,14 @@ namespace DataManager
                     status = "Y";
                 }
                 catch (Exception e)
-                {
-                    _SiteThread.ErrorMessages.Add($"{siteName} >> {e.Message}");
+                {   
+                    _SiteThread.ErrorMessages.Add($"{siteData.SiteName} >> {e.Message}");
+
+                    siteData.Result = "Fail";
+                    siteData.ErrorMessage = e.Message;
                 }
                 SetRowCellValue(gv_Site, i, "Status", status);
+                _LogManager.AppendDetail(siteData);
             }
 
             _SiteThread.IsComplete = true;
@@ -330,20 +342,26 @@ namespace DataManager
             {
                 SetFocusedRowHandle(gv_Database, i);
 
-                string dbName = dataTable.Rows[i]["DBName"].ToString();
-                string backupFilePath = dataTable.Rows[i]["BackupFilePath"].ToString();
                 string status = "N";
+
+                Log_Manager.DatabaseData databaseData = new Log_Manager.DatabaseData
+                {
+                    DatabaseName = dataTable.Rows[i]["DBName"].ToString(),
+                    BackupFilePath = dataTable.Rows[i]["BackupFilePath"].ToString(),
+                    Result = "Success",
+                    ErrorMessage = string.Empty
+                };
                 try
                 {
                     // 1. 기존 DB -> 백업 DB로 변경 (Database_Manager)
-                    Tuple<string, DatabaseInfo> result = BackupCurrentDatabase(dbName);
+                    Tuple<string, DatabaseInfo> result = BackupCurrentDatabase(databaseData.DatabaseName);
                     if (result.Item1 != string.Empty)
                         throw new Exception(result.Item1);
 
                     DatabaseInfo BackupDbInfo = result.Item2;
 
                     // 2. tempDbName으로 복원 (기존 DB에 데이터 insert 방지)
-                    DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, dbName, backupFilePath);
+                    DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
 
                     // 3. 데이터 복사 (CopyData)
                     Tuple<string, Sql_Manager> copyResult = CopyDataBackupToCurrent(tempDbDatabaseInfo.Current.DBName, BackupDbInfo);
@@ -357,10 +375,13 @@ namespace DataManager
                 }
                 catch (Exception e)
                 {
-                    _DbThread.ErrorMessages.Add($"{dbName} >> {e.Message}");
-                    status = "N";
+                    _DbThread.ErrorMessages.Add($"{databaseData.DatabaseName} >> {e.Message}");
+
+                    databaseData.Result = "Fail";
+                    databaseData.ErrorMessage = e.Message;
                 }
                 SetRowCellValue(gv_Database, i, "Status", status);
+                _LogManager.AppendDetail(databaseData);
             }
 
             _DbThread.IsComplete = true;

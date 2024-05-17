@@ -284,6 +284,7 @@
     <Compile Include="Class\BackgroundWorker_Manager.cs" />
     <Compile Include="Class\Database_Manager.cs" />
     <Compile Include="Class\Init_Manager.cs" />
+    <Compile Include="Class\Log_Manager.cs" />
     <Compile Include="Class\Query_Manager.cs" />
     <Compile Include="Class\Sql_Manager.cs" />
     <Compile Include="Forms\AllInOneDashBoard.cs">
@@ -316,6 +317,18 @@
     <Compile Include="Forms\Log.Designer.cs">
       <DependentUpon>Log.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\LogDetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LogDetailView.Designer.cs">
+      <DependentUpon>LogDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LogView.Designer.cs">
+      <DependentUpon>LogView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -339,6 +352,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Log.resx">
       <DependentUpon>Log.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LogDetailView.resx">
+      <DependentUpon>LogDetailView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LogView.resx">
+      <DependentUpon>LogView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -373,6 +392,7 @@
   <ItemGroup>
     <Content Include="Content\check.svg" />
     <Content Include="Content\complete.png" />
+    <Content Include="Content\detail.png" />
     <Content Include="Content\error.png" />
     <Content Include="Content\loading.gif" />
     <Content Include="Content\wait.png" />

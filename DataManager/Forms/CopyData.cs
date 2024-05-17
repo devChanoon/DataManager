@@ -16,6 +16,7 @@ namespace DataManager
         public string ErrorMessage = string.Empty;
         private bool _ShowMessage = true;
 
+        private Log_Manager _LogManager = new Log_Manager();
         private Sql_Manager _SqlManager = null;
         private BackgroundWorker _BackgroundWorker = null;
 
@@ -93,27 +94,43 @@ namespace DataManager
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (_ShowMessage)
+                _LogManager.AppendMaster("Copy Data", _SqlManager.ServerName);
+            
+            AppendDetailLog($"[{_SourceDbName}] => [{_SqlManager.Database}] 데이터 이전 시작");
+
             try
             {
+
                 bool exit = false;
                 while (!exit)
                 {
                     switch ((Step)spb_Step.SelectedItemIndex)
                     {
                         case Step.SEARCH_FK:
+                            AppendDetailLog("FK 목록 조회 시작");
                             SearchForeignKey();
+                            AppendDetailLog("FK 목록 조회 종료");
                             break;
                         case Step.NOCHECK_FK:
+                            AppendDetailLog("FK 비활성화 시작");
                             SetForeignKey(false);
+                            AppendDetailLog("FK 비활성화 종료");
                             break;
                         case Step.TRANSFER_DATA:
+                            AppendDetailLog("데이터 복사 시작");
                             TransferTableData();
+                            AppendDetailLog("데이터 복사 종료");
                             break;
                         case Step.CHECK_FK:
+                            AppendDetailLog("FK 활성화 시작");
                             SetForeignKey(true);
+                            AppendDetailLog("FK 활성화 종료");
                             break;
                         case Step.CHECK_DATA:
+                            AppendDetailLog("데이터 검증 시작");
                             ValidationTableData();
+                            AppendDetailLog("데이터 검증 종료");
                             exit = true;
                             break;
                     }
@@ -121,11 +138,26 @@ namespace DataManager
             }
             catch (Exception ex)
             {
-                if (_ShowMessage)
+                if (_ShowMessage) {
+                    AppendDetailLog(ex.Message, true);
                     MessageBox.Show(ex.Message);
+                }
                 else
                     ErrorMessage = ex.Message;
             }
+        }
+
+        private void AppendDetailLog(string logMessage, bool isError = false)
+        {
+            if (!_ShowMessage)
+                return;
+            
+            _LogManager.AppendDetail(new Log_Manager.DetailData()
+            {
+                Result = isError ? "FAIL" : "SUCCESS",
+                LogMessage = logMessage,
+                ErrorMessage = isError ? logMessage : string.Empty
+            });
         }
 
         private void MoveNextStep()
