@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
-using System.Data;
 using System.Xml.Linq;
 
 namespace DataManager
@@ -53,6 +49,7 @@ namespace DataManager
             public string dbName = string.Empty;
             private string encryptID = string.Empty;
             private string encryptPassword = string.Empty;
+            private const string CRYPT_PASSWORD = "ZR";
 
             public string ID
             {
@@ -61,11 +58,11 @@ namespace DataManager
                     if (encryptID == string.Empty)
                         return encryptID;
                     else
-                        return Decrypt(encryptID, "ZR");
+                        return Decrypt(encryptID, CRYPT_PASSWORD);
                 }
                 set
                 {
-                    encryptID = Encrypt(value, "ZR");
+                    encryptID = Encrypt(value, CRYPT_PASSWORD);
                 }
             }
             public string password
@@ -75,11 +72,11 @@ namespace DataManager
                     if (encryptPassword == string.Empty)
                         return encryptPassword;
                     else
-                        return Decrypt(encryptPassword, "ZR");
+                        return Decrypt(encryptPassword, CRYPT_PASSWORD);
                 }
                 set
                 {
-                    encryptPassword = Encrypt(value, "ZR");
+                    encryptPassword = Encrypt(value, CRYPT_PASSWORD);
                 }
             }
 

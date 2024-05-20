@@ -42,10 +42,10 @@
             this.gv_Database = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
             this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.gc_DBTime = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gc_DBResult = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gc_DBErrorMessage = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.gc_DatabaseName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.gc_BackupFilePath = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gc_DBResult = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gc_DBErrorMessage = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.repositoryItemImageEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemImageEdit();
             this.gc_Site = new DevExpress.XtraGrid.GridControl();
             this.gv_Site = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
@@ -181,13 +181,13 @@
             // 
             this.gridBand2.Caption = "gridBand1";
             this.gridBand2.Columns.Add(this.gc_DBTime);
-            this.gridBand2.Columns.Add(this.gc_DBResult);
-            this.gridBand2.Columns.Add(this.gc_DBErrorMessage);
             this.gridBand2.Columns.Add(this.gc_DatabaseName);
             this.gridBand2.Columns.Add(this.gc_BackupFilePath);
+            this.gridBand2.Columns.Add(this.gc_DBResult);
+            this.gridBand2.Columns.Add(this.gc_DBErrorMessage);
             this.gridBand2.Name = "gridBand2";
             this.gridBand2.VisibleIndex = 0;
-            this.gridBand2.Width = 1123;
+            this.gridBand2.Width = 1152;
             // 
             // gc_DBTime
             // 
@@ -210,51 +210,7 @@
             this.gc_DBTime.OptionsFilter.AllowAutoFilter = false;
             this.gc_DBTime.OptionsFilter.AllowFilter = false;
             this.gc_DBTime.Visible = true;
-            this.gc_DBTime.Width = 265;
-            // 
-            // gc_DBResult
-            // 
-            this.gc_DBResult.AppearanceCell.Options.UseTextOptions = true;
-            this.gc_DBResult.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_DBResult.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_DBResult.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
-            this.gc_DBResult.AppearanceHeader.Options.UseFont = true;
-            this.gc_DBResult.AppearanceHeader.Options.UseForeColor = true;
-            this.gc_DBResult.AppearanceHeader.Options.UseTextOptions = true;
-            this.gc_DBResult.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_DBResult.Caption = "결과";
-            this.gc_DBResult.FieldName = "Result";
-            this.gc_DBResult.Name = "gc_DBResult";
-            this.gc_DBResult.OptionsColumn.AllowEdit = false;
-            this.gc_DBResult.OptionsColumn.AllowFocus = false;
-            this.gc_DBResult.OptionsColumn.ReadOnly = true;
-            this.gc_DBResult.OptionsFilter.AllowAutoFilter = false;
-            this.gc_DBResult.OptionsFilter.AllowFilter = false;
-            this.gc_DBResult.Visible = true;
-            this.gc_DBResult.Width = 164;
-            // 
-            // gc_DBErrorMessage
-            // 
-            this.gc_DBErrorMessage.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_DBErrorMessage.AppearanceCell.Options.UseFont = true;
-            this.gc_DBErrorMessage.AppearanceCell.Options.UseTextOptions = true;
-            this.gc_DBErrorMessage.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.gc_DBErrorMessage.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_DBErrorMessage.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
-            this.gc_DBErrorMessage.AppearanceHeader.Options.UseFont = true;
-            this.gc_DBErrorMessage.AppearanceHeader.Options.UseForeColor = true;
-            this.gc_DBErrorMessage.AppearanceHeader.Options.UseTextOptions = true;
-            this.gc_DBErrorMessage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_DBErrorMessage.Caption = "오류메세지";
-            this.gc_DBErrorMessage.FieldName = "ErrorMessage";
-            this.gc_DBErrorMessage.Name = "gc_DBErrorMessage";
-            this.gc_DBErrorMessage.OptionsColumn.AllowEdit = false;
-            this.gc_DBErrorMessage.OptionsColumn.AllowFocus = false;
-            this.gc_DBErrorMessage.OptionsColumn.ReadOnly = true;
-            this.gc_DBErrorMessage.OptionsFilter.AllowAutoFilter = false;
-            this.gc_DBErrorMessage.OptionsFilter.AllowFilter = false;
-            this.gc_DBErrorMessage.Visible = true;
-            this.gc_DBErrorMessage.Width = 694;
+            this.gc_DBTime.Width = 166;
             // 
             // gc_DatabaseName
             // 
@@ -276,9 +232,8 @@
             this.gc_DatabaseName.OptionsColumn.ReadOnly = true;
             this.gc_DatabaseName.OptionsFilter.AllowAutoFilter = false;
             this.gc_DatabaseName.OptionsFilter.AllowFilter = false;
-            this.gc_DatabaseName.RowIndex = 1;
             this.gc_DatabaseName.Visible = true;
-            this.gc_DatabaseName.Width = 265;
+            this.gc_DatabaseName.Width = 157;
             // 
             // gc_BackupFilePath
             // 
@@ -300,9 +255,54 @@
             this.gc_BackupFilePath.OptionsColumn.ReadOnly = true;
             this.gc_BackupFilePath.OptionsFilter.AllowAutoFilter = false;
             this.gc_BackupFilePath.OptionsFilter.AllowFilter = false;
-            this.gc_BackupFilePath.RowIndex = 1;
             this.gc_BackupFilePath.Visible = true;
-            this.gc_BackupFilePath.Width = 858;
+            this.gc_BackupFilePath.Width = 829;
+            // 
+            // gc_DBResult
+            // 
+            this.gc_DBResult.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_DBResult.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_DBResult.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_DBResult.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_DBResult.AppearanceHeader.Options.UseFont = true;
+            this.gc_DBResult.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_DBResult.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_DBResult.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_DBResult.Caption = "결과";
+            this.gc_DBResult.FieldName = "Result";
+            this.gc_DBResult.Name = "gc_DBResult";
+            this.gc_DBResult.OptionsColumn.AllowEdit = false;
+            this.gc_DBResult.OptionsColumn.AllowFocus = false;
+            this.gc_DBResult.OptionsColumn.ReadOnly = true;
+            this.gc_DBResult.OptionsFilter.AllowAutoFilter = false;
+            this.gc_DBResult.OptionsFilter.AllowFilter = false;
+            this.gc_DBResult.RowIndex = 1;
+            this.gc_DBResult.Visible = true;
+            this.gc_DBResult.Width = 166;
+            // 
+            // gc_DBErrorMessage
+            // 
+            this.gc_DBErrorMessage.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_DBErrorMessage.AppearanceCell.Options.UseFont = true;
+            this.gc_DBErrorMessage.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_DBErrorMessage.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.gc_DBErrorMessage.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_DBErrorMessage.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_DBErrorMessage.AppearanceHeader.Options.UseFont = true;
+            this.gc_DBErrorMessage.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_DBErrorMessage.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_DBErrorMessage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_DBErrorMessage.Caption = "오류메세지";
+            this.gc_DBErrorMessage.FieldName = "ErrorMessage";
+            this.gc_DBErrorMessage.Name = "gc_DBErrorMessage";
+            this.gc_DBErrorMessage.OptionsColumn.AllowEdit = false;
+            this.gc_DBErrorMessage.OptionsColumn.AllowFocus = false;
+            this.gc_DBErrorMessage.OptionsColumn.ReadOnly = true;
+            this.gc_DBErrorMessage.OptionsFilter.AllowAutoFilter = false;
+            this.gc_DBErrorMessage.OptionsFilter.AllowFilter = false;
+            this.gc_DBErrorMessage.RowIndex = 1;
+            this.gc_DBErrorMessage.Visible = true;
+            this.gc_DBErrorMessage.Width = 986;
             // 
             // repositoryItemImageEdit2
             // 
@@ -379,14 +379,14 @@
             // 
             this.gridBand1.Caption = "gridBand1";
             this.gridBand1.Columns.Add(this.gc_SiteTime);
-            this.gridBand1.Columns.Add(this.gc_Result);
-            this.gridBand1.Columns.Add(this.gc_ErrorMessage);
             this.gridBand1.Columns.Add(this.gc_SiteName);
             this.gridBand1.Columns.Add(this.gc_Path);
             this.gridBand1.Columns.Add(this.gc_FilePath);
+            this.gridBand1.Columns.Add(this.gc_Result);
+            this.gridBand1.Columns.Add(this.gc_ErrorMessage);
             this.gridBand1.Name = "gridBand1";
             this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 1123;
+            this.gridBand1.Width = 1152;
             // 
             // gc_SiteTime
             // 
@@ -409,7 +409,7 @@
             this.gc_SiteTime.OptionsFilter.AllowAutoFilter = false;
             this.gc_SiteTime.OptionsFilter.AllowFilter = false;
             this.gc_SiteTime.Visible = true;
-            this.gc_SiteTime.Width = 265;
+            this.gc_SiteTime.Width = 166;
             // 
             // gc_Result
             // 
@@ -429,8 +429,9 @@
             this.gc_Result.OptionsColumn.ReadOnly = true;
             this.gc_Result.OptionsFilter.AllowAutoFilter = false;
             this.gc_Result.OptionsFilter.AllowFilter = false;
+            this.gc_Result.RowIndex = 1;
             this.gc_Result.Visible = true;
-            this.gc_Result.Width = 164;
+            this.gc_Result.Width = 166;
             // 
             // gc_ErrorMessage
             // 
@@ -452,8 +453,9 @@
             this.gc_ErrorMessage.OptionsColumn.ReadOnly = true;
             this.gc_ErrorMessage.OptionsFilter.AllowAutoFilter = false;
             this.gc_ErrorMessage.OptionsFilter.AllowFilter = false;
+            this.gc_ErrorMessage.RowIndex = 1;
             this.gc_ErrorMessage.Visible = true;
-            this.gc_ErrorMessage.Width = 694;
+            this.gc_ErrorMessage.Width = 986;
             // 
             // gc_SiteName
             // 
@@ -475,9 +477,8 @@
             this.gc_SiteName.OptionsColumn.ReadOnly = true;
             this.gc_SiteName.OptionsFilter.AllowAutoFilter = false;
             this.gc_SiteName.OptionsFilter.AllowFilter = false;
-            this.gc_SiteName.RowIndex = 1;
             this.gc_SiteName.Visible = true;
-            this.gc_SiteName.Width = 265;
+            this.gc_SiteName.Width = 219;
             // 
             // gc_Path
             // 
@@ -499,9 +500,8 @@
             this.gc_Path.OptionsColumn.ReadOnly = true;
             this.gc_Path.OptionsFilter.AllowAutoFilter = false;
             this.gc_Path.OptionsFilter.AllowFilter = false;
-            this.gc_Path.RowIndex = 1;
             this.gc_Path.Visible = true;
-            this.gc_Path.Width = 384;
+            this.gc_Path.Width = 318;
             // 
             // gc_FilePath
             // 
@@ -523,9 +523,8 @@
             this.gc_FilePath.OptionsColumn.ReadOnly = true;
             this.gc_FilePath.OptionsFilter.AllowAutoFilter = false;
             this.gc_FilePath.OptionsFilter.AllowFilter = false;
-            this.gc_FilePath.RowIndex = 1;
             this.gc_FilePath.Visible = true;
-            this.gc_FilePath.Width = 474;
+            this.gc_FilePath.Width = 449;
             // 
             // repositoryItemImageEdit1
             // 
@@ -642,6 +641,7 @@
             this.gc_Time.Caption = "시간";
             this.gc_Time.FieldName = "Time";
             this.gc_Time.Name = "gc_Time";
+            this.gc_Time.OptionsColumn.AllowEdit = false;
             this.gc_Time.Visible = true;
             this.gc_Time.VisibleIndex = 0;
             this.gc_Time.Width = 199;
@@ -663,6 +663,7 @@
             this.gc_ETCResult.Caption = "결과";
             this.gc_ETCResult.FieldName = "Result";
             this.gc_ETCResult.Name = "gc_ETCResult";
+            this.gc_ETCResult.OptionsColumn.AllowEdit = false;
             this.gc_ETCResult.Visible = true;
             this.gc_ETCResult.VisibleIndex = 1;
             this.gc_ETCResult.Width = 122;

@@ -1042,7 +1042,7 @@ namespace DataManager
             this.tlp_ModifyTop.ColumnCount = 3;
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 122F));
+            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tlp_ModifyTop.Controls.Add(this.labelControl11, 0, 0);
             this.tlp_ModifyTop.Controls.Add(this.labelControl10, 0, 4);
             this.tlp_ModifyTop.Controls.Add(this.lb_LogDBPath, 1, 4);
@@ -1111,7 +1111,7 @@ namespace DataManager
             this.lb_LogDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBPath.Location = new System.Drawing.Point(205, 125);
             this.lb_LogDBPath.Name = "lb_LogDBPath";
-            this.lb_LogDBPath.Size = new System.Drawing.Size(793, 23);
+            this.lb_LogDBPath.Size = new System.Drawing.Size(790, 23);
             this.lb_LogDBPath.TabIndex = 15;
             this.lb_LogDBPath.Text = "Log DB Path";
             // 
@@ -1123,7 +1123,7 @@ namespace DataManager
             this.lb_DataDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBPath.Location = new System.Drawing.Point(205, 65);
             this.lb_DataDBPath.Name = "lb_DataDBPath";
-            this.lb_DataDBPath.Size = new System.Drawing.Size(793, 23);
+            this.lb_DataDBPath.Size = new System.Drawing.Size(790, 23);
             this.lb_DataDBPath.TabIndex = 14;
             this.lb_DataDBPath.Text = "Data DB Path";
             // 
@@ -1150,12 +1150,12 @@ namespace DataManager
             this.sb_ModifyExecute.Appearance.Options.UseFont = true;
             this.sb_ModifyExecute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sb_ModifyExecute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_ModifyExecute.Location = new System.Drawing.Point(1002, 32);
+            this.sb_ModifyExecute.Location = new System.Drawing.Point(999, 32);
             this.sb_ModifyExecute.Margin = new System.Windows.Forms.Padding(0);
             this.sb_ModifyExecute.Name = "sb_ModifyExecute";
             this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyExecute, 4);
             this.sb_ModifyExecute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
-            this.sb_ModifyExecute.Size = new System.Drawing.Size(122, 119);
+            this.sb_ModifyExecute.Size = new System.Drawing.Size(125, 119);
             this.sb_ModifyExecute.TabIndex = 7;
             this.sb_ModifyExecute.Text = "EXECUTE";
             this.sb_ModifyExecute.Click += new System.EventHandler(this.sb_ModifyExecute_Click);
@@ -1168,7 +1168,7 @@ namespace DataManager
             this.lb_DataDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBName.Location = new System.Drawing.Point(205, 35);
             this.lb_DataDBName.Name = "lb_DataDBName";
-            this.lb_DataDBName.Size = new System.Drawing.Size(793, 23);
+            this.lb_DataDBName.Size = new System.Drawing.Size(790, 23);
             this.lb_DataDBName.TabIndex = 8;
             this.lb_DataDBName.Text = "Data DB Name";
             // 
@@ -1180,7 +1180,7 @@ namespace DataManager
             this.lb_LogDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBName.Location = new System.Drawing.Point(205, 95);
             this.lb_LogDBName.Name = "lb_LogDBName";
-            this.lb_LogDBName.Size = new System.Drawing.Size(793, 23);
+            this.lb_LogDBName.Size = new System.Drawing.Size(790, 23);
             this.lb_LogDBName.TabIndex = 9;
             this.lb_LogDBName.Text = "Log DB Name";
             // 

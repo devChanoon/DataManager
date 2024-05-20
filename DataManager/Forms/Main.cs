@@ -74,6 +74,11 @@ namespace DataManager
                 DisconnectDatabase();
         }
 
+        private void sb_Log_Click(object sender, EventArgs e)
+        {
+            new LogView().ShowDialog();
+        }
+
         private bool ConnectDatabase()
         {
             string connectionResult = _SqlManager.SqlConnect(Sql_Manager.CreateConnectionString(tb_DBAddress.Text, tb_DBName.Text, tb_ID.Text, tb_Password.Text));
@@ -328,10 +333,8 @@ namespace DataManager
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "Zip Files (*.zip)|*.zip";
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    gv_Site.SetFocusedRowCellValue(e.Column, openFileDialog.FileName);
-                }
+                string fileName = openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : string.Empty;
+                gv_Site.SetFocusedRowCellValue(e.Column, fileName);
             }
         }
 
@@ -341,17 +344,15 @@ namespace DataManager
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "Backup File (*.bak)|*.bak";
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    gv_Database.SetFocusedRowCellValue(e.Column, openFileDialog.FileName);
-                }
+                string fileName = openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : string.Empty;
+                gv_Database.SetFocusedRowCellValue(e.Column, fileName);
             }
         }
 
         private void sb_Add_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;            
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 Tuple<bool, string> result = AddSite(folderBrowserDialog.SelectedPath);
@@ -503,10 +504,5 @@ namespace DataManager
         }
 
         #endregion
-
-        private void sb_Log_Click(object sender, EventArgs e)
-        {
-            new LogView().ShowDialog();
-        }
     }
 }
