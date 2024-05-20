@@ -33,6 +33,7 @@ namespace DataManager
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.styleController1 = new DevExpress.XtraEditors.StyleController(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.sb_Log = new DevExpress.XtraEditors.SimpleButton();
             this.tb_Password = new System.Windows.Forms.TextBox();
             this.tb_DBName = new System.Windows.Forms.TextBox();
             this.tb_ID = new System.Windows.Forms.TextBox();
@@ -45,6 +46,24 @@ namespace DataManager
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
             this.tc_WorkType = new DevExpress.XtraTab.XtraTabControl();
+            this.tp_AllInOne = new DevExpress.XtraTab.XtraTabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.gc_Site = new DevExpress.XtraGrid.GridControl();
+            this.gv_Site = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gc_SiteName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gc_Path = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gc_FilePath = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.gc_Database = new DevExpress.XtraGrid.GridControl();
+            this.gv_Database = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gc_DbName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gc_BackupFilePath = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gc_SitePath = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemCheckEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.sb_Delete = new DevExpress.XtraEditors.SimpleButton();
+            this.sb_Add = new DevExpress.XtraEditors.SimpleButton();
+            this.sb_AllInOneExecute = new DevExpress.XtraEditors.SimpleButton();
             this.tp_Copy = new DevExpress.XtraTab.XtraTabPage();
             this.gb_Copy = new System.Windows.Forms.GroupBox();
             this.gc_TableList = new DevExpress.XtraGrid.GridControl();
@@ -87,6 +106,15 @@ namespace DataManager
             this.tlp_Main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tc_WorkType)).BeginInit();
             this.tc_WorkType.SuspendLayout();
+            this.tp_AllInOne.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gc_Site)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_Site)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gc_Database)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_Database)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit2)).BeginInit();
+            this.panel1.SuspendLayout();
             this.tp_Copy.SuspendLayout();
             this.gb_Copy.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).BeginInit();
@@ -114,6 +142,7 @@ namespace DataManager
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.sb_Log);
             this.groupBox1.Controls.Add(this.tb_Password);
             this.groupBox1.Controls.Add(this.tb_DBName);
             this.groupBox1.Controls.Add(this.tb_ID);
@@ -125,6 +154,7 @@ namespace DataManager
             this.groupBox1.Controls.Add(this.labelControl2);
             this.groupBox1.Controls.Add(this.labelControl1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1133, 84);
@@ -132,10 +162,23 @@ namespace DataManager
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "DB Information";
             // 
+            // sb_Log
+            // 
+            this.sb_Log.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sb_Log.Appearance.Options.UseFont = true;
+            this.sb_Log.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_Log.Location = new System.Drawing.Point(982, 19);
+            this.sb_Log.Name = "sb_Log";
+            this.sb_Log.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
+            this.sb_Log.Size = new System.Drawing.Size(124, 53);
+            this.sb_Log.TabIndex = 10;
+            this.sb_Log.Text = "LOG";
+            this.sb_Log.Click += new System.EventHandler(this.sb_Log_Click);
+            // 
             // tb_Password
             // 
             this.tb_Password.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_Password.Location = new System.Drawing.Point(596, 49);
+            this.tb_Password.Location = new System.Drawing.Point(516, 49);
             this.tb_Password.Name = "tb_Password";
             this.tb_Password.Size = new System.Drawing.Size(272, 23);
             this.tb_Password.TabIndex = 3;
@@ -146,7 +189,7 @@ namespace DataManager
             // tb_DBName
             // 
             this.tb_DBName.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.tb_DBName.Location = new System.Drawing.Point(596, 20);
+            this.tb_DBName.Location = new System.Drawing.Point(516, 20);
             this.tb_DBName.Name = "tb_DBName";
             this.tb_DBName.Size = new System.Drawing.Size(300, 23);
             this.tb_DBName.TabIndex = 1;
@@ -180,7 +223,7 @@ namespace DataManager
             this.cbe_ViewPassword.AppearancePressed.Options.UseBackColor = true;
             this.cbe_ViewPassword.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("cbe_ViewPassword.ImageOptions.Image")));
             this.cbe_ViewPassword.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.cbe_ViewPassword.Location = new System.Drawing.Point(867, 49);
+            this.cbe_ViewPassword.Location = new System.Drawing.Point(787, 49);
             this.cbe_ViewPassword.Name = "cbe_ViewPassword";
             this.cbe_ViewPassword.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.cbe_ViewPassword.Size = new System.Drawing.Size(28, 23);
@@ -192,7 +235,7 @@ namespace DataManager
             this.sb_Connect.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sb_Connect.Appearance.Options.UseFont = true;
             this.sb_Connect.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_Connect.Location = new System.Drawing.Point(995, 20);
+            this.sb_Connect.Location = new System.Drawing.Point(852, 19);
             this.sb_Connect.Name = "sb_Connect";
             this.sb_Connect.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
             this.sb_Connect.Size = new System.Drawing.Size(124, 53);
@@ -210,7 +253,7 @@ namespace DataManager
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(528, 52);
+            this.labelControl3.Location = new System.Drawing.Point(448, 52);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(51, 14);
             this.labelControl3.TabIndex = 2;
@@ -218,7 +261,7 @@ namespace DataManager
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(528, 23);
+            this.labelControl2.Location = new System.Drawing.Point(448, 23);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(50, 14);
             this.labelControl2.TabIndex = 1;
@@ -228,9 +271,9 @@ namespace DataManager
             // 
             this.labelControl1.Location = new System.Drawing.Point(31, 23);
             this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(62, 14);
+            this.labelControl1.Size = new System.Drawing.Size(35, 14);
             this.labelControl1.TabIndex = 0;
-            this.labelControl1.Text = "DB Address";
+            this.labelControl1.Text = "Server";
             // 
             // tlp_Main
             // 
@@ -276,12 +319,326 @@ namespace DataManager
             this.tc_WorkType.Enabled = false;
             this.tc_WorkType.Location = new System.Drawing.Point(3, 93);
             this.tc_WorkType.Name = "tc_WorkType";
-            this.tc_WorkType.SelectedTabPage = this.tp_Copy;
+            this.tc_WorkType.SelectedTabPage = this.tp_AllInOne;
             this.tc_WorkType.Size = new System.Drawing.Size(1133, 581);
             this.tc_WorkType.TabIndex = 2;
             this.tc_WorkType.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.tp_AllInOne,
             this.tp_Copy,
             this.tp_ModifyDatabase});
+            // 
+            // tp_AllInOne
+            // 
+            this.tp_AllInOne.Controls.Add(this.groupBox3);
+            this.tp_AllInOne.Name = "tp_AllInOne";
+            this.tp_AllInOne.Size = new System.Drawing.Size(1131, 555);
+            this.tp_AllInOne.Text = "All In One";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.gc_Site);
+            this.groupBox3.Controls.Add(this.gc_Database);
+            this.groupBox3.Controls.Add(this.panel1);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(1131, 555);
+            this.groupBox3.TabIndex = 6;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Action";
+            // 
+            // gc_Site
+            // 
+            this.gc_Site.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gc_Site.Location = new System.Drawing.Point(3, 61);
+            this.gc_Site.LookAndFeel.UseDefaultLookAndFeel = false;
+            this.gc_Site.MainView = this.gv_Site;
+            this.gc_Site.Name = "gc_Site";
+            this.gc_Site.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemCheckEdit1});
+            this.gc_Site.Size = new System.Drawing.Size(1125, 332);
+            this.gc_Site.TabIndex = 7;
+            this.gc_Site.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gv_Site});
+            // 
+            // gv_Site
+            // 
+            this.gv_Site.Appearance.EvenRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(233)))), ((int)(((byte)(242)))));
+            this.gv_Site.Appearance.EvenRow.Options.UseBackColor = true;
+            this.gv_Site.Appearance.FocusedCell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Site.Appearance.FocusedCell.ForeColor = System.Drawing.Color.White;
+            this.gv_Site.Appearance.FocusedCell.Options.UseBackColor = true;
+            this.gv_Site.Appearance.FocusedCell.Options.UseForeColor = true;
+            this.gv_Site.Appearance.FocusedRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Site.Appearance.FocusedRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Site.Appearance.FocusedRow.Options.UseBackColor = true;
+            this.gv_Site.Appearance.FocusedRow.Options.UseForeColor = true;
+            this.gv_Site.Appearance.HideSelectionRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Site.Appearance.HideSelectionRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Site.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            this.gv_Site.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            this.gv_Site.Appearance.Row.ForeColor = System.Drawing.Color.Black;
+            this.gv_Site.Appearance.Row.Options.UseForeColor = true;
+            this.gv_Site.Appearance.SelectedRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Site.Appearance.SelectedRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Site.Appearance.SelectedRow.Options.UseBackColor = true;
+            this.gv_Site.Appearance.SelectedRow.Options.UseForeColor = true;
+            this.gv_Site.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gc_SiteName,
+            this.gc_Path,
+            this.gc_FilePath});
+            this.gv_Site.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.None;
+            this.gv_Site.GridControl = this.gc_Site;
+            this.gv_Site.Name = "gv_Site";
+            this.gv_Site.OptionsView.EnableAppearanceEvenRow = true;
+            this.gv_Site.OptionsView.ShowGroupPanel = false;
+            this.gv_Site.OptionsView.ShowIndicator = false;
+            this.gv_Site.RowHeight = 25;
+            this.gv_Site.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.gv_Site_RowCellClick);
+            // 
+            // gc_SiteName
+            // 
+            this.gc_SiteName.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_SiteName.AppearanceCell.Options.UseFont = true;
+            this.gc_SiteName.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_SiteName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_SiteName.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_SiteName.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_SiteName.AppearanceHeader.Options.UseFont = true;
+            this.gc_SiteName.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_SiteName.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_SiteName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_SiteName.Caption = "IIS 사이트명";
+            this.gc_SiteName.FieldName = "SiteName";
+            this.gc_SiteName.Name = "gc_SiteName";
+            this.gc_SiteName.OptionsFilter.AllowAutoFilter = false;
+            this.gc_SiteName.OptionsFilter.AllowFilter = false;
+            this.gc_SiteName.Visible = true;
+            this.gc_SiteName.VisibleIndex = 0;
+            this.gc_SiteName.Width = 187;
+            // 
+            // gc_Path
+            // 
+            this.gc_Path.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_Path.AppearanceCell.Options.UseFont = true;
+            this.gc_Path.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_Path.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_Path.AppearanceHeader.Options.UseFont = true;
+            this.gc_Path.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_Path.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_Path.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_Path.Caption = "경로";
+            this.gc_Path.FieldName = "Path";
+            this.gc_Path.Name = "gc_Path";
+            this.gc_Path.OptionsColumn.AllowEdit = false;
+            this.gc_Path.OptionsColumn.AllowFocus = false;
+            this.gc_Path.OptionsFilter.AllowAutoFilter = false;
+            this.gc_Path.OptionsFilter.AllowFilter = false;
+            this.gc_Path.Visible = true;
+            this.gc_Path.VisibleIndex = 1;
+            this.gc_Path.Width = 466;
+            // 
+            // gc_FilePath
+            // 
+            this.gc_FilePath.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.gc_FilePath.AppearanceCell.Options.UseFont = true;
+            this.gc_FilePath.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_FilePath.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_FilePath.AppearanceHeader.Options.UseFont = true;
+            this.gc_FilePath.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_FilePath.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_FilePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_FilePath.Caption = "배포 파일 경로 (.zip)";
+            this.gc_FilePath.FieldName = "FilePath";
+            this.gc_FilePath.Name = "gc_FilePath";
+            this.gc_FilePath.OptionsColumn.AllowEdit = false;
+            this.gc_FilePath.OptionsColumn.AllowFocus = false;
+            this.gc_FilePath.OptionsFilter.AllowAutoFilter = false;
+            this.gc_FilePath.OptionsFilter.AllowFilter = false;
+            this.gc_FilePath.Visible = true;
+            this.gc_FilePath.VisibleIndex = 2;
+            this.gc_FilePath.Width = 479;
+            // 
+            // repositoryItemCheckEdit1
+            // 
+            this.repositoryItemCheckEdit1.AutoHeight = false;
+            this.repositoryItemCheckEdit1.CheckBoxOptions.Style = DevExpress.XtraEditors.Controls.CheckBoxStyle.SvgCheckBox1;
+            this.repositoryItemCheckEdit1.Name = "repositoryItemCheckEdit1";
+            this.repositoryItemCheckEdit1.NullStyle = DevExpress.XtraEditors.Controls.StyleIndeterminate.Unchecked;
+            this.repositoryItemCheckEdit1.ValueChecked = "Y";
+            this.repositoryItemCheckEdit1.ValueUnchecked = "N";
+            // 
+            // gc_Database
+            // 
+            this.gc_Database.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.gc_Database.Location = new System.Drawing.Point(3, 393);
+            this.gc_Database.LookAndFeel.UseDefaultLookAndFeel = false;
+            this.gc_Database.MainView = this.gv_Database;
+            this.gc_Database.Name = "gc_Database";
+            this.gc_Database.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemCheckEdit2});
+            this.gc_Database.Size = new System.Drawing.Size(1125, 159);
+            this.gc_Database.TabIndex = 8;
+            this.gc_Database.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gv_Database});
+            // 
+            // gv_Database
+            // 
+            this.gv_Database.Appearance.EvenRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(233)))), ((int)(((byte)(242)))));
+            this.gv_Database.Appearance.EvenRow.Options.UseBackColor = true;
+            this.gv_Database.Appearance.FocusedCell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Database.Appearance.FocusedCell.ForeColor = System.Drawing.Color.White;
+            this.gv_Database.Appearance.FocusedCell.Options.UseBackColor = true;
+            this.gv_Database.Appearance.FocusedCell.Options.UseForeColor = true;
+            this.gv_Database.Appearance.FocusedRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Database.Appearance.FocusedRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Database.Appearance.FocusedRow.Options.UseBackColor = true;
+            this.gv_Database.Appearance.FocusedRow.Options.UseForeColor = true;
+            this.gv_Database.Appearance.HideSelectionRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Database.Appearance.HideSelectionRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Database.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            this.gv_Database.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            this.gv_Database.Appearance.Row.ForeColor = System.Drawing.Color.Black;
+            this.gv_Database.Appearance.Row.Options.UseForeColor = true;
+            this.gv_Database.Appearance.SelectedRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(66)))), ((int)(((byte)(92)))));
+            this.gv_Database.Appearance.SelectedRow.ForeColor = System.Drawing.Color.White;
+            this.gv_Database.Appearance.SelectedRow.Options.UseBackColor = true;
+            this.gv_Database.Appearance.SelectedRow.Options.UseForeColor = true;
+            this.gv_Database.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gc_DbName,
+            this.gc_BackupFilePath,
+            this.gc_SitePath});
+            this.gv_Database.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.None;
+            this.gv_Database.GridControl = this.gc_Database;
+            this.gv_Database.Name = "gv_Database";
+            this.gv_Database.OptionsView.EnableAppearanceEvenRow = true;
+            this.gv_Database.OptionsView.ShowGroupPanel = false;
+            this.gv_Database.OptionsView.ShowIndicator = false;
+            this.gv_Database.RowHeight = 25;
+            this.gv_Database.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.gv_Database_RowCellClick);
+            // 
+            // gc_DbName
+            // 
+            this.gc_DbName.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_DbName.AppearanceCell.Options.UseFont = true;
+            this.gc_DbName.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_DbName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_DbName.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_DbName.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_DbName.AppearanceHeader.Options.UseFont = true;
+            this.gc_DbName.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_DbName.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_DbName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_DbName.Caption = "DB명";
+            this.gc_DbName.FieldName = "DBName";
+            this.gc_DbName.Name = "gc_DbName";
+            this.gc_DbName.OptionsFilter.AllowAutoFilter = false;
+            this.gc_DbName.OptionsFilter.AllowFilter = false;
+            this.gc_DbName.Visible = true;
+            this.gc_DbName.VisibleIndex = 0;
+            this.gc_DbName.Width = 188;
+            // 
+            // gc_BackupFilePath
+            // 
+            this.gc_BackupFilePath.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_BackupFilePath.AppearanceCell.Options.UseFont = true;
+            this.gc_BackupFilePath.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_BackupFilePath.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_BackupFilePath.AppearanceHeader.Options.UseFont = true;
+            this.gc_BackupFilePath.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_BackupFilePath.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_BackupFilePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_BackupFilePath.Caption = "백업 파일 경로 (.bak)";
+            this.gc_BackupFilePath.FieldName = "BackupFilePath";
+            this.gc_BackupFilePath.Name = "gc_BackupFilePath";
+            this.gc_BackupFilePath.OptionsColumn.AllowEdit = false;
+            this.gc_BackupFilePath.OptionsColumn.AllowFocus = false;
+            this.gc_BackupFilePath.OptionsFilter.AllowAutoFilter = false;
+            this.gc_BackupFilePath.OptionsFilter.AllowFilter = false;
+            this.gc_BackupFilePath.Visible = true;
+            this.gc_BackupFilePath.VisibleIndex = 1;
+            this.gc_BackupFilePath.Width = 911;
+            // 
+            // gc_SitePath
+            // 
+            this.gc_SitePath.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.gc_SitePath.AppearanceCell.Options.UseFont = true;
+            this.gc_SitePath.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_SitePath.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.gc_SitePath.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gc_SitePath.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_SitePath.AppearanceHeader.Options.UseFont = true;
+            this.gc_SitePath.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_SitePath.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_SitePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_SitePath.Caption = "사이트 경로";
+            this.gc_SitePath.FieldName = "SitePath";
+            this.gc_SitePath.Name = "gc_SitePath";
+            this.gc_SitePath.OptionsColumn.AllowEdit = false;
+            this.gc_SitePath.OptionsColumn.AllowFocus = false;
+            this.gc_SitePath.OptionsFilter.AllowAutoFilter = false;
+            this.gc_SitePath.OptionsFilter.AllowFilter = false;
+            this.gc_SitePath.Width = 201;
+            // 
+            // repositoryItemCheckEdit2
+            // 
+            this.repositoryItemCheckEdit2.AutoHeight = false;
+            this.repositoryItemCheckEdit2.CheckBoxOptions.Style = DevExpress.XtraEditors.Controls.CheckBoxStyle.SvgCheckBox1;
+            this.repositoryItemCheckEdit2.Name = "repositoryItemCheckEdit2";
+            this.repositoryItemCheckEdit2.NullStyle = DevExpress.XtraEditors.Controls.StyleIndeterminate.Unchecked;
+            this.repositoryItemCheckEdit2.ValueChecked = "Y";
+            this.repositoryItemCheckEdit2.ValueUnchecked = "N";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.sb_Delete);
+            this.panel1.Controls.Add(this.sb_Add);
+            this.panel1.Controls.Add(this.sb_AllInOneExecute);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 18);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1125, 43);
+            this.panel1.TabIndex = 6;
+            // 
+            // sb_Delete
+            // 
+            this.sb_Delete.Appearance.Font = new System.Drawing.Font("맑은 고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.sb_Delete.Appearance.Options.UseFont = true;
+            this.sb_Delete.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_Delete.Location = new System.Drawing.Point(89, 4);
+            this.sb_Delete.Name = "sb_Delete";
+            this.sb_Delete.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
+            this.sb_Delete.Size = new System.Drawing.Size(83, 34);
+            this.sb_Delete.TabIndex = 13;
+            this.sb_Delete.Text = "삭제";
+            this.sb_Delete.Click += new System.EventHandler(this.sb_Delete_Click);
+            // 
+            // sb_Add
+            // 
+            this.sb_Add.Appearance.Font = new System.Drawing.Font("맑은 고딕", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.sb_Add.Appearance.Options.UseFont = true;
+            this.sb_Add.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_Add.Location = new System.Drawing.Point(3, 4);
+            this.sb_Add.Name = "sb_Add";
+            this.sb_Add.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
+            this.sb_Add.Size = new System.Drawing.Size(83, 34);
+            this.sb_Add.TabIndex = 12;
+            this.sb_Add.Text = "추가";
+            this.sb_Add.Click += new System.EventHandler(this.sb_Add_Click);
+            // 
+            // sb_AllInOneExecute
+            // 
+            this.sb_AllInOneExecute.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sb_AllInOneExecute.Appearance.Options.UseFont = true;
+            this.sb_AllInOneExecute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_AllInOneExecute.Location = new System.Drawing.Point(997, 4);
+            this.sb_AllInOneExecute.Name = "sb_AllInOneExecute";
+            this.sb_AllInOneExecute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
+            this.sb_AllInOneExecute.Size = new System.Drawing.Size(124, 34);
+            this.sb_AllInOneExecute.TabIndex = 7;
+            this.sb_AllInOneExecute.Text = "EXECUTE";
+            this.sb_AllInOneExecute.Click += new System.EventHandler(this.sb_AllInOneExecute_Click);
             // 
             // tp_Copy
             // 
@@ -685,7 +1042,7 @@ namespace DataManager
             this.tlp_ModifyTop.ColumnCount = 3;
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 107F));
+            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tlp_ModifyTop.Controls.Add(this.labelControl11, 0, 0);
             this.tlp_ModifyTop.Controls.Add(this.labelControl10, 0, 4);
             this.tlp_ModifyTop.Controls.Add(this.lb_LogDBPath, 1, 4);
@@ -754,7 +1111,7 @@ namespace DataManager
             this.lb_LogDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBPath.Location = new System.Drawing.Point(205, 125);
             this.lb_LogDBPath.Name = "lb_LogDBPath";
-            this.lb_LogDBPath.Size = new System.Drawing.Size(808, 23);
+            this.lb_LogDBPath.Size = new System.Drawing.Size(790, 23);
             this.lb_LogDBPath.TabIndex = 15;
             this.lb_LogDBPath.Text = "Log DB Path";
             // 
@@ -766,7 +1123,7 @@ namespace DataManager
             this.lb_DataDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBPath.Location = new System.Drawing.Point(205, 65);
             this.lb_DataDBPath.Name = "lb_DataDBPath";
-            this.lb_DataDBPath.Size = new System.Drawing.Size(808, 23);
+            this.lb_DataDBPath.Size = new System.Drawing.Size(790, 23);
             this.lb_DataDBPath.TabIndex = 14;
             this.lb_DataDBPath.Text = "Data DB Path";
             // 
@@ -793,12 +1150,12 @@ namespace DataManager
             this.sb_ModifyExecute.Appearance.Options.UseFont = true;
             this.sb_ModifyExecute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sb_ModifyExecute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_ModifyExecute.Location = new System.Drawing.Point(1017, 32);
+            this.sb_ModifyExecute.Location = new System.Drawing.Point(999, 32);
             this.sb_ModifyExecute.Margin = new System.Windows.Forms.Padding(0);
             this.sb_ModifyExecute.Name = "sb_ModifyExecute";
             this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyExecute, 4);
             this.sb_ModifyExecute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
-            this.sb_ModifyExecute.Size = new System.Drawing.Size(107, 119);
+            this.sb_ModifyExecute.Size = new System.Drawing.Size(125, 119);
             this.sb_ModifyExecute.TabIndex = 7;
             this.sb_ModifyExecute.Text = "EXECUTE";
             this.sb_ModifyExecute.Click += new System.EventHandler(this.sb_ModifyExecute_Click);
@@ -811,7 +1168,7 @@ namespace DataManager
             this.lb_DataDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBName.Location = new System.Drawing.Point(205, 35);
             this.lb_DataDBName.Name = "lb_DataDBName";
-            this.lb_DataDBName.Size = new System.Drawing.Size(808, 23);
+            this.lb_DataDBName.Size = new System.Drawing.Size(790, 23);
             this.lb_DataDBName.TabIndex = 8;
             this.lb_DataDBName.Text = "Data DB Name";
             // 
@@ -823,7 +1180,7 @@ namespace DataManager
             this.lb_LogDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBName.Location = new System.Drawing.Point(205, 95);
             this.lb_LogDBName.Name = "lb_LogDBName";
-            this.lb_LogDBName.Size = new System.Drawing.Size(808, 23);
+            this.lb_LogDBName.Size = new System.Drawing.Size(790, 23);
             this.lb_LogDBName.TabIndex = 9;
             this.lb_LogDBName.Text = "Log DB Name";
             // 
@@ -878,6 +1235,15 @@ namespace DataManager
             this.tlp_Main.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tc_WorkType)).EndInit();
             this.tc_WorkType.ResumeLayout(false);
+            this.tp_AllInOne.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gc_Site)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_Site)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gc_Database)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_Database)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit2)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.tp_Copy.ResumeLayout(false);
             this.gb_Copy.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).EndInit();
@@ -951,6 +1317,25 @@ namespace DataManager
         private DevExpress.XtraEditors.LabelControl labelControl7;
         private DevExpress.XtraEditors.LabelControl labelControl8;
         private DevExpress.XtraEditors.LabelControl labelControl11;
+        private DevExpress.XtraTab.XtraTabPage tp_AllInOne;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private DevExpress.XtraGrid.GridControl gc_Site;
+        private DevExpress.XtraGrid.Views.Grid.GridView gv_Site;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_SiteName;
+        private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit repositoryItemCheckEdit1;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_Path;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_FilePath;
+        private System.Windows.Forms.Panel panel1;
+        private DevExpress.XtraEditors.SimpleButton sb_Delete;
+        private DevExpress.XtraEditors.SimpleButton sb_Add;
+        private DevExpress.XtraEditors.SimpleButton sb_AllInOneExecute;
+        private DevExpress.XtraGrid.GridControl gc_Database;
+        private DevExpress.XtraGrid.Views.Grid.GridView gv_Database;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_DbName;
+        private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit repositoryItemCheckEdit2;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_BackupFilePath;
+        private DevExpress.XtraGrid.Columns.GridColumn gc_SitePath;
+        private DevExpress.XtraEditors.SimpleButton sb_Log;
     }
 }
 

@@ -49,9 +49,21 @@ namespace DataManager
         public void Initialize(int backgroundWorkerSeq, string sourceDbName)
         {
             _BackgroundWorkerSeq = backgroundWorkerSeq;
-            lc_BWName.Text = string.Format("Thread {0}", backgroundWorkerSeq);
+            SetBWName($"Thread {backgroundWorkerSeq}");
 
             _SourceDbName = sourceDbName;
+        }
+
+        private void SetBWName(string name)
+        {
+            if (lc_BWName.InvokeRequired)
+            {
+                Action setBWName = delegate { SetBWName(name); };
+                lc_BWName.Invoke(setBWName);
+            }
+            else
+                lc_BWName.Text = name;
+
         }
 
         public void Disabled()

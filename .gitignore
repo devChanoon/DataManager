@@ -1,6 +1,10 @@
 # 관리 불필요 폴더
 DataManager/bin/
 DataManager/obj/
+Patch/bin/
+Patch/obj/
+PatchFileUploader/bin/
+PatchFileUploader/obj/
 .vs/
 
 # 관리 불필요 확장자
