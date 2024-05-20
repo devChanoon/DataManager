@@ -6,6 +6,7 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using DevExpress.XtraLayout.Customization;
+using System.Text.RegularExpressions;
 
 namespace DataManager
 {
@@ -17,6 +18,29 @@ namespace DataManager
 
         private enum DataType { DATA_SET, DATA_TABLE, STRING };
         public string ConnectionString { get { return _ConnectionString; } }
+        public string ServerName { get { return GetProperty("Server"); } }
+        public string Database { get { return GetProperty("database"); } }
+
+        public static string CreateConnectionString(string dbAddress, string dbName, string userId, string password)
+        {   
+            return $"Server={dbAddress};database={dbName};uid={userId};pwd={password}";
+        }
+
+        public string GetProperty(string propertyName)
+        {
+            if (_ConnectionString == string.Empty)
+                return string.Empty;
+            else
+            {
+                string pattern = propertyName + @"=([^;]+)";
+                Match match = Regex.Match(_ConnectionString, pattern);
+
+                if (match.Success)
+                    return match.Groups[1].Value;
+                else
+                    return string.Empty;
+            }
+        }
 
         public string SqlConnect(string connectionString)
         {
@@ -42,7 +66,7 @@ namespace DataManager
         public bool SqlDisconnect()
         {
             try
-            {
+            {                
                 _SqlConnection.Close();
                 _SqlCommand = null;
 

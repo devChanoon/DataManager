@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
-using System.Data;
+using System.Xml.Linq;
 
 namespace DataManager
 {
@@ -15,11 +12,7 @@ namespace DataManager
 
         public void Initialize()
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(System.Windows.Forms.Application.StartupPath, "Init"));
-            if (!directoryInfo.Exists)
-                directoryInfo.Create();
- 
-            FileInfo[] files = directoryInfo.GetFiles();
+            FileInfo[] files = GetDirectoryInfo("Init").GetFiles();
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].Name.ToUpper().Contains("DB_CONFIG"))
@@ -27,6 +20,26 @@ namespace DataManager
                     _InitDb.InitializeDbConfig(files[i].FullName);
                 }
             }
+
+            DirectoryInfo logDirectory = GetDirectoryInfo("Log");
+            string filePath = Path.Combine(logDirectory.FullName, "Log.xml");
+            if (!File.Exists(filePath))
+                CreateLogXml(filePath);
+        }
+
+        private void CreateLogXml(string filePath)
+        {
+            XDocument xDoc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), new XElement("data"));
+            xDoc.Save(filePath);
+        }
+
+        private DirectoryInfo GetDirectoryInfo(string folderName)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(System.Windows.Forms.Application.StartupPath, folderName));
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+
+            return directoryInfo;
         }
 
         public class Database
@@ -36,6 +49,7 @@ namespace DataManager
             public string dbName = string.Empty;
             private string encryptID = string.Empty;
             private string encryptPassword = string.Empty;
+            private const string CRYPT_PASSWORD = "ZR";
 
             public string ID
             {
@@ -44,11 +58,11 @@ namespace DataManager
                     if (encryptID == string.Empty)
                         return encryptID;
                     else
-                        return Decrypt(encryptID, "ZR");
+                        return Decrypt(encryptID, CRYPT_PASSWORD);
                 }
                 set
                 {
-                    encryptID = Encrypt(value, "ZR");
+                    encryptID = Encrypt(value, CRYPT_PASSWORD);
                 }
             }
             public string password
@@ -58,11 +72,11 @@ namespace DataManager
                     if (encryptPassword == string.Empty)
                         return encryptPassword;
                     else
-                        return Decrypt(encryptPassword, "ZR");
+                        return Decrypt(encryptPassword, CRYPT_PASSWORD);
                 }
                 set
                 {
-                    encryptPassword = Encrypt(value, "ZR");
+                    encryptPassword = Encrypt(value, CRYPT_PASSWORD);
                 }
             }
 
