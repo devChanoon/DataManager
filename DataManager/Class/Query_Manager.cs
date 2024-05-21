@@ -112,21 +112,6 @@ DELETE @TABLE_NAME
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string SetIdentityInsert(string tableName, bool isOn)
-        {
-            string query = @"
-BEGIN TRY
-    SET IDENTITY_INSERT @TABLE_NAME @ONOFF;
-    SELECT ''
-END TRY
-BEGIN CATCH
-    SELECT ERROR_MESSAGE()
-END CATCH
-";
-            query = query.Replace("@TABLE_NAME", tableName);
-            return query.Replace("@ONOFF", isOn ? "ON" : "OFF");
-        }
-
         public static string GetColumnList(string sourceDbName, string tableName)
         {
             string query = @"
@@ -161,22 +146,15 @@ SELECT @COLUMN_DATA
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string InsertDataToTable(string tableName, string columnData, string valueData)
+        public static string GetTableSchema(string tableName, string columnData)
         {
             string query = @"
-BEGIN TRY
-    INSERT INTO @TABLE_NAME (@COLUMN_DATA)
-         VALUES @INSERT_DATA;
-
-    SELECT ''
-END TRY
-BEGIN CATCH
-    SELECT ERROR_MESSAGE()
-END CATCH
-";
-            query = query.Replace("@TABLE_NAME", tableName);
+SELECT @COLUMN_DATA
+  FROM @TABLE_NAME
+ WHERE 1 = 2
+            ";
             query = query.Replace("@COLUMN_DATA", columnData);
-            return query.Replace("@INSERT_DATA", valueData);
+            return query.Replace("@TABLE_NAME", tableName);
         }
 
         public static string ResetIdentity(string tableName)

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Data;
-using DevExpress.XtraGrid;
 
 namespace DataManager
 {
@@ -17,6 +13,7 @@ namespace DataManager
         public BackgroundWorkerProgress.SetStatusDelete _SetStatusDelete;
         public BackgroundWorkerProgress.SetStatusSearch _SetStatusSearch;
         public BackgroundWorkerProgress.SetStatusInsert _SetStatusInsert;
+        public BackgroundWorkerProgress.SetStatusValidate _SetStatusValidate;
         public BackgroundWorkerProgress.SetStatusException _SetStatusException;
         public BackgroundWorkerProgress.ProgressChanged _ProgressChanged;
 
@@ -24,10 +21,15 @@ namespace DataManager
         private BackgroundWorker _BackgroundWorker = null;
         private string _SourceDbName = string.Empty;
         private int _BackgroundWorkerSeq = 0;
+        private List<string> _InvalidTableList = new List<string>();
 
         public bool IsBusy
         {
             get { return _BackgroundWorker.IsBusy; }
+        }
+        public List<string> InvalidTableList
+        {
+            get { return _InvalidTableList; }
         }
 
         public void Initialize(string sourceDbName, int backgroundWorkerSeq, ref Sql_Manager sqlManager)
@@ -59,15 +61,14 @@ namespace DataManager
             {
                 while (tableName != string.Empty && !_BackgroundWorker.CancellationPending)
                 {
-                    if (ValidationTable(tableName))
+                    if (ExistTable(tableName))
                     { 
-                        SetIndentityInsert(tableName, true);
-
                         DeleteTableData(tableName);
                         string columnData = SearchColumnList(tableName);
                         InsertTableData(tableName, columnData, SearchDataTable(tableName, columnData));
+                        if (!_BackgroundWorker.CancellationPending)
+                            ValidationTable(tableName, columnData);
 
-                        SetIndentityInsert(tableName, false);
                         ResetIdentity(tableName);
                     }
 
@@ -76,15 +77,23 @@ namespace DataManager
             }
             catch (Exception ex)
             {
-                SetIndentityInsert(tableName, false);
                 _SetStatusException(ex.Message);
             }
         }
 
-        private bool ValidationTable(string tableName)
+        private bool ExistTable(string tableName)
         {
             string result = _SqlManager.CheckExistTable(tableName);
             return result == "Y" ? true : false;
+        }
+
+        private void ValidationTable(string tableName, string columnData)
+        {
+            _SetStatusValidate();
+
+            DataTable dataTable = _SqlManager.ValidationTableData(_SourceDbName, tableName, columnData);
+            if (dataTable != null && dataTable.Rows.Count > 0)
+                _InvalidTableList.Add($"[{tableName}]");
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -98,11 +107,6 @@ namespace DataManager
         {
             _SetStatusSearch();
             return _SqlManager.GetTableDataList(_SourceDbName, tableName, columnData);
-        }
-
-        private void SetIndentityInsert(string tableName, bool isOn)
-        {
-            _SqlManager.SetIdentityInsert(tableName, isOn);
         }
 
         private void ResetIdentity(string tableName)
@@ -132,85 +136,49 @@ namespace DataManager
             if (targetDataTable != null && targetDataTable.Rows.Count > 0)
             {
                 int totalRowCount = targetDataTable.Rows.Count;
+
+                // Progress 초기화
                 _ProgressChanged(0, totalRowCount);
 
+                // 입력 상태로 변경
                 _SetStatusInsert();
-                string valueData = string.Empty;
-                int valueDataCount = 0;
-                Dictionary<string, byte[]> bytesData = new Dictionary<string, byte[]>();
+
+                // 현재 DB 테이블 스키마 조회
+                DataTable currentDbTable = _SqlManager.GetTableSchema(tableName, columnData);
+
+                const int ADD_ROW_COUNT = 10000;
+                // 현재 DB 스키마에 원본 데이터 입력
                 for (int i = 0; i < totalRowCount; i++)
                 {
                     if (_BackgroundWorker.CancellationPending)
                         break;
 
-                    string comma = valueData == string.Empty ? "" : ",";
-                    string data = CreateValueData(targetDataTable.Rows[i], i, ref bytesData);
-                    valueData += string.Format("{0}({1})", comma, data);
-                    valueDataCount++;
-                    if (valueDataCount % 25 == 0 || bytesData.Count > 0)
-                    { 
-                        InsertDataToTable(tableName, columnData, ref bytesData, ref valueData, ref valueDataCount);                        
-                        _ProgressChanged(i + 1, totalRowCount);
+                    DataRow dataRow = currentDbTable.NewRow();
+                    for (int j = 0; j < targetDataTable.Columns.Count; j++)
+                    {
+                        string columnName = targetDataTable.Columns[j].ColumnName;
+                        dataRow[columnName] = targetDataTable.Rows[i][columnName];
                     }
+                    currentDbTable.Rows.Add(dataRow);
+
+                    // Bulk Insert
+                    if (currentDbTable.Rows.Count == ADD_ROW_COUNT)
+                        BulkInsert(tableName, ref currentDbTable, totalRowCount, i + 1);
                 }
 
-                if (valueData != string.Empty && !_BackgroundWorker.CancellationPending)
-                { 
-                    InsertDataToTable(tableName, columnData, ref bytesData, ref valueData, ref valueDataCount);
-                    _ProgressChanged(totalRowCount, totalRowCount);
-                }
+                // 남은 데이터 Insert
+                if (currentDbTable.Rows.Count > 0 && !_BackgroundWorker.CancellationPending)
+                    BulkInsert(tableName, ref currentDbTable, totalRowCount);
             }
         }
 
-        private string CreateValueData(DataRow dr, int currentRowIndex, ref Dictionary<string, byte[]> bytesData)
+        private void BulkInsert(string tableName, ref DataTable dataTable, int totalRowCount, int currentRowCount = -1)
         {
-            string valueData = string.Empty;
-            for (int i = 0; i < dr.ItemArray.Length; i++)
-            {
-                string comma = i == 0 ? "" : ",";
-                string data = string.Empty;
-                if (dr.ItemArray[i] == DBNull.Value)
-                    data = "null";
-                else if (dr.ItemArray[i].GetType() == typeof(DateTime))
-                    data = string.Format("'{0}'", ((DateTime)dr.ItemArray[i]).ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                else if (dr.ItemArray[i].GetType() == typeof(byte[]))
-                {
-                    string keyName = currentRowIndex.ToString();
-                    if (bytesData.ContainsKey(keyName))
-                        keyName = string.Format("{0}_{1}", keyName, DateTime.Now.ToString("HHmmssfff"));
+            // Insert
+            _SqlManager.InsertBulk(tableName, dataTable);
 
-                    bytesData.Add(keyName, (byte[])dr.ItemArray[i]);
-                    data = string.Format("@BinaryData_{0}", keyName);
-                }
-                else if (dr.ItemArray[i].GetType() == typeof(double))
-                    data = string.Format("{0}", dr.ItemArray[i].ToString());
-                else
-                    data = string.Format("N'{0}'", dr.ItemArray[i].ToString().Replace("'", "''"));
-                    
-                valueData += string.Format("{0}{1}", comma, data);
-            }
-
-            return valueData;
-        }
-
-        private void InsertDataToTable(string tableName, string columnData, ref Dictionary<string, byte[]> bytesData, ref string valueData, ref int valueDataCount)
-        {
-            string query = string.Empty;
-            string result = string.Empty;
-            if (bytesData.Count > 0)
-            { 
-                _SqlManager.InsertDataToTable(tableName, columnData, valueData, bytesData, ref query);
-                bytesData.Clear();
-            }
-            else
-                result = _SqlManager.InsertDataToTable(tableName, columnData, valueData, ref query);
-            if (result != string.Empty)
-            {
-                throw new Exception(result);
-            }
-
-            valueData = string.Empty;
-            valueDataCount = 0;
+            dataTable.Rows.Clear();
+            _ProgressChanged(currentRowCount != -1 ? currentRowCount : totalRowCount, totalRowCount);
         }
 
         public void RunWorkerAsync()

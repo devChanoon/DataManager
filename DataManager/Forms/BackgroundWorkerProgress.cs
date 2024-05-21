@@ -23,6 +23,7 @@ namespace DataManager
         private Color _SearchStatus = Color.LightYellow;
         private Color _InsertStatus = Color.SeaGreen;
         private Color _IdleStatus = Color.WhiteSmoke;
+        private Color _ValidateStatus = Color.SlateBlue;
         private Color _DisabledStatus = Color.DarkGray;
         private Color _ExceptionStatus = Color.Red;
 
@@ -31,15 +32,17 @@ namespace DataManager
         public delegate void SetStatusDelete();
         public delegate void SetStatusSearch();
         public delegate void SetStatusInsert();
+        public delegate void SetStatusValidate();
         public delegate void SetStatusException(string message);
         public delegate void ProgressChanged(int insertedRowCount, int totalRowCount);
         public GetTableInTableList _GetTableInTableList;
 
         public int BackgroundWorkerSeq { get { return _BackgroundWorkerSeq; } }
-        public bool IsEnabled { get { return this.Enabled; } }
-        public bool IsBusy { get { return _BackgoundWorker_Manager == null ? false : _BackgoundWorker_Manager.IsBusy; } }
+        public bool IsEnabled { get { return this.Enabled; } }        
+        public bool IsBusy { get { return _BackgoundWorker_Manager == null ? false : (lc_BWName.BackColor != _IdleStatus || _BackgoundWorker_Manager.IsBusy); } }
         public bool IsException { get { return _IsException; } }
         public string ExceptionMessage { get { return _ExceptionMessage; } }
+        public List<string> InvalidTableList { get { return _BackgoundWorker_Manager.InvalidTableList; } }
 
         public BackgroundWorkerProgress()
         {
@@ -63,7 +66,6 @@ namespace DataManager
             }
             else
                 lc_BWName.Text = name;
-
         }
 
         public void Disabled()
@@ -119,8 +121,8 @@ namespace DataManager
         {
             if (lc_BWName.InvokeRequired)
             {
-                Action setUpdate = delegate { SetInsert(); };
-                lc_BWName.Invoke(setUpdate);
+                Action setInsert = delegate { SetInsert(); };
+                lc_BWName.Invoke(setInsert);
             }
             else
             {
@@ -128,6 +130,18 @@ namespace DataManager
             }
         }
 
+        private void SetValidate()
+        {
+            if (lc_BWName.InvokeRequired)
+            {
+                Action setValidate = delegate { SetValidate(); };
+                lc_BWName.Invoke(setValidate);
+            }
+            else
+            {
+                lc_BWName.BackColor = _ValidateStatus;
+            }
+        }
 
         private void SetException(string message)
         {
@@ -148,7 +162,6 @@ namespace DataManager
         {   
             if (lc_TableName.InvokeRequired)
             {
-                //Console.WriteLine(string.Format("[{0}] Thread {1} > {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), _BackgroundWorkerSeq, tableName));
                 Action setTableName = delegate { SetTableName(tableName); };
                 pbc_Progress.Invoke(setTableName);
             }
@@ -190,6 +203,7 @@ namespace DataManager
                 _BackgoundWorker_Manager._SetStatusDelete = new SetStatusDelete(SetDelete);
                 _BackgoundWorker_Manager._SetStatusSearch = new SetStatusSearch(SetSearch);
                 _BackgoundWorker_Manager._SetStatusInsert = new SetStatusInsert(SetInsert);
+                _BackgoundWorker_Manager._SetStatusValidate = new SetStatusValidate(SetValidate);
                 _BackgoundWorker_Manager._SetStatusException = new SetStatusException(SetException);
                 _BackgoundWorker_Manager._ProgressChanged = new ProgressChanged(SetProgress);
 

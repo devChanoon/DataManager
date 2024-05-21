@@ -86,6 +86,8 @@ namespace DataManager
                     }
                 }
             }
+            else
+                FindSiteAndRestart();
 
             if (DialogResult.OK == MessageBox.Show(sb.ToString(),
                     result.Item1 ? "오류" : "알림", 
@@ -274,6 +276,24 @@ namespace DataManager
             }
         }
 
+        private void DisplayDatabaseStatus(string content)
+        {
+            if (lc_DatabaseStatus.InvokeRequired)
+            {
+                Action displayDatabaseStatus = delegate { DisplayDatabaseStatus(content); };
+                lc_DatabaseStatus.Invoke(displayDatabaseStatus);
+            }
+            else
+            {
+                lc_DatabaseStatus.Text = content;
+                if (content.Equals("완료"))
+                {
+                    lc_DatabaseStatus.BackColor = System.Drawing.Color.Green;
+                    lc_DatabaseStatus.ImageOptions.Image = null;
+                }
+            }
+        }
+
         private string CompressionFolder(string folderPath)
         {
             DisplaySiteStatus("기존 파일 압축하는 중...");
@@ -353,6 +373,7 @@ namespace DataManager
                 };
                 try
                 {
+                    DisplayDatabaseStatus("기존 DB를 백업 DB로 변경하는 중...");
                     // 1. 기존 DB -> 백업 DB로 변경 (Database_Manager)
                     Tuple<string, DatabaseInfo> result = BackupCurrentDatabase(databaseData.DatabaseName);
                     if (result.Item1 != string.Empty)
@@ -360,16 +381,20 @@ namespace DataManager
 
                     DatabaseInfo BackupDbInfo = result.Item2;
 
+                    DisplayDatabaseStatus("백업 파일로 임시 DB 복원하는 중...");
                     // 2. tempDbName으로 복원 (기존 DB에 데이터 insert 방지)
                     DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
 
                     // 3. 데이터 복사 (CopyData)
+                    DisplayDatabaseStatus("백업 DB에서 임시 DB로 데이터 복사하는 중...");
                     Tuple<string, Sql_Manager> copyResult = CopyDataBackupToCurrent(tempDbDatabaseInfo.Current.DBName, BackupDbInfo);
-                    if (copyResult.Item1 != string.Empty)
-                        throw new Exception(copyResult.Item1);
 
                     // 4. tempDbName -> dbName으로 변경 (Database_Manager)
+                    DisplayDatabaseStatus("임시 DB를 기존 DB로 변경하는 중...");
                     ModifyDatabase(tempDbDatabaseInfo, copyResult.Item2);
+
+                    if (copyResult.Item1 != string.Empty)
+                        throw new Exception(copyResult.Item1);
 
                     status = "Y";
                 }
@@ -385,6 +410,7 @@ namespace DataManager
             }
 
             _DbThread.IsComplete = true;
+            DisplayDatabaseStatus("완료");
         }
 
         private Tuple<string, DatabaseInfo> BackupCurrentDatabase(string dbName)
