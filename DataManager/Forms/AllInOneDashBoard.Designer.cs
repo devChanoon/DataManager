@@ -247,7 +247,7 @@
             this.gc_FilePath.AppearanceHeader.Options.UseForeColor = true;
             this.gc_FilePath.AppearanceHeader.Options.UseTextOptions = true;
             this.gc_FilePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_FilePath.Caption = "배포 파일 경로 (.zip)";
+            this.gc_FilePath.Caption = "배포 파일 경로 (.zip | .tar)";
             this.gc_FilePath.FieldName = "FilePath";
             this.gc_FilePath.Name = "gc_FilePath";
             this.gc_FilePath.OptionsColumn.AllowEdit = false;
@@ -430,7 +430,7 @@
             this.lc_DatabaseStatus.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.lc_DatabaseStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lc_DatabaseStatus.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.lc_DatabaseStatus.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("labelControl1.ImageOptions.Image")));
+            this.lc_DatabaseStatus.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("lc_DatabaseStatus.ImageOptions.Image")));
             this.lc_DatabaseStatus.IndentBetweenImageAndText = 10;
             this.lc_DatabaseStatus.Location = new System.Drawing.Point(0, 130);
             this.lc_DatabaseStatus.Name = "lc_DatabaseStatus";

@@ -452,7 +452,7 @@ namespace DataManager
             this.gc_FilePath.AppearanceHeader.Options.UseForeColor = true;
             this.gc_FilePath.AppearanceHeader.Options.UseTextOptions = true;
             this.gc_FilePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_FilePath.Caption = "배포 파일 경로 (.zip)";
+            this.gc_FilePath.Caption = "배포 파일 경로 (.zip | .tar)";
             this.gc_FilePath.FieldName = "FilePath";
             this.gc_FilePath.Name = "gc_FilePath";
             this.gc_FilePath.OptionsColumn.AllowEdit = false;
@@ -1088,7 +1088,7 @@ namespace DataManager
             this.tlp_ModifyTop.ColumnCount = 3;
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 131F));
             this.tlp_ModifyTop.Controls.Add(this.sb_ModifyRollback, 2, 3);
             this.tlp_ModifyTop.Controls.Add(this.lc_GuideMessage, 0, 0);
             this.tlp_ModifyTop.Controls.Add(this.labelControl10, 0, 4);
@@ -1119,12 +1119,12 @@ namespace DataManager
             this.sb_ModifyRollback.Appearance.Options.UseFont = true;
             this.sb_ModifyRollback.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sb_ModifyRollback.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_ModifyRollback.Location = new System.Drawing.Point(994, 92);
+            this.sb_ModifyRollback.Location = new System.Drawing.Point(993, 92);
             this.sb_ModifyRollback.Margin = new System.Windows.Forms.Padding(0);
             this.sb_ModifyRollback.Name = "sb_ModifyRollback";
             this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyRollback, 2);
             this.sb_ModifyRollback.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
-            this.sb_ModifyRollback.Size = new System.Drawing.Size(130, 59);
+            this.sb_ModifyRollback.Size = new System.Drawing.Size(131, 59);
             this.sb_ModifyRollback.TabIndex = 20;
             this.sb_ModifyRollback.Text = "ROLLBACK";
             this.sb_ModifyRollback.Click += new System.EventHandler(this.sb_ModifyRollback_Click);
@@ -1175,7 +1175,7 @@ namespace DataManager
             this.lb_LogDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBPath.Location = new System.Drawing.Point(205, 125);
             this.lb_LogDBPath.Name = "lb_LogDBPath";
-            this.lb_LogDBPath.Size = new System.Drawing.Size(785, 23);
+            this.lb_LogDBPath.Size = new System.Drawing.Size(784, 23);
             this.lb_LogDBPath.TabIndex = 15;
             this.lb_LogDBPath.Text = "Log DB Path";
             // 
@@ -1187,7 +1187,7 @@ namespace DataManager
             this.lb_DataDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBPath.Location = new System.Drawing.Point(205, 65);
             this.lb_DataDBPath.Name = "lb_DataDBPath";
-            this.lb_DataDBPath.Size = new System.Drawing.Size(785, 23);
+            this.lb_DataDBPath.Size = new System.Drawing.Size(784, 23);
             this.lb_DataDBPath.TabIndex = 14;
             this.lb_DataDBPath.Text = "Data DB Path";
             // 
@@ -1214,12 +1214,12 @@ namespace DataManager
             this.sb_ModifyExecute.Appearance.Options.UseFont = true;
             this.sb_ModifyExecute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sb_ModifyExecute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_ModifyExecute.Location = new System.Drawing.Point(994, 32);
+            this.sb_ModifyExecute.Location = new System.Drawing.Point(993, 32);
             this.sb_ModifyExecute.Margin = new System.Windows.Forms.Padding(0);
             this.sb_ModifyExecute.Name = "sb_ModifyExecute";
             this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyExecute, 2);
             this.sb_ModifyExecute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
-            this.sb_ModifyExecute.Size = new System.Drawing.Size(130, 59);
+            this.sb_ModifyExecute.Size = new System.Drawing.Size(131, 59);
             this.sb_ModifyExecute.TabIndex = 7;
             this.sb_ModifyExecute.Text = "EXECUTE";
             this.sb_ModifyExecute.Click += new System.EventHandler(this.sb_ModifyExecute_Click);
@@ -1233,7 +1233,7 @@ namespace DataManager
             this.lb_DataDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBName.Location = new System.Drawing.Point(205, 35);
             this.lb_DataDBName.Name = "lb_DataDBName";
-            this.lb_DataDBName.Size = new System.Drawing.Size(785, 23);
+            this.lb_DataDBName.Size = new System.Drawing.Size(784, 23);
             this.lb_DataDBName.TabIndex = 8;
             this.lb_DataDBName.Text = "Data DB Name";
             // 
@@ -1245,7 +1245,7 @@ namespace DataManager
             this.lb_LogDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBName.Location = new System.Drawing.Point(205, 95);
             this.lb_LogDBName.Name = "lb_LogDBName";
-            this.lb_LogDBName.Size = new System.Drawing.Size(785, 23);
+            this.lb_LogDBName.Size = new System.Drawing.Size(784, 23);
             this.lb_LogDBName.TabIndex = 9;
             this.lb_LogDBName.Text = "Log DB Name";
             // 

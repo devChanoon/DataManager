@@ -231,10 +231,13 @@ namespace DataManager
                 try
                 {
                     // 1. 기존 배포파일 압축하여 백업
-                    CompressionFolder(siteData.Path);
-                    
+                    DisplaySiteStatus("기존 파일 압축하는 중...");
+                    Compression_Manager.CompressionFolder(siteData.Path, GetFilePath(siteData.Path));
+
                     // 2. 신규 배포 파일 압축 풀기
-                    string filePath = DecompressionFolder(siteData.FilePath);
+                    DisplaySiteStatus("신규 파일 압축 푸는 중...");
+                    string filePath = GetPath(siteData.FilePath.Replace(Path.GetExtension(siteData.FilePath), string.Empty));
+                    Compression_Manager.DecompressionFile(siteData.FilePath, filePath);
 
                     // 3. 압축 해제한 파일들을 기존 경로로 복사
                     CopyFiles(filePath, siteData.Path);
@@ -296,15 +299,6 @@ namespace DataManager
             }
         }
 
-        private string CompressionFolder(string folderPath)
-        {
-            DisplaySiteStatus("기존 파일 압축하는 중...");
-
-            string zipFilePath = GetFilePath(folderPath);
-            ZipFile.CreateFromDirectory(folderPath, zipFilePath);
-            return zipFilePath;
-        }
-
         private string GetPath(string path)
         {
             string newPath = path;
@@ -314,15 +308,6 @@ namespace DataManager
                 newPath = $"{path} ({duplicateIndex++})";
             }
             return newPath;
-        }
-
-        private string DecompressionFolder(string zipFilePath)
-        {
-            DisplaySiteStatus("신규 파일 압축 푸는 중...");
-
-            string targetPath = GetPath(zipFilePath.Replace(".zip", ""));
-            ZipFile.ExtractToDirectory(zipFilePath, targetPath);
-            return targetPath;
         }
 
         private string GetFilePath(string path)
