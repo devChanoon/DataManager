@@ -42,8 +42,11 @@ namespace DataManager
             return this;
         }
 
-        public void SetTargetDbInfo(string suffix)
+        public void SetTargetDbInfo(string suffix = "")
         {
+            if (suffix == string.Empty)
+                suffix = Current.DBName.Substring(Current.DBName.IndexOf("#"));
+
             Target.DBName = Current.DBName.Replace(suffix, string.Empty);
             Target.DataDBName = Current.DataDBName.Replace(suffix, string.Empty);
             Target.DataDBPath = Current.DataDBPath.Replace(suffix, string.Empty);

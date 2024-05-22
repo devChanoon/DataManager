@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataManager
+﻿namespace DataManager
 {
     public static class Query_Manager
     {
@@ -88,6 +81,17 @@ ELSE
             return query.Replace("@TABLE_NAME", tableName);
         }
 
+        public static string CheckExistDatabase(string dbName)
+        {
+            string query = @"
+IF EXISTS (select name from sys.databases where name = '@DB_NAME')
+	SELECT 'Y'
+ELSE
+	SELECT 'N'
+";
+            return query.Replace("@DB_NAME", dbName);
+        }
+
         public static string ValidationTableData(string sourceDbName, string tableName, string columnData)
         {
             string query = @"
@@ -110,21 +114,6 @@ SELECT @COLUMN_DATA
 DELETE @TABLE_NAME
 ";
             return query.Replace("@TABLE_NAME", tableName);
-        }
-
-        public static string SetIdentityInsert(string tableName, bool isOn)
-        {
-            string query = @"
-BEGIN TRY
-    SET IDENTITY_INSERT @TABLE_NAME @ONOFF;
-    SELECT ''
-END TRY
-BEGIN CATCH
-    SELECT ERROR_MESSAGE()
-END CATCH
-";
-            query = query.Replace("@TABLE_NAME", tableName);
-            return query.Replace("@ONOFF", isOn ? "ON" : "OFF");
         }
 
         public static string GetColumnList(string sourceDbName, string tableName)
@@ -161,22 +150,15 @@ SELECT @COLUMN_DATA
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string InsertDataToTable(string tableName, string columnData, string valueData)
+        public static string GetTableSchema(string tableName, string columnData)
         {
             string query = @"
-BEGIN TRY
-    INSERT INTO @TABLE_NAME (@COLUMN_DATA)
-         VALUES @INSERT_DATA;
-
-    SELECT ''
-END TRY
-BEGIN CATCH
-    SELECT ERROR_MESSAGE()
-END CATCH
-";
-            query = query.Replace("@TABLE_NAME", tableName);
+SELECT @COLUMN_DATA
+  FROM @TABLE_NAME
+ WHERE 1 = 2
+            ";
             query = query.Replace("@COLUMN_DATA", columnData);
-            return query.Replace("@INSERT_DATA", valueData);
+            return query.Replace("@TABLE_NAME", tableName);
         }
 
         public static string ResetIdentity(string tableName)
@@ -250,6 +232,17 @@ ALTER DATABASE @CURRENT_DB_NAME MODIFY NAME = @NEW_NAME;
 ";
             query = query.Replace("@CURRENT_DB_NAME", currentDbName);
             return query.Replace("@NEW_NAME", newName);
+        }
+
+        public static string DropDatabase(string currentDbName)
+        {
+            string query = @"
+ALTER DATABASE [@CURRENT_DB_NAME] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+DROP DATABASE @CURRENT_DB_NAME
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            return query;
         }
     }
 }

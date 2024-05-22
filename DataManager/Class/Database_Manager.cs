@@ -17,6 +17,12 @@ namespace DataManager
         private DatabaseInfo _DatabaseInfo;
 
         private bool _isAppendLog = false;
+        private const string TIME_STAMP_SYMBOL = "#";
+
+        public static bool CheckBackupDB(string dbName)
+        {
+            return dbName.Contains(TIME_STAMP_SYMBOL);
+        }
 
         public Database_Manager(DatabaseInfo databaseInfo, bool isAppendLog, ref Sql_Manager sqlManager)
         {
@@ -42,20 +48,20 @@ namespace DataManager
                 _DatabaseInfo.Current.DataDBName = SetDBLogicalName(_DatabaseInfo.Current.DataDBName, suffix, _DatabaseInfo.Target.DataDBName);
                 _DatabaseInfo.Current.LogDBName = SetDBLogicalName(_DatabaseInfo.Current.LogDBName, suffix, _DatabaseInfo.Target.LogDBName);
 
-                // 4. DB명 변경
+                // 3. DB명 변경
                 _DatabaseInfo.Current.DBName = SetDBName(_DatabaseInfo.Current.DBName, suffix, _DatabaseInfo.Target.DBName);
 
-                // 3. DB OFFLINE
+                // 4. DB OFFLINE
                 SetDBStatus(false);
 
-                // 4. 물리 DB 파일 이름 변경
+                // 5. 물리 DB 파일 이름 변경
                 _DatabaseInfo.Current.DataDBPath = SetDBPhysicalName(_DatabaseInfo.Current.DataDBPath, suffix, _DatabaseInfo.Target.DataDBPath);
                 _DatabaseInfo.Current.LogDBPath = SetDBPhysicalName(_DatabaseInfo.Current.LogDBPath, suffix, _DatabaseInfo.Target.LogDBPath);
 
-                // 5. DB ONLINE
+                // 6. DB ONLINE
                 SetDBStatus(true);
 
-                // 6. 파일 경로 수정
+                // 7. 파일 경로 수정
                 SetDBPath(_DatabaseInfo.Current.DataDBName, _DatabaseInfo.Current.DataDBPath);
                 SetDBPath(_DatabaseInfo.Current.LogDBName, _DatabaseInfo.Current.LogDBPath);
             }
@@ -77,20 +83,20 @@ namespace DataManager
 
         private void SetDBAccess(bool isMultiUser)
         {
-            AppendLog(string.Format("DB Access 제한 변경 : {0}", isMultiUser ? "MULTI_USER" : "RESTRICED_USER"));
+            AppendLog($"DB Access 제한 변경 : {(isMultiUser ? "MULTI_USER" : "RESTRICED_USER")}");
             _SqlManager.SetDBAccess(_DatabaseInfo.Current.DBName, isMultiUser);
         }
 
         private void SetDBStatus(bool isOnline)
         {
-            AppendLog(string.Format("DB State 변경 : {0}", isOnline ? "ONLINE" : "OFFLINE"));
+            AppendLog($"DB State 변경 : {(isOnline ? "ONLINE" : "OFFLINE")}");
             _SqlManager.SetDBStatus(_DatabaseInfo.Current.DBName, isOnline);
         }
 
         private string SetDBLogicalName(string currentName, string suffix, string targetName = "")
         {
             string newName = targetName == string.Empty ? GetNewName(currentName, suffix) : targetName;
-            AppendLog(string.Format("DB 논리 파일명 변경 : {0} >> {1}", currentName, newName));
+            AppendLog($"DB 논리 파일명 변경 : {currentName} >> {newName}");
 
             string resultName = _SqlManager.SetDBLogicalName(_DatabaseInfo.Current.DBName, currentName, newName);
             if (resultName != newName)
@@ -101,12 +107,11 @@ namespace DataManager
 
         private string GetNewName(string currentName, string suffix)
         {
-            const string TIME_STAMP_SYMBOL = "#";
             string sourceName = currentName;
             if (sourceName.IndexOf(TIME_STAMP_SYMBOL) > -1)
                 sourceName = sourceName.Substring(0, sourceName.IndexOf(TIME_STAMP_SYMBOL));
 
-            return string.Format("{0}{1}{2}", sourceName, TIME_STAMP_SYMBOL, suffix);
+            return $"{sourceName}{TIME_STAMP_SYMBOL}{suffix}";
         }
 
         private string SetDBPhysicalName(string path, string suffix, string targetPath = "")
@@ -115,19 +120,19 @@ namespace DataManager
             string fileName = Path.GetFileName(path);
             fileName = fileName.Substring(0, fileName.Length - extention.Length);
 
-            string newFileName = string.Format("{0}{1}", targetPath == string.Empty ? GetNewName(fileName, suffix) : targetPath, extention);
+            string newFileName = targetPath == string.Empty ? $"{GetNewName(fileName, suffix)}{extention}" : Path.GetFileName(targetPath);
             string newPath = Path.Combine(Path.GetDirectoryName(path), newFileName);
 
             try
             {
-                AppendLog(string.Format("DB 물리 파일명 변경 : {0} >> {1}", Path.GetFileName(path), newFileName));
+                AppendLog($"DB 물리 파일명 변경 : {Path.GetFileName(path)} >> {newFileName}");
 
                 FileInfo fileInfo = new FileInfo(path);
                 fileInfo.MoveTo(newPath);
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("DB 물리 파일명 변경에 실패했습니다. {0}", ex.Message));
+                throw new Exception($"DB 물리 파일명 변경에 실패했습니다. {ex.Message}");
             }
 
             return newPath;
@@ -135,14 +140,14 @@ namespace DataManager
 
         private void SetDBPath(string currentName, string path)
         {
-            AppendLog(string.Format("DB 물리 경로 변경 : {0} - {1}", currentName, path));
+            AppendLog($"DB 물리 경로 변경 : {currentName} - {path}");
             _SqlManager.SetDBLogicalPath(_DatabaseInfo.Current.DBName, currentName, path);
         }
 
         private string SetDBName(string currentName, string suffix, string targetName = "")
         {
             string newName = targetName == string.Empty ? GetNewName(currentName, suffix) : targetName;
-            AppendLog(string.Format("DB명 변경 : {0} >> {1}", _DatabaseInfo.Current.DBName, newName));
+            AppendLog($"DB명 변경 : {_DatabaseInfo.Current.DBName} >> {newName}");
             _SqlManager.ChangeDBName(currentName, newName);
             return newName;
         }

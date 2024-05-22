@@ -61,6 +61,8 @@ namespace DataManager
             this.gc_SitePath = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemCheckEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.labelControl12 = new DevExpress.XtraEditors.LabelControl();
+            this.nud_AllInOneMaxThread = new System.Windows.Forms.NumericUpDown();
             this.sb_Delete = new DevExpress.XtraEditors.SimpleButton();
             this.sb_Add = new DevExpress.XtraEditors.SimpleButton();
             this.sb_AllInOneExecute = new DevExpress.XtraEditors.SimpleButton();
@@ -91,7 +93,8 @@ namespace DataManager
             this.ModifyLog = new DataManager.Log();
             this.pnl_ModifyTop = new System.Windows.Forms.Panel();
             this.tlp_ModifyTop = new System.Windows.Forms.TableLayoutPanel();
-            this.labelControl11 = new DevExpress.XtraEditors.LabelControl();
+            this.sb_ModifyRollback = new DevExpress.XtraEditors.SimpleButton();
+            this.lc_GuideMessage = new DevExpress.XtraEditors.LabelControl();
             this.labelControl10 = new DevExpress.XtraEditors.LabelControl();
             this.lb_LogDBPath = new DevExpress.XtraEditors.LabelControl();
             this.lb_DataDBPath = new DevExpress.XtraEditors.LabelControl();
@@ -115,6 +118,7 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.gv_Database)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit2)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_AllInOneMaxThread)).BeginInit();
             this.tp_Copy.SuspendLayout();
             this.gb_Copy.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).BeginInit();
@@ -592,6 +596,8 @@ namespace DataManager
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.labelControl12);
+            this.panel1.Controls.Add(this.nud_AllInOneMaxThread);
             this.panel1.Controls.Add(this.sb_Delete);
             this.panel1.Controls.Add(this.sb_Add);
             this.panel1.Controls.Add(this.sb_AllInOneExecute);
@@ -600,6 +606,46 @@ namespace DataManager
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1125, 43);
             this.panel1.TabIndex = 6;
+            // 
+            // labelControl12
+            // 
+            this.labelControl12.Appearance.BackColor = System.Drawing.Color.AliceBlue;
+            this.labelControl12.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.labelControl12.Appearance.Options.UseBackColor = true;
+            this.labelControl12.Appearance.Options.UseFont = true;
+            this.labelControl12.Appearance.Options.UseTextOptions = true;
+            this.labelControl12.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.labelControl12.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControl12.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.labelControl12.Location = new System.Drawing.Point(869, 5);
+            this.labelControl12.Name = "labelControl12";
+            this.labelControl12.Size = new System.Drawing.Size(70, 32);
+            this.labelControl12.TabIndex = 19;
+            this.labelControl12.Text = "Thread";
+            // 
+            // nud_AllInOneMaxThread
+            // 
+            this.nud_AllInOneMaxThread.Font = new System.Drawing.Font("맑은 고딕", 14F, System.Drawing.FontStyle.Bold);
+            this.nud_AllInOneMaxThread.Location = new System.Drawing.Point(938, 5);
+            this.nud_AllInOneMaxThread.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nud_AllInOneMaxThread.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nud_AllInOneMaxThread.Name = "nud_AllInOneMaxThread";
+            this.nud_AllInOneMaxThread.Size = new System.Drawing.Size(55, 32);
+            this.nud_AllInOneMaxThread.TabIndex = 18;
+            this.nud_AllInOneMaxThread.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.nud_AllInOneMaxThread.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
             // sb_Delete
             // 
@@ -1042,8 +1088,9 @@ namespace DataManager
             this.tlp_ModifyTop.ColumnCount = 3;
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
-            this.tlp_ModifyTop.Controls.Add(this.labelControl11, 0, 0);
+            this.tlp_ModifyTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tlp_ModifyTop.Controls.Add(this.sb_ModifyRollback, 2, 3);
+            this.tlp_ModifyTop.Controls.Add(this.lc_GuideMessage, 0, 0);
             this.tlp_ModifyTop.Controls.Add(this.labelControl10, 0, 4);
             this.tlp_ModifyTop.Controls.Add(this.lb_LogDBPath, 1, 4);
             this.tlp_ModifyTop.Controls.Add(this.lb_DataDBPath, 1, 2);
@@ -1066,25 +1113,42 @@ namespace DataManager
             this.tlp_ModifyTop.Size = new System.Drawing.Size(1125, 152);
             this.tlp_ModifyTop.TabIndex = 8;
             // 
-            // labelControl11
+            // sb_ModifyRollback
             // 
-            this.labelControl11.Appearance.BackColor = System.Drawing.Color.Orange;
-            this.labelControl11.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.labelControl11.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelControl11.Appearance.Options.UseBackColor = true;
-            this.labelControl11.Appearance.Options.UseFont = true;
-            this.labelControl11.Appearance.Options.UseForeColor = true;
-            this.labelControl11.Appearance.Options.UseTextOptions = true;
-            this.labelControl11.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.labelControl11.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.tlp_ModifyTop.SetColumnSpan(this.labelControl11, 3);
-            this.labelControl11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelControl11.Location = new System.Drawing.Point(1, 1);
-            this.labelControl11.Margin = new System.Windows.Forms.Padding(0);
-            this.labelControl11.Name = "labelControl11";
-            this.labelControl11.Size = new System.Drawing.Size(1123, 30);
-            this.labelControl11.TabIndex = 19;
-            this.labelControl11.Text = "※※ 현재 접속중인 DB를 백업 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss ) ※※";
+            this.sb_ModifyRollback.Appearance.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sb_ModifyRollback.Appearance.Options.UseFont = true;
+            this.sb_ModifyRollback.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sb_ModifyRollback.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
+            this.sb_ModifyRollback.Location = new System.Drawing.Point(994, 92);
+            this.sb_ModifyRollback.Margin = new System.Windows.Forms.Padding(0);
+            this.sb_ModifyRollback.Name = "sb_ModifyRollback";
+            this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyRollback, 2);
+            this.sb_ModifyRollback.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
+            this.sb_ModifyRollback.Size = new System.Drawing.Size(130, 59);
+            this.sb_ModifyRollback.TabIndex = 20;
+            this.sb_ModifyRollback.Text = "ROLLBACK";
+            this.sb_ModifyRollback.Click += new System.EventHandler(this.sb_ModifyRollback_Click);
+            this.sb_ModifyRollback.MouseHover += new System.EventHandler(this.sb_ModifyRollback_MouseHover);
+            // 
+            // lc_GuideMessage
+            // 
+            this.lc_GuideMessage.Appearance.BackColor = System.Drawing.Color.Orange;
+            this.lc_GuideMessage.Appearance.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lc_GuideMessage.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lc_GuideMessage.Appearance.Options.UseBackColor = true;
+            this.lc_GuideMessage.Appearance.Options.UseFont = true;
+            this.lc_GuideMessage.Appearance.Options.UseForeColor = true;
+            this.lc_GuideMessage.Appearance.Options.UseTextOptions = true;
+            this.lc_GuideMessage.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.lc_GuideMessage.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.tlp_ModifyTop.SetColumnSpan(this.lc_GuideMessage, 3);
+            this.lc_GuideMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lc_GuideMessage.Location = new System.Drawing.Point(1, 1);
+            this.lc_GuideMessage.Margin = new System.Windows.Forms.Padding(0);
+            this.lc_GuideMessage.Name = "lc_GuideMessage";
+            this.lc_GuideMessage.Size = new System.Drawing.Size(1123, 30);
+            this.lc_GuideMessage.TabIndex = 19;
+            this.lc_GuideMessage.Text = "※※ 현재 연결된 DB를 백업 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss ) ※※";
             // 
             // labelControl10
             // 
@@ -1111,7 +1175,7 @@ namespace DataManager
             this.lb_LogDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBPath.Location = new System.Drawing.Point(205, 125);
             this.lb_LogDBPath.Name = "lb_LogDBPath";
-            this.lb_LogDBPath.Size = new System.Drawing.Size(790, 23);
+            this.lb_LogDBPath.Size = new System.Drawing.Size(785, 23);
             this.lb_LogDBPath.TabIndex = 15;
             this.lb_LogDBPath.Text = "Log DB Path";
             // 
@@ -1123,7 +1187,7 @@ namespace DataManager
             this.lb_DataDBPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBPath.Location = new System.Drawing.Point(205, 65);
             this.lb_DataDBPath.Name = "lb_DataDBPath";
-            this.lb_DataDBPath.Size = new System.Drawing.Size(790, 23);
+            this.lb_DataDBPath.Size = new System.Drawing.Size(785, 23);
             this.lb_DataDBPath.TabIndex = 14;
             this.lb_DataDBPath.Text = "Data DB Path";
             // 
@@ -1150,15 +1214,16 @@ namespace DataManager
             this.sb_ModifyExecute.Appearance.Options.UseFont = true;
             this.sb_ModifyExecute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sb_ModifyExecute.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
-            this.sb_ModifyExecute.Location = new System.Drawing.Point(999, 32);
+            this.sb_ModifyExecute.Location = new System.Drawing.Point(994, 32);
             this.sb_ModifyExecute.Margin = new System.Windows.Forms.Padding(0);
             this.sb_ModifyExecute.Name = "sb_ModifyExecute";
-            this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyExecute, 4);
+            this.tlp_ModifyTop.SetRowSpan(this.sb_ModifyExecute, 2);
             this.sb_ModifyExecute.ShowFocusRectangle = DevExpress.Utils.DefaultBoolean.False;
-            this.sb_ModifyExecute.Size = new System.Drawing.Size(125, 119);
+            this.sb_ModifyExecute.Size = new System.Drawing.Size(130, 59);
             this.sb_ModifyExecute.TabIndex = 7;
             this.sb_ModifyExecute.Text = "EXECUTE";
             this.sb_ModifyExecute.Click += new System.EventHandler(this.sb_ModifyExecute_Click);
+            this.sb_ModifyExecute.MouseHover += new System.EventHandler(this.sb_ModifyExecute_MouseHover);
             // 
             // lb_DataDBName
             // 
@@ -1168,7 +1233,7 @@ namespace DataManager
             this.lb_DataDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_DataDBName.Location = new System.Drawing.Point(205, 35);
             this.lb_DataDBName.Name = "lb_DataDBName";
-            this.lb_DataDBName.Size = new System.Drawing.Size(790, 23);
+            this.lb_DataDBName.Size = new System.Drawing.Size(785, 23);
             this.lb_DataDBName.TabIndex = 8;
             this.lb_DataDBName.Text = "Data DB Name";
             // 
@@ -1180,7 +1245,7 @@ namespace DataManager
             this.lb_LogDBName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lb_LogDBName.Location = new System.Drawing.Point(205, 95);
             this.lb_LogDBName.Name = "lb_LogDBName";
-            this.lb_LogDBName.Size = new System.Drawing.Size(790, 23);
+            this.lb_LogDBName.Size = new System.Drawing.Size(785, 23);
             this.lb_LogDBName.TabIndex = 9;
             this.lb_LogDBName.Text = "Log DB Name";
             // 
@@ -1244,6 +1309,7 @@ namespace DataManager
             ((System.ComponentModel.ISupportInitialize)(this.gv_Database)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit2)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nud_AllInOneMaxThread)).EndInit();
             this.tp_Copy.ResumeLayout(false);
             this.gb_Copy.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gc_TableList)).EndInit();
@@ -1316,7 +1382,7 @@ namespace DataManager
         private DevExpress.XtraEditors.LabelControl labelControl10;
         private DevExpress.XtraEditors.LabelControl labelControl7;
         private DevExpress.XtraEditors.LabelControl labelControl8;
-        private DevExpress.XtraEditors.LabelControl labelControl11;
+        private DevExpress.XtraEditors.LabelControl lc_GuideMessage;
         private DevExpress.XtraTab.XtraTabPage tp_AllInOne;
         private System.Windows.Forms.GroupBox groupBox3;
         private DevExpress.XtraGrid.GridControl gc_Site;
@@ -1336,6 +1402,9 @@ namespace DataManager
         private DevExpress.XtraGrid.Columns.GridColumn gc_BackupFilePath;
         private DevExpress.XtraGrid.Columns.GridColumn gc_SitePath;
         private DevExpress.XtraEditors.SimpleButton sb_Log;
+        private DevExpress.XtraEditors.LabelControl labelControl12;
+        private System.Windows.Forms.NumericUpDown nud_AllInOneMaxThread;
+        private DevExpress.XtraEditors.SimpleButton sb_ModifyRollback;
     }
 }
 

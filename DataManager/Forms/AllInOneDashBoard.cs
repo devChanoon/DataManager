@@ -29,6 +29,7 @@ namespace DataManager
             public string ServerName;
             public string Id;
             public string Password;
+            public int ThreadCount;
         }
 
         private ThreadInfo _SiteThread;
@@ -37,7 +38,7 @@ namespace DataManager
 
         private Log_Manager _LogManager = new Log_Manager();
 
-        public AllInOneDashBoard(DataTable siteData, DataTable dbData, string serverName, string id, string password)
+        public AllInOneDashBoard(DataTable siteData, DataTable dbData, string serverName, string id, string password, int threadCount)
         {
             InitializeComponent();
             gc_Site.DataSource = GetFilteredDataTable(siteData, "FilePath");
@@ -49,7 +50,8 @@ namespace DataManager
                 ErrorMessages = new List<string>(), 
                 ServerName = serverName, 
                 Id = id,
-                Password = password
+                Password = password,
+                ThreadCount = threadCount
             };
 
             BackgroundWorker backgroundWorker = new BackgroundWorker();
@@ -86,6 +88,8 @@ namespace DataManager
                     }
                 }
             }
+            else
+                FindSiteAndRestart();
 
             if (DialogResult.OK == MessageBox.Show(sb.ToString(),
                     result.Item1 ? "오류" : "알림", 
@@ -274,6 +278,24 @@ namespace DataManager
             }
         }
 
+        private void DisplayDatabaseStatus(string content)
+        {
+            if (lc_DatabaseStatus.InvokeRequired)
+            {
+                Action displayDatabaseStatus = delegate { DisplayDatabaseStatus(content); };
+                lc_DatabaseStatus.Invoke(displayDatabaseStatus);
+            }
+            else
+            {
+                lc_DatabaseStatus.Text = content;
+                if (content.Equals("완료"))
+                {
+                    lc_DatabaseStatus.BackColor = System.Drawing.Color.Green;
+                    lc_DatabaseStatus.ImageOptions.Image = null;
+                }
+            }
+        }
+
         private string CompressionFolder(string folderPath)
         {
             DisplaySiteStatus("기존 파일 압축하는 중...");
@@ -351,30 +373,60 @@ namespace DataManager
                     Result = "Success",
                     ErrorMessage = string.Empty
                 };
+
+                DatabaseInfo BackupDbInfo = null;
+                DatabaseInfo tempDbDatabaseInfo = null;
                 try
                 {
                     // 1. 기존 DB -> 백업 DB로 변경 (Database_Manager)
+                    DisplayDatabaseStatus("기존 DB를 백업 DB로 변경하는 중...");
                     Tuple<string, DatabaseInfo> result = BackupCurrentDatabase(databaseData.DatabaseName);
                     if (result.Item1 != string.Empty)
                         throw new Exception(result.Item1);
-
-                    DatabaseInfo BackupDbInfo = result.Item2;
+                    else
+                        BackupDbInfo = result.Item2;
 
                     // 2. tempDbName으로 복원 (기존 DB에 데이터 insert 방지)
-                    DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
+                    DisplayDatabaseStatus("백업 파일로 임시 DB 복원하는 중...");
+                    tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
 
                     // 3. 데이터 복사 (CopyData)
+                    DisplayDatabaseStatus("백업 DB에서 임시 DB로 데이터 복사하는 중...");
                     Tuple<string, Sql_Manager> copyResult = CopyDataBackupToCurrent(tempDbDatabaseInfo.Current.DBName, BackupDbInfo);
                     if (copyResult.Item1 != string.Empty)
+                    {
                         throw new Exception(copyResult.Item1);
+                    }
 
                     // 4. tempDbName -> dbName으로 변경 (Database_Manager)
+                    DisplayDatabaseStatus("임시 DB를 기존 DB로 변경하는 중...");
                     ModifyDatabase(tempDbDatabaseInfo, copyResult.Item2);
 
                     status = "Y";
                 }
                 catch (Exception e)
                 {
+                    if (BackupDbInfo != null)
+                    { 
+                        // 오류 발생시 백업 DB를 기존 DB로 변경
+                        DisplayDatabaseStatus("오류 발생 >> 백업 DB를 기존 DB로 변경하는 중...");
+                        BackupDbInfo.SetTargetDbInfo();
+
+                        Sql_Manager sqlManager = new Sql_Manager();
+                        sqlManager.SqlConnect(Sql_Manager.CreateConnectionString(_DbThread.ServerName, BackupDbInfo.Current.DBName, _DbThread.Id, _DbThread.Password));
+                        ModifyDatabase(BackupDbInfo, sqlManager);
+                        sqlManager.SqlDisconnect();
+                    }
+
+                    if (tempDbDatabaseInfo != null)
+                    {
+                        // 오류 발생한 임시 DB 삭제
+                        Sql_Manager sqlManager = new Sql_Manager();
+                        sqlManager.SqlConnect(Sql_Manager.CreateConnectionString(_DbThread.ServerName, "master", _DbThread.Id, _DbThread.Password));
+                        DisplayDatabaseStatus("오류 발생 >> 임시 DB 삭제하는 중...");
+                        DropDatabase(tempDbDatabaseInfo, sqlManager);
+                        sqlManager.SqlDisconnect();
+                    }
                     _DbThread.ErrorMessages.Add($"{databaseData.DatabaseName} >> {e.Message}");
 
                     databaseData.Result = "Fail";
@@ -385,6 +437,7 @@ namespace DataManager
             }
 
             _DbThread.IsComplete = true;
+            DisplayDatabaseStatus("완료");
         }
 
         private Tuple<string, DatabaseInfo> BackupCurrentDatabase(string dbName)
@@ -431,8 +484,7 @@ namespace DataManager
                 tableList.Add(dataRow["table_name"].ToString());
             }
 
-            int threadCount = Environment.ProcessorCount > 8 ? 8 : Environment.ProcessorCount;
-            copyData.Initialize(tableList, backupDbInfo.Current.DBName, threadCount, ref sqlManager, false);
+            copyData.Initialize(tableList, backupDbInfo.Current.DBName, _DbThread.ThreadCount, ref sqlManager, false);
             while (!copyData.IsEnd) { }
             if (copyData.ErrorMessage != string.Empty)
                 sqlManager.SqlDisconnect();
@@ -445,7 +497,12 @@ namespace DataManager
             Database_Manager databaseManager = new Database_Manager(tempDbDatabaseInfo, false, ref sqlManager);
             Tuple<bool, DatabaseInfo> modifyResult = databaseManager.ModifyDatabase();
             if (!modifyResult.Item1)
-                throw new Exception("임시 DB 변경 실패");
+                throw new Exception("DB 변경 실패");
+        }
+
+        private void DropDatabase(DatabaseInfo databaseInfo, Sql_Manager sqlManager)
+        {
+            sqlManager.DropDatabase(databaseInfo.Current.DBName);
         }
 
         public Tuple<string, string> GetOriginalDatabaseNameFromBackupFile(string backupFilePath)
