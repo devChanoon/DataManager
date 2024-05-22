@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataManager
+﻿namespace DataManager
 {
     public static class Query_Manager
     {
@@ -86,6 +79,17 @@ ELSE
 	SELECT 'N'
 ";
             return query.Replace("@TABLE_NAME", tableName);
+        }
+
+        public static string CheckExistDatabase(string dbName)
+        {
+            string query = @"
+IF EXISTS (select name from sys.databases where name = '@DB_NAME')
+	SELECT 'Y'
+ELSE
+	SELECT 'N'
+";
+            return query.Replace("@DB_NAME", dbName);
         }
 
         public static string ValidationTableData(string sourceDbName, string tableName, string columnData)
@@ -228,6 +232,17 @@ ALTER DATABASE @CURRENT_DB_NAME MODIFY NAME = @NEW_NAME;
 ";
             query = query.Replace("@CURRENT_DB_NAME", currentDbName);
             return query.Replace("@NEW_NAME", newName);
+        }
+
+        public static string DropDatabase(string currentDbName)
+        {
+            string query = @"
+ALTER DATABASE [@CURRENT_DB_NAME] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+DROP DATABASE @CURRENT_DB_NAME
+";
+            query = query.Replace("@CURRENT_DB_NAME", currentDbName);
+            return query;
         }
     }
 }

@@ -103,6 +103,11 @@ namespace DataManager
             return ExecuteSql(DataType.STRING, Query_Manager.CheckExistTable(tableName));
         }
 
+        public string CheckExistDatabase(string dbName)
+        {
+            return ExecuteSql(DataType.STRING, Query_Manager.CheckExistDatabase(dbName));
+        }
+
         public DataTable ValidationTableData(string sourceDbName, string tableName, string columnData)
         {
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.ValidationTableData(sourceDbName, tableName, columnData));
@@ -199,6 +204,11 @@ namespace DataManager
         public void ChangeDBName(string currentDbName, string newName)
         {
             ExecuteSql(DataType.STRING, Query_Manager.ChangeDBName(currentDbName, newName));
+        }
+
+        public void DropDatabase(string currentDbName)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.DropDatabase(currentDbName));
         }
 
         private dynamic ExecuteSql(DataType dataType, string query)

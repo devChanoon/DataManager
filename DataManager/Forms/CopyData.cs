@@ -133,7 +133,7 @@ namespace DataManager
                 }
 
                 if (_InvalidTableList.Count > 0)
-                    throw new Exception(string.Format("{0} > not valid.", string.Join(",", _InvalidTableList)));
+                    throw new Exception($"{string.Join(",", _InvalidTableList)} > not valid.");
             }
             catch (Exception ex)
             {
@@ -316,17 +316,25 @@ namespace DataManager
 
         private void SetBackgroundWorkerList()
         {
-            int backgroundWorkerIndex = 0;
-            for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
+            if (tlp_BWList.InvokeRequired)
             {
-                BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
-                backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
-                if (backgroundWorkerProgress.BackgroundWorkerSeq > _BackgroundWorkerCount)
-                    backgroundWorkerProgress.Disabled();
-                else
+                Action setBackgroundWorkerList = delegate { SetBackgroundWorkerList(); };
+                tlp_BWList.Invoke(setBackgroundWorkerList);
+            }
+            else
+            { 
+                int backgroundWorkerIndex = 0;
+                for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
                 {
-                    backgroundWorkerProgress._GetTableInTableList = new BackgroundWorkerProgress.GetTableInTableList(GetTable);
-                    backgroundWorkerProgress.ConnectDatabase(_SqlManager.ConnectionString);
+                    BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
+                    backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
+                    if (backgroundWorkerProgress.BackgroundWorkerSeq > _BackgroundWorkerCount)
+                        backgroundWorkerProgress.Disabled();
+                    else
+                    {
+                        backgroundWorkerProgress._GetTableInTableList = new BackgroundWorkerProgress.GetTableInTableList(GetTable);
+                        backgroundWorkerProgress.ConnectDatabase(_SqlManager.ConnectionString);
+                    }
                 }
             }
 

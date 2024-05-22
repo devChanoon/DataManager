@@ -62,13 +62,29 @@ namespace DataManager
                 while (tableName != string.Empty && !_BackgroundWorker.CancellationPending)
                 {
                     if (ExistTable(tableName))
-                    { 
+                    {
+                        // 1. 기존 테이블 데이터 삭제
+                        if (_BackgroundWorker.CancellationPending) break;
                         DeleteTableData(tableName);
-                        string columnData = SearchColumnList(tableName);
-                        InsertTableData(tableName, columnData, SearchDataTable(tableName, columnData));
-                        if (!_BackgroundWorker.CancellationPending)
-                            ValidationTable(tableName, columnData);
 
+                        // 2. 계산열을 제외한 컬럼 데이터 조회
+                        if (_BackgroundWorker.CancellationPending) break;
+                        string columnData = SearchColumnList(tableName);
+
+                        // 3. 컬럼 데이터 기준 기존 테이블 데이터 조회
+                        if (_BackgroundWorker.CancellationPending) break;
+                        DataTable dataTable = SearchDataTable(tableName, columnData);
+
+                        // 4. 기존 테이블 데이터 신규 DB 테이블로 복사
+                        if (_BackgroundWorker.CancellationPending) break;
+                        InsertTableData(tableName, columnData, dataTable);
+
+                        // 5. 신규 테이블 데이터 검증
+                        if (_BackgroundWorker.CancellationPending) break;
+                        ValidationTable(tableName, columnData);
+
+                        // 6. 테이블 ID값 재설정
+                        if (_BackgroundWorker.CancellationPending) break;
                         ResetIdentity(tableName);
                     }
 
@@ -126,7 +142,7 @@ namespace DataManager
             string columnData = string.Empty;
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
-                columnData += string.Format("{0}[{1}]", i == 0 ? "" : ",", dataTable.Rows[i]["column_name"].ToString());
+                columnData += $"{(i == 0 ? "" : ",")}[{dataTable.Rows[i]["column_name"]}]";
             }
             return columnData;
         }

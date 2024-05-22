@@ -31,7 +31,7 @@ namespace DataManager
 
         public void AppendLog(string content, LogType logType = LogType.INFO)
         {            
-            lb_Log.Items.Add(string.Format("[{0}]\t[{1}]\t{2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), logType.ToString(), content));
+            lb_Log.Items.Add($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}]\t[{logType.ToString()}]\t{content}");
             lb_Log.SelectedIndex = lb_Log.Items.Count - 1;
         }
 

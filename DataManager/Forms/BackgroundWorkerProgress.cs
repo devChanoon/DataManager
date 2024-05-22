@@ -154,7 +154,7 @@ namespace DataManager
             {
                 lc_BWName.BackColor = _ExceptionStatus;
                 _IsException = true;
-                _ExceptionMessage = string.Format("Thread {0} > {1}", _BackgroundWorkerSeq, message);
+                _ExceptionMessage = $"Thread {_BackgroundWorkerSeq} > {message}";
             }
         }
 
@@ -185,7 +185,7 @@ namespace DataManager
                 else
                     pbc_Progress.Position = Convert.ToInt32(Convert.ToDouble(insertedRowCount) / Convert.ToDouble(totalRowCount) * 100);
 
-                lc_CompleteCount.Text = string.Format("{0} / {1}", insertedRowCount, totalRowCount);
+                lc_CompleteCount.Text = $"{insertedRowCount} / {totalRowCount}";
             }
         }
 
