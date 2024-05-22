@@ -292,6 +292,16 @@ namespace DataManager
             ModifyLog.AppendLog(log, logType);
         }
 
+        private void sb_ModifyExecute_MouseHover(object sender, EventArgs e)
+        {
+            lc_GuideMessage.Text = "※※ 현재 연결된 DB를 백업 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss ) ※※";
+        }
+
+        private void sb_ModifyRollback_MouseHover(object sender, EventArgs e)
+        {
+            lc_GuideMessage.Text = "※※ 현재 연결된 DB가 백업 DB일 경우 기존 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss -> 기존 DB명 ) ※※";
+        }
+
         private void sb_ModifyExecute_Click(object sender, EventArgs e)
         {
             ModifyDatabase(false);
@@ -370,7 +380,8 @@ namespace DataManager
             if (e.Column == gc_FilePath)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Zip Files (*.zip)|*.zip";
+                openFileDialog.Title = "배포 파일 선택";
+                openFileDialog.Filter = "Compressed Files (*.zip;*.tar)|*.zip;*.tar";
                 string fileName = openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : string.Empty;
                 gv_Site.SetFocusedRowCellValue(e.Column, fileName);
             }
@@ -381,6 +392,7 @@ namespace DataManager
             if (e.Column == gc_BackupFilePath)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Title = "백업 파일 선택";
                 openFileDialog.Filter = "Backup File (*.bak)|*.bak";
                 string fileName = openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : string.Empty;
                 gv_Database.SetFocusedRowCellValue(e.Column, fileName);
@@ -544,14 +556,5 @@ namespace DataManager
 
         #endregion
 
-        private void sb_ModifyExecute_MouseHover(object sender, EventArgs e)
-        {
-            lc_GuideMessage.Text = "※※ 현재 연결된 DB를 백업 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss ) ※※";
-        }
-
-        private void sb_ModifyRollback_MouseHover(object sender, EventArgs e)
-        {
-            lc_GuideMessage.Text = "※※ 현재 연결된 DB가 백업 DB일 경우 기존 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss -> 기존 DB명 ) ※※";
-        }
     }
 }
