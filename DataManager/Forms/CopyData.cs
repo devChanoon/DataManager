@@ -21,6 +21,7 @@ namespace DataManager
         private BackgroundWorker _BackgroundWorker = null;
 
         private List<string> _TableList = null;
+        private List<string> _InvalidTableList = null;
         private Queue<string> _TableQueue = null;
         private Dictionary<string, List<string>> _ForeignKeyList = null;
         private string _SourceDbName = string.Empty;
@@ -41,8 +42,7 @@ namespace DataManager
             SEARCH_FK,
             NOCHECK_FK,
             TRANSFER_DATA,
-            CHECK_FK,
-            CHECK_DATA
+            CHECK_FK
         }
 
         public void Initialize(List<string> tableList, string sourceDbName, int backgroundWorkerCount, ref Sql_Manager sqlManager, bool showMessage = true)
@@ -101,6 +101,7 @@ namespace DataManager
 
             try
             {
+                _InvalidTableList = new List<string>();
 
                 bool exit = false;
                 while (!exit)
@@ -126,15 +127,13 @@ namespace DataManager
                             AppendDetailLog("FK 활성화 시작");
                             SetForeignKey(true);
                             AppendDetailLog("FK 활성화 종료");
-                            break;
-                        case Step.CHECK_DATA:
-                            AppendDetailLog("데이터 검증 시작");
-                            ValidationTableData();
-                            AppendDetailLog("데이터 검증 종료");
                             exit = true;
                             break;
                     }
                 }
+
+                if (_InvalidTableList.Count > 0)
+                    throw new Exception($"{string.Join(",", _InvalidTableList)} > not valid.");
             }
             catch (Exception ex)
             {
@@ -209,44 +208,8 @@ namespace DataManager
                 }
             }
 
-            MoveNextStep();
-        }
-
-        private void ValidationTableData()
-        {
-            SetStepStartTime();
-            SetTableCount(0, _TableList.Count);
-
-            string invalidTable = string.Empty;
-            for (int i = 0; i < _TableList.Count; i++)
-            {
-                SetTableCount(i + 1, _TableList.Count);
-
-                string result = _SqlManager.CheckExistTable(_TableList[i]);
-                if (result == "Y")
-                {
-                    string tableName = _TableList[i];
-                    DataTable dataTable = _SqlManager.ValidationTableData(_SourceDbName, tableName, SearchColumnList(tableName));
-                    if (dataTable != null && dataTable.Rows.Count > 0)
-                    {
-                        invalidTable += string.Format("{0}[{1}]", invalidTable == string.Empty ? "" : ",", tableName);
-                    }
-                }
-            }
-
-            if (invalidTable != string.Empty)
-                throw new Exception(string.Format("{0} > not valid.", invalidTable));
-        }
-
-        private string SearchColumnList(string tableName)
-        {
-            DataTable dataTable = _SqlManager.GetColumnList(_SourceDbName, tableName);
-            string columnData = string.Empty;
-            for (int i = 0; i < dataTable.Rows.Count; i++)
-            {
-                columnData += string.Format("{0}[{1}]", i == 0 ? "" : ",", dataTable.Rows[i]["column_name"].ToString());
-            }
-            return columnData;
+            if (!isCheck)
+                MoveNextStep();
         }
 
         private void SetStepStartTime()
@@ -295,7 +258,10 @@ namespace DataManager
                         break;
                     }
                     else
+                    {
+                        MergeInvalidTableList(enabledBackroundWorkerList[i].InvalidTableList);
                         enabledBackroundWorkerList.RemoveAt(i);
+                    }   
                 }
 
                 if (existException)
@@ -304,6 +270,12 @@ namespace DataManager
                     {
                         enabledBackroundWorkerList[i].CancelBackgroundWorker();
                     }
+
+                    for (int i = 0; i < enabledBackroundWorkerList.Count; i++)
+                    {
+                        while (enabledBackroundWorkerList[i].IsBusy) { }
+                    }
+
                     throw new Exception(exceptionMessage);
                 }
 
@@ -336,20 +308,33 @@ namespace DataManager
             Close(this, null);
         }
 
+        private void MergeInvalidTableList(List<string> invalidTableList)        
+        {
+            _InvalidTableList.AddRange(invalidTableList);
+            _InvalidTableList.Sort();
+        }
 
         private void SetBackgroundWorkerList()
         {
-            int backgroundWorkerIndex = 0;
-            for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
+            if (tlp_BWList.InvokeRequired)
             {
-                BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
-                backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
-                if (backgroundWorkerProgress.BackgroundWorkerSeq > _BackgroundWorkerCount)
-                    backgroundWorkerProgress.Disabled();
-                else
+                Action setBackgroundWorkerList = delegate { SetBackgroundWorkerList(); };
+                tlp_BWList.Invoke(setBackgroundWorkerList);
+            }
+            else
+            { 
+                int backgroundWorkerIndex = 0;
+                for (int i = tlp_BWList.Controls.Count - 1; i >= 0; i--)
                 {
-                    backgroundWorkerProgress._GetTableInTableList = new BackgroundWorkerProgress.GetTableInTableList(GetTable);
-                    backgroundWorkerProgress.ConnectDatabase(_SqlManager.ConnectionString);
+                    BackgroundWorkerProgress backgroundWorkerProgress = ((BackgroundWorkerProgress)tlp_BWList.Controls[i]);
+                    backgroundWorkerProgress.Initialize(++backgroundWorkerIndex, _SourceDbName);
+                    if (backgroundWorkerProgress.BackgroundWorkerSeq > _BackgroundWorkerCount)
+                        backgroundWorkerProgress.Disabled();
+                    else
+                    {
+                        backgroundWorkerProgress._GetTableInTableList = new BackgroundWorkerProgress.GetTableInTableList(GetTable);
+                        backgroundWorkerProgress.ConnectDatabase(_SqlManager.ConnectionString);
+                    }
                 }
             }
 
@@ -376,13 +361,13 @@ namespace DataManager
             {
                 currentItem.Options.Indicator.ActiveStateImageOptions.SvgImage = svgImageCollection1[0];
                 currentItem.Options.Indicator.Width = 100;
-                currentItem.ContentBlock1.Description = $"Step {(stepProgressBar.SelectedItemIndex + 1)} of 5";
+                currentItem.ContentBlock1.Description = $"Step {(stepProgressBar.SelectedItemIndex + 1)} of 4";
                 currentItem.Options.ConnectorOffset = 0;
-                if (stepProgressBar.SelectedItemIndex < 2)
+                if (stepProgressBar.SelectedItemIndex < 1)
                     stepProgressBar.Appearances.CommonActiveColor = Color.IndianRed;
-                if (stepProgressBar.SelectedItemIndex >= 2 && stepProgressBar.SelectedItemIndex < 4)
+                if (stepProgressBar.SelectedItemIndex >= 1 && stepProgressBar.SelectedItemIndex < 3)
                     stepProgressBar.Appearances.CommonActiveColor = Color.Goldenrod;
-                if (stepProgressBar.SelectedItemIndex >= 4)
+                if (stepProgressBar.SelectedItemIndex >= 3)
                     stepProgressBar.Appearances.CommonActiveColor = Color.Green;
             }
         }

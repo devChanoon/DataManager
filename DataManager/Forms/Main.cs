@@ -44,9 +44,12 @@ namespace DataManager
             {
                 nud_MaxThread.Maximum = Environment.ProcessorCount;
                 nud_MaxThread.Value = Environment.ProcessorCount;
+
+                nud_AllInOneMaxThread.Maximum = Environment.ProcessorCount;
+                nud_AllInOneMaxThread.Value = Environment.ProcessorCount;
             }
 
-            this.Text = string.Format("DataManager - V{0}", System.Windows.Forms.Application.ProductVersion);
+            Text = $"DataManager - V{System.Windows.Forms.Application.ProductVersion}";
 
             InitializeDataSource(gv_Site);
             InitializeDataSource(gv_Database);
@@ -178,7 +181,7 @@ namespace DataManager
                 }
             }
 
-            lc_Checked_Count.Text = string.Format("{0} / {1}", _checkedCount, gv_TableList.RowCount);
+            lc_Checked_Count.Text = $"{_checkedCount} / {gv_TableList.RowCount}";
         }
 
         private void sb_CheckAll_Click(object sender, EventArgs e)
@@ -291,6 +294,16 @@ namespace DataManager
 
         private void sb_ModifyExecute_Click(object sender, EventArgs e)
         {
+            ModifyDatabase(false);
+        }
+
+        private void sb_ModifyRollback_Click(object sender, EventArgs e)
+        {
+            ModifyDatabase(true);
+        }
+
+        private void ModifyDatabase(bool isRollback)
+        {
             ModifyLog.Clear();
 
             if (!File.Exists(lb_DataDBPath.Text) || !File.Exists(lb_LogDBPath.Text))
@@ -305,6 +318,31 @@ namespace DataManager
             databaseInfo.Current.DataDBPath = lb_DataDBPath.Text;
             databaseInfo.Current.LogDBName = lb_LogDBName.Text;
             databaseInfo.Current.LogDBPath = lb_LogDBPath.Text;
+
+            if (isRollback)
+            {
+                // check time stamp
+                if (!Database_Manager.CheckBackupDB(databaseInfo.Current.DBName))
+                {
+                    ModifyLog.AppendLog("타임 스탬프를 확인할 수 없습니다.", Log.LogType.ALERT);
+                    return;
+                }
+                else
+                    databaseInfo.SetTargetDbInfo();
+
+                // check exist DB
+                if (_SqlManager.CheckExistDatabase(databaseInfo.Target.DBName) == "Y")
+                {
+                    ModifyLog.AppendLog($"[{databaseInfo.Target.DBName}] DB가 이미 존재합니다.", Log.LogType.ALERT);
+                    return;
+                }
+
+                if (File.Exists(databaseInfo.Target.DataDBPath) || File.Exists(databaseInfo.Target.LogDBPath))
+                {
+                    ModifyLog.AppendLog("data 파일 또는 log 파일이 경로에 이미 존재합니다.", Log.LogType.ALERT);
+                    return;
+                }
+            }
 
             Database_Manager databaseManager = new Database_Manager(databaseInfo, true, ref _SqlManager);
             databaseManager.ModifyDBAppendLog = new ModifyDBAppendLog(AppendLog);
@@ -471,7 +509,8 @@ namespace DataManager
                 GetDataSource(gv_Database), 
                 tb_DBAddress.Text,
                 tb_ID.Text,
-                tb_Password.Text);
+                tb_Password.Text,
+                (int)nud_AllInOneMaxThread.Value);
             allInOneDashBoard.ShowDialog();
         }
 
@@ -504,5 +543,15 @@ namespace DataManager
         }
 
         #endregion
+
+        private void sb_ModifyExecute_MouseHover(object sender, EventArgs e)
+        {
+            lc_GuideMessage.Text = "※※ 현재 연결된 DB를 백업 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss ) ※※";
+        }
+
+        private void sb_ModifyRollback_MouseHover(object sender, EventArgs e)
+        {
+            lc_GuideMessage.Text = "※※ 현재 연결된 DB가 백업 DB일 경우 기존 DB로 전환합니다. ( 기존 DB명#yyyyMMddHHmmss -> 기존 DB명 ) ※※";
+        }
     }
 }

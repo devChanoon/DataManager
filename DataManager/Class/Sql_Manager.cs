@@ -103,6 +103,11 @@ namespace DataManager
             return ExecuteSql(DataType.STRING, Query_Manager.CheckExistTable(tableName));
         }
 
+        public string CheckExistDatabase(string dbName)
+        {
+            return ExecuteSql(DataType.STRING, Query_Manager.CheckExistDatabase(dbName));
+        }
+
         public DataTable ValidationTableData(string sourceDbName, string tableName, string columnData)
         {
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.ValidationTableData(sourceDbName, tableName, columnData));
@@ -113,14 +118,14 @@ namespace DataManager
             ExecuteSql(DataType.STRING, Query_Manager.DeleteTableData(tablename));
         }
 
-        public void SetIdentityInsert(string tableName, bool isOn)
-        {
-            ExecuteSql(DataType.STRING, Query_Manager.SetIdentityInsert(tableName, isOn));
-        }
-
         public DataTable GetColumnList(string sourceDbName, string tableName)
         {
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetColumnList(sourceDbName, tableName));
+        }
+
+        public DataTable GetTableSchema(string tableName, string columnData)
+        {
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableSchema(tableName, columnData));
         }
 
         public DataTable GetTableDataList(string sourceDbName, string tableName, string columnData)
@@ -128,23 +133,21 @@ namespace DataManager
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName, columnData));
         }
 
-        public string InsertDataToTable(string tableName, string columnData, string valueData, ref string query)
+        public void InsertBulk(string tableName, DataTable dataTable)
         {
-            query = Query_Manager.InsertDataToTable(tableName, columnData, valueData);
-            return ExecuteSql(DataType.STRING, query);
-        }
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(_SqlConnection, SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.KeepNulls, null))
+            {   
+                bulkCopy.DestinationTableName = tableName;
+                bulkCopy.BulkCopyTimeout = 0;
 
-        public void InsertDataToTable(string tableName, string columnData, string valueData, Dictionary<string, byte[]> bytesData, ref string query)
-        {
-            query = Query_Manager.InsertDataToTable(tableName, columnData, valueData);
-            using (SqlCommand sqlCommand = new SqlCommand(query, _SqlConnection))
-            {
-                for (int i = 0; i < bytesData.Count; i++)
+                // DataTable의 열과 테이블의 열 매핑
+                foreach (DataColumn column in dataTable.Columns)
                 {
-                    sqlCommand.Parameters.AddWithValue(string.Format("@BinaryData_{0}", bytesData.Keys.ElementAt(i)), bytesData.Values.ElementAt(i));
+                    bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
                 }
 
-                sqlCommand.ExecuteNonQuery();
+                // Bulk insert 실행
+                bulkCopy.WriteToServer(dataTable);
             }
         }
 
@@ -201,6 +204,11 @@ namespace DataManager
         public void ChangeDBName(string currentDbName, string newName)
         {
             ExecuteSql(DataType.STRING, Query_Manager.ChangeDBName(currentDbName, newName));
+        }
+
+        public void DropDatabase(string currentDbName)
+        {
+            ExecuteSql(DataType.STRING, Query_Manager.DropDatabase(currentDbName));
         }
 
         private dynamic ExecuteSql(DataType dataType, string query)
