@@ -51,11 +51,11 @@
             this.gv_Site = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
             this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.gc_SiteTime = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gc_Result = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gc_ErrorMessage = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.gc_SiteName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.gc_Path = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.gc_FilePath = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gc_Result = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gc_ErrorMessage = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.repositoryItemImageEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemImageEdit();
             this.tp_ETC = new DevExpress.XtraTab.XtraTabPage();
             this.gc_ETC = new DevExpress.XtraGrid.GridControl();
@@ -411,52 +411,6 @@
             this.gc_SiteTime.Visible = true;
             this.gc_SiteTime.Width = 166;
             // 
-            // gc_Result
-            // 
-            this.gc_Result.AppearanceCell.Options.UseTextOptions = true;
-            this.gc_Result.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_Result.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_Result.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
-            this.gc_Result.AppearanceHeader.Options.UseFont = true;
-            this.gc_Result.AppearanceHeader.Options.UseForeColor = true;
-            this.gc_Result.AppearanceHeader.Options.UseTextOptions = true;
-            this.gc_Result.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_Result.Caption = "결과";
-            this.gc_Result.FieldName = "Result";
-            this.gc_Result.Name = "gc_Result";
-            this.gc_Result.OptionsColumn.AllowEdit = false;
-            this.gc_Result.OptionsColumn.AllowFocus = false;
-            this.gc_Result.OptionsColumn.ReadOnly = true;
-            this.gc_Result.OptionsFilter.AllowAutoFilter = false;
-            this.gc_Result.OptionsFilter.AllowFilter = false;
-            this.gc_Result.RowIndex = 1;
-            this.gc_Result.Visible = true;
-            this.gc_Result.Width = 166;
-            // 
-            // gc_ErrorMessage
-            // 
-            this.gc_ErrorMessage.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_ErrorMessage.AppearanceCell.Options.UseFont = true;
-            this.gc_ErrorMessage.AppearanceCell.Options.UseTextOptions = true;
-            this.gc_ErrorMessage.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.gc_ErrorMessage.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
-            this.gc_ErrorMessage.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
-            this.gc_ErrorMessage.AppearanceHeader.Options.UseFont = true;
-            this.gc_ErrorMessage.AppearanceHeader.Options.UseForeColor = true;
-            this.gc_ErrorMessage.AppearanceHeader.Options.UseTextOptions = true;
-            this.gc_ErrorMessage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_ErrorMessage.Caption = "오류메세지";
-            this.gc_ErrorMessage.FieldName = "ErrorMessage";
-            this.gc_ErrorMessage.Name = "gc_ErrorMessage";
-            this.gc_ErrorMessage.OptionsColumn.AllowEdit = false;
-            this.gc_ErrorMessage.OptionsColumn.AllowFocus = false;
-            this.gc_ErrorMessage.OptionsColumn.ReadOnly = true;
-            this.gc_ErrorMessage.OptionsFilter.AllowAutoFilter = false;
-            this.gc_ErrorMessage.OptionsFilter.AllowFilter = false;
-            this.gc_ErrorMessage.RowIndex = 1;
-            this.gc_ErrorMessage.Visible = true;
-            this.gc_ErrorMessage.Width = 986;
-            // 
             // gc_SiteName
             // 
             this.gc_SiteName.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F);
@@ -515,7 +469,7 @@
             this.gc_FilePath.AppearanceHeader.Options.UseForeColor = true;
             this.gc_FilePath.AppearanceHeader.Options.UseTextOptions = true;
             this.gc_FilePath.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gc_FilePath.Caption = "배포 파일 경로 (.zip)";
+            this.gc_FilePath.Caption = "배포 파일 경로 (.zip | .tar)";
             this.gc_FilePath.FieldName = "FilePath";
             this.gc_FilePath.Name = "gc_FilePath";
             this.gc_FilePath.OptionsColumn.AllowEdit = false;
@@ -525,6 +479,52 @@
             this.gc_FilePath.OptionsFilter.AllowFilter = false;
             this.gc_FilePath.Visible = true;
             this.gc_FilePath.Width = 449;
+            // 
+            // gc_Result
+            // 
+            this.gc_Result.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_Result.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_Result.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_Result.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_Result.AppearanceHeader.Options.UseFont = true;
+            this.gc_Result.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_Result.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_Result.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_Result.Caption = "결과";
+            this.gc_Result.FieldName = "Result";
+            this.gc_Result.Name = "gc_Result";
+            this.gc_Result.OptionsColumn.AllowEdit = false;
+            this.gc_Result.OptionsColumn.AllowFocus = false;
+            this.gc_Result.OptionsColumn.ReadOnly = true;
+            this.gc_Result.OptionsFilter.AllowAutoFilter = false;
+            this.gc_Result.OptionsFilter.AllowFilter = false;
+            this.gc_Result.RowIndex = 1;
+            this.gc_Result.Visible = true;
+            this.gc_Result.Width = 166;
+            // 
+            // gc_ErrorMessage
+            // 
+            this.gc_ErrorMessage.AppearanceCell.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_ErrorMessage.AppearanceCell.Options.UseFont = true;
+            this.gc_ErrorMessage.AppearanceCell.Options.UseTextOptions = true;
+            this.gc_ErrorMessage.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.gc_ErrorMessage.AppearanceHeader.Font = new System.Drawing.Font("맑은 고딕", 9F);
+            this.gc_ErrorMessage.AppearanceHeader.ForeColor = System.Drawing.Color.Black;
+            this.gc_ErrorMessage.AppearanceHeader.Options.UseFont = true;
+            this.gc_ErrorMessage.AppearanceHeader.Options.UseForeColor = true;
+            this.gc_ErrorMessage.AppearanceHeader.Options.UseTextOptions = true;
+            this.gc_ErrorMessage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gc_ErrorMessage.Caption = "오류메세지";
+            this.gc_ErrorMessage.FieldName = "ErrorMessage";
+            this.gc_ErrorMessage.Name = "gc_ErrorMessage";
+            this.gc_ErrorMessage.OptionsColumn.AllowEdit = false;
+            this.gc_ErrorMessage.OptionsColumn.AllowFocus = false;
+            this.gc_ErrorMessage.OptionsColumn.ReadOnly = true;
+            this.gc_ErrorMessage.OptionsFilter.AllowAutoFilter = false;
+            this.gc_ErrorMessage.OptionsFilter.AllowFilter = false;
+            this.gc_ErrorMessage.RowIndex = 1;
+            this.gc_ErrorMessage.Visible = true;
+            this.gc_ErrorMessage.Width = 986;
             // 
             // repositoryItemImageEdit1
             // 
