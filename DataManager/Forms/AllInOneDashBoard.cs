@@ -64,8 +64,6 @@ namespace DataManager
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            FindSiteAndRestart();
-
             Tuple<bool, StringBuilder> result = GetWorkResultMessage();
             StringBuilder sb = result.Item2;
             if (result.Item1)
