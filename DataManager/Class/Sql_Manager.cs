@@ -128,9 +128,9 @@ namespace DataManager
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableSchema(tableName, columnData));
         }
 
-        public DataTable GetTableDataList(string sourceDbName, string tableName, string columnData)
+        public DataTable GetTableDataList(string sourceDbName, string tableName, string columnData, int page)
         {
-            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName, columnData));
+            return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetTableDataList(sourceDbName, tableName, columnData, page));
         }
 
         public void InsertBulk(string tableName, DataTable dataTable)

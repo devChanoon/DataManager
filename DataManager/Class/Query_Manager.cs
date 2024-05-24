@@ -139,12 +139,28 @@ DELETE @TABLE_NAME
             return query.Replace("@TABLE_NAME", tableName);
         }
 
-        public static string GetTableDataList(string sourceDbName, string tableName, string columnData)
+        public static string GetTableDataList(string sourceDbName, string tableName, string columnData, int pageNumber)
         {
             string query = @"
-SELECT @COLUMN_DATA
-  FROM [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
+DECLARE @RowsPerPage AS INT = 1000000
+DECLARE @StartRow AS INT = ((@PAGE_NUMBER - 1) * @RowsPerPage) + 1
+DECLARE @EndRow AS INT = @PAGE_NUMBER * @RowsPerPage
+
+;WITH NumberedTable AS (
+    SELECT 
+        @COLUMN_DATA, 
+        ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS RowNumber
+    FROM 
+        [@SOURCE_DB_NAME].dbo.[@TABLE_NAME]
+)
+SELECT 
+    @COLUMN_DATA
+FROM 
+    NumberedTable
+WHERE 
+    RowNumber BETWEEN @StartRow AND @EndRow
 ";
+            query = query.Replace("@PAGE_NUMBER", pageNumber.ToString());
             query = query.Replace("@COLUMN_DATA", columnData);
             query = query.Replace("@SOURCE_DB_NAME", sourceDbName);
             return query.Replace("@TABLE_NAME", tableName);
