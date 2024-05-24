@@ -71,19 +71,15 @@ namespace DataManager
                         if (_BackgroundWorker.CancellationPending) break;
                         string columnData = SearchColumnList(tableName);
 
-                        // 3. 컬럼 데이터 기준 기존 테이블 데이터 조회
+                        // 3. 기존 테이블 데이터 신규 DB 테이블로 복사
                         if (_BackgroundWorker.CancellationPending) break;
-                        DataTable dataTable = SearchDataTable(tableName, columnData);
+                        InsertTableData(tableName, columnData);
 
-                        // 4. 기존 테이블 데이터 신규 DB 테이블로 복사
-                        if (_BackgroundWorker.CancellationPending) break;
-                        InsertTableData(tableName, columnData, dataTable);
-
-                        // 5. 신규 테이블 데이터 검증
+                        // 4. 신규 테이블 데이터 검증
                         if (_BackgroundWorker.CancellationPending) break;
                         ValidationTable(tableName, columnData);
 
-                        // 6. 테이블 ID값 재설정
+                        // 5. 테이블 ID값 재설정
                         if (_BackgroundWorker.CancellationPending) break;
                         ResetIdentity(tableName);
                     }
@@ -119,10 +115,10 @@ namespace DataManager
             GC.Collect();
         }
 
-        private DataTable SearchDataTable(string tableName, string columnData)
+        private DataTable SearchDataTable(string tableName, string columnData, int page)
         {
             _SetStatusSearch();
-            return _SqlManager.GetTableDataList(_SourceDbName, tableName, columnData);
+            return _SqlManager.GetTableDataList(_SourceDbName, tableName, columnData, page);
         }
 
         private void ResetIdentity(string tableName)
@@ -147,9 +143,16 @@ namespace DataManager
             return columnData;
         }
 
-        private void InsertTableData(string tableName, string columnData, DataTable targetDataTable)
+        private void InsertTableData(string tableName, string columnData)
         {
-            if (targetDataTable != null && targetDataTable.Rows.Count > 0)
+            // 컬럼 데이터 기준 기존 테이블 데이터 조회
+            int page = 1;
+            DataTable targetDataTable = SearchDataTable(tableName, columnData, page);
+
+            // 현재 DB 테이블 스키마 조회
+            DataTable currentDbTable = _SqlManager.GetTableSchema(tableName, columnData);
+
+            while (targetDataTable != null && targetDataTable.Rows.Count > 0)
             {
                 int totalRowCount = targetDataTable.Rows.Count;
 
@@ -158,9 +161,6 @@ namespace DataManager
 
                 // 입력 상태로 변경
                 _SetStatusInsert();
-
-                // 현재 DB 테이블 스키마 조회
-                DataTable currentDbTable = _SqlManager.GetTableSchema(tableName, columnData);
 
                 const int ADD_ROW_COUNT = 10000;
                 // 현재 DB 스키마에 원본 데이터 입력
@@ -185,6 +185,9 @@ namespace DataManager
                 // 남은 데이터 Insert
                 if (currentDbTable.Rows.Count > 0 && !_BackgroundWorker.CancellationPending)
                     BulkInsert(tableName, ref currentDbTable, totalRowCount);
+
+                // 다음 페이지 조회
+                targetDataTable = SearchDataTable(tableName, columnData, ++page);
             }
         }
 
