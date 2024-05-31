@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using DevExpress.XtraRichEdit;
+using System.Collections.Generic;
 
 namespace DataManager
 {
@@ -17,12 +18,10 @@ namespace DataManager
             // 확장자 확인
             string extension = Path.GetExtension(filePath);
             string argument = string.Empty;
-            bool moveParentDir = false;
             switch (extension.Replace(".", string.Empty))
             {
                 case "tar":
                     argument = $"-c \"tar -xf '{Path.GetFileName(filePath)}' -C '{targetPath}'\"";
-                    moveParentDir = true;
                     break;
 
                 case "zip":
@@ -30,7 +29,7 @@ namespace DataManager
                     break;
             }
 
-            Decompression(filePath, targetPath, argument, moveParentDir);
+            Decompression(filePath, targetPath, argument);
         }
 
         private static void Compression(string folderPath, string zipFilePath)
@@ -39,24 +38,23 @@ namespace DataManager
             ProcessPowerShell(true, argument);
         }
 
-        private static void Decompression(string filePath, string targetPath, string argument, bool moveParentDir)
+        private static void Decompression(string filePath, string targetPath, string argument)
         {
             if (!Directory.Exists(targetPath))
                 Directory.CreateDirectory(targetPath);
 
             ProcessPowerShell(false, argument, Path.GetDirectoryName(filePath));
 
-            if (moveParentDir)
+            string decompressionPath = GetDecompressionPath(targetPath);
+            if (decompressionPath == string.Empty)
+                throw new Exception("압축 해제된 경로를 찾을 수 없습니다.\r\n압축 해제가 진행 중일 수 있습니다.");
+            else if (decompressionPath != targetPath)
             {
-                // 파일명 추출
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                string targetPathInFolder = Path.Combine(targetPath, fileName);
-
                 // 폴더 내 파일들을 모두 targetPath로 이동
-                string[] files = Directory.GetFiles(targetPathInFolder, "*.*", SearchOption.AllDirectories);
+                string[] files = Directory.GetFiles(decompressionPath, "*.*", SearchOption.AllDirectories);
                 foreach (string file in files)
                 {
-                    string destPath = file.Replace(targetPathInFolder, targetPath);
+                    string destPath = file.Replace(decompressionPath, targetPath);
                     string destDir = Path.GetDirectoryName(destPath);
                     if (!Directory.Exists(destDir))
                         Directory.CreateDirectory(destDir);
@@ -64,6 +62,45 @@ namespace DataManager
                     File.Move(file, destPath);
                 }
             }
+        }
+
+        private static string GetDecompressionPath(string filePath)
+        {
+            string checkFileName = "Web.config"; // 체크할 파일명
+            
+            // 현재 디렉토리의 파일 검색
+            string[] allDirectorys = GetAllDirectories(filePath);
+            string targetPath = string.Empty;
+            foreach (string directory in allDirectorys)
+            {
+                targetPath = GetFilePath(directory, checkFileName);
+                if (!string.IsNullOrEmpty(targetPath))
+                    return Path.GetDirectoryName(targetPath);
+            }
+            return targetPath;
+        }
+
+        private static string[] GetAllDirectories(string rootPath)
+        {
+            List<string> directories = new List<string>() { rootPath };
+            // 하위 디렉토리에 대해 재귀적으로 검색
+            foreach (string directory in Directory.GetDirectories(rootPath))
+            {
+                directories.AddRange(GetAllDirectories(directory));
+            }
+
+            return directories.ToArray();
+        }
+
+        private static string GetFilePath(string path, string fileName)
+        {
+            foreach (string file in Directory.GetFiles(path))
+            {
+                if (Path.GetFileName(file).Equals(fileName, StringComparison.OrdinalIgnoreCase))
+                    return file;
+            }
+
+            return string.Empty;
         }
 
         private static void ProcessPowerShell(bool isCompressing, string argument, string workingDirectory = "")
