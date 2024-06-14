@@ -7,12 +7,18 @@ using System.IO;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace Patch
 {
     public partial class Patch : Form
     {
         private const string TARGET_PROGRAM = "DataManager.exe";
+        private List<string> _IgnoreFileList = new List<string>() { 
+            "DB_CONFIG.ini",
+            "Log.xml"
+        };
+
         public Patch()
         {
             InitializeComponent();
@@ -48,6 +54,9 @@ namespace Patch
                     // 각 파일을 목적지 디렉토리로 복사합니다.
                     foreach (string file in files)
                     {
+                        if (_IgnoreFileList.Contains(Path.GetFileName(file)))
+                            continue;
+
                         // 파일 이름만 추출하여 목적지 경로에 추가합니다.
                         string destinationFile = file.Replace(targetPath, Application.StartupPath);
                         string destinationDirectory = Path.GetDirectoryName(destinationFile);
