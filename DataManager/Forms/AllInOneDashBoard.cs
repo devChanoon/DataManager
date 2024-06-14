@@ -37,6 +37,7 @@ namespace DataManager
         private DateTime _StartTime;
 
         private Log_Manager _LogManager = new Log_Manager();
+        private const string PUBLIC_DOCUMENTS_DIRECTORY = "C:\\Users\\Public\\Documents";
 
         public AllInOneDashBoard(DataTable siteData, DataTable dbData, string serverName, string id, string password, int threadCount)
         {
@@ -448,11 +449,19 @@ namespace DataManager
         private DatabaseInfo RestoreDatabase(DatabaseInfo databaseInfo, string dbName, string backupFilePath)
         {
             string dataPath = Path.GetDirectoryName(databaseInfo.Current.DataDBPath);
-            Tuple<string, string> originDatabase = GetOriginalDatabaseNameFromBackupFile(backupFilePath);
+
+            // DB 옮기기
+            string tempBackupFilePath = $"{PUBLIC_DOCUMENTS_DIRECTORY}\\{Path.GetFileName(backupFilePath)}";
+            File.Copy(backupFilePath, tempBackupFilePath, true);
+
+            Tuple<string, string> originDatabase = GetOriginalDatabaseNameFromBackupFile(tempBackupFilePath);
             string suffix = $"_{DateTime.Now.ToString("yyyyMMddHHmmssfff")}";
             string tempDbName = $"{dbName}{suffix}";
-            DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(backupFilePath, _DbThread.ServerName, originDatabase.Item1, originDatabase.Item2, tempDbName, dataPath);
+            DatabaseInfo tempDbDatabaseInfo = RestoreDatabase(tempBackupFilePath, _DbThread.ServerName, originDatabase.Item1, originDatabase.Item2, tempDbName, dataPath);
             tempDbDatabaseInfo.SetTargetDbInfo(suffix);
+
+            // DB 옮긴 후 파일 삭제
+            File.Delete(tempBackupFilePath);
 
             return tempDbDatabaseInfo;
         }
