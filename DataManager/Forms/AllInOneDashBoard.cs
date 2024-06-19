@@ -11,6 +11,7 @@ using Microsoft.Web.Administration;
 using System.Threading;
 using System.Text;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace DataManager
 {
@@ -329,15 +330,47 @@ namespace DataManager
             // 각 파일을 목적지 디렉토리로 복사합니다.
             foreach (string file in files)
             {
-                if (_IgnoreFileList.Contains(Path.GetFileName(file)))
+                string fileName = Path.GetFileName(file);
+                if (_IgnoreFileList.Contains(fileName))
                     continue;
 
                 // 파일 이름만 추출하여 목적지 경로에 추가합니다.
                 string destinationFile = file.Replace(sourcePath, targetPath);
 
+                XElement rewriteSection = null;
+                if (fileName.ToLower() == "web.config")
+                    rewriteSection = GetRewriteSection(destinationFile);
+
                 // 파일을 덮어쓰기 위해 복사합니다.
                 File.Copy(file, destinationFile, true);
+
+                if (rewriteSection != null)
+                    SetRewriteSection(destinationFile, rewriteSection);
             }
+        }
+
+        private XElement GetRewriteSection(string filePath)
+        {
+            XElement rewriteSection = null;
+            if (File.Exists(filePath))
+            { 
+                XDocument webConfig = XDocument.Load(filePath);
+                rewriteSection = webConfig.Descendants("rewrite").FirstOrDefault();
+            }
+
+            return rewriteSection;
+        }
+
+        private void SetRewriteSection(string filePath, XElement rewriteSection)
+        {
+            XDocument webConfig = XDocument.Load(filePath);
+            XElement oldRewriteSection = webConfig.Descendants("rewrite").FirstOrDefault();
+            if (oldRewriteSection != null)
+                oldRewriteSection.ReplaceWith(rewriteSection);
+            else
+                webConfig.Descendants("system.webServer").FirstOrDefault().Add(rewriteSection);
+
+            webConfig.Save(filePath);
         }
         #endregion
 
