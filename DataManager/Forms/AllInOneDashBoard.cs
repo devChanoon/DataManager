@@ -341,6 +341,11 @@ namespace DataManager
                 if (fileName.ToLower() == "web.config")
                     rewriteSection = GetRewriteSection(destinationFile);
 
+                // 경로가 없을 경우에 생성하면서 파일 복사
+                string directoryPath = Path.GetDirectoryName(destinationFile);
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+
                 // 파일을 덮어쓰기 위해 복사합니다.
                 File.Copy(file, destinationFile, true);
 
