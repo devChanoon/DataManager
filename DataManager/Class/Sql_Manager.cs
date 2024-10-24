@@ -7,6 +7,8 @@ using System.Data;
 using System.Data.SqlClient;
 using DevExpress.XtraLayout.Customization;
 using System.Text.RegularExpressions;
+using DevExpress.Xpo.DB.Helpers;
+using DevExpress.Office.Utils;
 
 namespace DataManager
 {
@@ -82,6 +84,27 @@ namespace DataManager
         {
             return ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetDbList(currentDbName));
         }
+
+        public void DropCurrentUsers()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (DataRow row in ExecuteSql(DataType.DATA_TABLE, Query_Manager.DropCurrentUsers()).Rows)
+            {
+                stringBuilder.Append(row["query"].ToString());
+            }
+            ExecuteSql(DataType.STRING, stringBuilder.ToString());
+        }
+
+        public void CopyUserAndRoles(string sourceDbName)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (DataRow row in ExecuteSql(DataType.DATA_TABLE, Query_Manager.GetUserAndRoles(sourceDbName)).Rows)
+            {
+                stringBuilder.Append(row["query"].ToString());
+            }
+            ExecuteSql(DataType.STRING, stringBuilder.ToString());
+        }
+
 
         public DataTable GetTableList(string selectedDbName)
         {
