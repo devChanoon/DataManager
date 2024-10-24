@@ -397,7 +397,7 @@ namespace DataManager
                 };
 
                 DatabaseInfo BackupDbInfo = null;
-                DatabaseInfo tempDbDatabaseInfo = null;
+                DatabaseInfo tempDbInfo = null;
                 try
                 {
                     // 1. 기존 DB -> 백업 DB로 변경 (Database_Manager)
@@ -410,19 +410,23 @@ namespace DataManager
 
                     // 2. tempDbName으로 복원 (기존 DB에 데이터 insert 방지)
                     DisplayDatabaseStatus("백업 파일로 임시 DB 복원하는 중...");
-                    tempDbDatabaseInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
+                    tempDbInfo = RestoreDatabase(BackupDbInfo, databaseData.DatabaseName, databaseData.BackupFilePath);
 
                     // 3. 데이터 복사 (CopyData)
                     DisplayDatabaseStatus("백업 DB에서 임시 DB로 데이터 복사하는 중...");
-                    Tuple<string, Sql_Manager> copyResult = CopyDataBackupToCurrent(tempDbDatabaseInfo.Current.DBName, BackupDbInfo);
+                    Tuple<string, Sql_Manager> copyResult = CopyDataBackupToCurrent(tempDbInfo.Current.DBName, BackupDbInfo);
                     if (copyResult.Item1 != string.Empty)
                     {
                         throw new Exception(copyResult.Item1);
                     }
 
-                    // 4. tempDbName -> dbName으로 변경 (Database_Manager)
+                    // 4. 권한 복사
+                    DisplayDatabaseStatus("사용자 권한 복사하는 중...");
+                    CopyUserAndRoles(BackupDbInfo.Current.DBName, copyResult.Item2);
+
+                    // 5. tempDbName -> dbName으로 변경 (Database_Manager)
                     DisplayDatabaseStatus("임시 DB를 기존 DB로 변경하는 중...");
-                    ModifyDatabase(tempDbDatabaseInfo, copyResult.Item2);
+                    ModifyDatabase(tempDbInfo, copyResult.Item2);
 
                     status = "Y";
                 }
@@ -440,13 +444,13 @@ namespace DataManager
                         sqlManager.SqlDisconnect();
                     }
 
-                    if (tempDbDatabaseInfo != null)
+                    if (tempDbInfo != null)
                     {
                         // 오류 발생한 임시 DB 삭제
                         Sql_Manager sqlManager = new Sql_Manager();
                         sqlManager.SqlConnect(Sql_Manager.CreateConnectionString(_DbThread.ServerName, "master", _DbThread.Id, _DbThread.Password));
                         DisplayDatabaseStatus("오류 발생 >> 임시 DB 삭제하는 중...");
-                        DropDatabase(tempDbDatabaseInfo, sqlManager);
+                        DropDatabase(tempDbInfo, sqlManager);
                         sqlManager.SqlDisconnect();
                     }
                     _DbThread.ErrorMessages.Add($"{databaseData.DatabaseName} >> {e.Message}");
@@ -508,6 +512,7 @@ namespace DataManager
         {
             Sql_Manager sqlManager = new Sql_Manager();
             sqlManager.SqlConnect(Sql_Manager.CreateConnectionString(_DbThread.ServerName, tempDbName, _DbThread.Id, _DbThread.Password));
+
             List<string> tableList = new List<string>();
             foreach (DataRow dataRow in sqlManager.GetTableList(backupDbInfo.Current.DBName).Rows)
             {
@@ -521,6 +526,13 @@ namespace DataManager
 
             return new Tuple<string, Sql_Manager>(copyData.ErrorMessage, sqlManager);
         }
+
+        private void CopyUserAndRoles(string backupDbName, Sql_Manager sqlManager)
+        {
+            sqlManager.DropCurrentUsers();
+            sqlManager.CopyUserAndRoles(backupDbName);
+        }
+
 
         private void ModifyDatabase(DatabaseInfo tempDbDatabaseInfo, Sql_Manager sqlManager)
         {
