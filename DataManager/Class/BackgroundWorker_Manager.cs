@@ -89,7 +89,7 @@ namespace DataManager
             }
             catch (Exception ex)
             {
-                _SetStatusException(ex.Message);
+                _SetStatusException($"[{tableName}] >> {ex.Message}");
             }
         }
 
