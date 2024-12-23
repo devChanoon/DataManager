@@ -554,7 +554,8 @@ namespace DataManager
             restore.Devices.AddDevice(backupFilePath, DeviceType.File);
 
             // Read the backup header to get the database name
-            var fileList = restore.ReadFileList(new Server());
+            ServerConnection connection = new ServerConnection(_DbThread.ServerName);
+            var fileList = restore.ReadFileList(new Server(connection));
             return new Tuple<string, string>(fileList.Rows[0][0].ToString(), fileList.Rows[1][0].ToString());
         }
 
