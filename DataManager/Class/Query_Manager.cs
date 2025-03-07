@@ -34,24 +34,38 @@ SELECT CONCAT('DROP USER [', name, ']') as query
         {
             string query = @"
 SELECT CONCAT('CREATE USER [', a.name, '] FOR LOGIN [', a.name, ']; ') as query
-  FROM (select c.name
-		  from [@SOURCE_DB_NAME].sys.database_role_members a
-			   INNER JOIN [@SOURCE_DB_NAME].sys.database_principals b ON a.role_principal_id = b.principal_id
-			   INNER JOIN [@SOURCE_DB_NAME].sys.database_principals c ON a.member_principal_id = c.principal_id
-		 where c.name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys') -- 기본 사용자 제외
-	  group by c.name
+  FROM (select name
+		  from [@SOURCE_DB_NAME].sys.database_principals
+		 where name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys') -- 기본 사용자 제외
+	  group by name
 	   ) a
 	   LEFT OUTER JOIN sys.database_principals b on a.name = b.name
  WHERE b.name is null
 
- UNION ALL
+UNION ALL
 
 SELECT 'EXEC sp_addrolemember ''' + b.name + ''', ''' + c.name + '''; ' as query
   FROM [@SOURCE_DB_NAME].sys.database_role_members a
 	   INNER JOIN [@SOURCE_DB_NAME].sys.database_principals b ON a.role_principal_id = b.principal_id
 	   INNER JOIN [@SOURCE_DB_NAME].sys.database_principals c ON a.member_principal_id = c.principal_id
  WHERE c.type IN ('S', 'G', 'U') -- SQL 로그인, Windows 그룹, 데이터베이스 사용자만 포함
-   AND c.name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys'); -- 기본 사용자 제외
+   AND c.name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys') -- 기본 사용자 제외
+
+UNION ALL
+
+SELECT CONCAT(
+				CASE dp.state_desc
+					WHEN 'GRANT' THEN 'GRANT '
+					WHEN 'DENY' THEN 'DENY '
+					WHEN 'REVOKE' THEN 'REVOKE '
+				END COLLATE Korean_Wansung_CI_AS, -- 정렬 방식 통일
+				dp.permission_name COLLATE Korean_Wansung_CI_AS, ' ON [', so.name COLLATE Korean_Wansung_CI_AS, '] TO [', p.name COLLATE Korean_Wansung_CI_AS, '];'
+			 ) AS query
+  FROM [@SOURCE_DB_NAME].sys.database_permissions dp
+	   INNER JOIN [@SOURCE_DB_NAME].sys.objects so ON dp.major_id = so.object_id
+	   INNER JOIN [@SOURCE_DB_NAME].sys.database_principals p ON dp.grantee_principal_id = p.principal_id
+ WHERE p.type IN ('S', 'U', 'G')
+   AND p.name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys')
 ";
             return query.Replace("@SOURCE_DB_NAME", sourceDbName);
         }
