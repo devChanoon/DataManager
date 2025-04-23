@@ -107,7 +107,7 @@ namespace Patch
 
         private DataTable GetFileDataFromDatabase(string fileVersion)
         {
-            string connectionString = $"Server=sf.tascorp.co.kr,1444;database=_GIT_MIRROR_DB;uid=sa;pwd=!1Tascorp";
+            string connectionString = "";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
